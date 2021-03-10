@@ -3,5 +3,10 @@
     <string name="scissors">Scissors</string>
     <string name="paper">Paper</string>
     <string name="rock">Rock</string>
-    <string name="textview">TextView</string>
+    <string name="textview"> </string>
+    <string name="user_choice_visuali">user choice visuali</string>
+    <string name="computer_choice_visuali">computer choice visuali</string>
+    <string name="reset">Reset</string>
+    <string name="points">Points:</string>
+    <string name="_0">0</string>
 </resources>
