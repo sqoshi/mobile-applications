@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.app.roshambo.databinding.ActivityMainBinding
 
-
 class MainActivity : AppCompatActivity() {
     data class Move(val name: String, val img: Int, val note: String)
 
@@ -19,13 +18,25 @@ class MainActivity : AppCompatActivity() {
     private var userChoice = "";
     private var computerChoice = "";
     private lateinit var binding: ActivityMainBinding
+    private var counter = 0;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        if (savedInstanceState != null) {
+            val value = savedInstanceState.getInt("counter")
+            binding.counter.text = value.toString()
+            counter = value
+        }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("counter", counter)
+    }
+
 
     private fun showResultAndUpdateCounter() {
         // has user win?
@@ -36,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             val toast = Toast.makeText(binding.resultTextview.context, "Win :)", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
             toast.show()
-            binding.counter.text = (binding.counter.text.toString().toInt() + 1).toString()
+            updateCounter(1)
         } else if (userChoice == computerChoice) {
             val toast = Toast.makeText(binding.resultTextview.context, "Draw !", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
@@ -45,9 +56,18 @@ class MainActivity : AppCompatActivity() {
             val toast = Toast.makeText(binding.resultTextview.context, "Loss !", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0)
             toast.show()
-            binding.counter.text = (binding.counter.text.toString().toInt() - 1).toString()
+            updateCounter(-1)
         }
 
+    }
+
+    private fun updateCounter(value: Int) {
+        if (value == 0) {
+            counter = 0
+        } else {
+            counter += value;
+        }
+        binding.counter.text = counter.toString()
     }
 
     private fun computerMove() {
@@ -90,7 +110,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun resetButton(view: View) {
-        binding.counter.text = 0.toString()
+        updateCounter(0)
         binding.userChoice.setImageResource(0)
         binding.computerChoice.setImageResource(0)
     }
