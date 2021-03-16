@@ -15,10 +15,10 @@ class MainActivity : AppCompatActivity() {
         Move("paper", R.drawable.paper, "Paper throwed!"),
         Move("scissors", R.drawable.scissors, "Scissors throwed!")
     )
-    private var userChoice = "";
-    private var computerChoice = "";
+    private var userChoice = ""
+    private var computerChoice = ""
     private lateinit var binding: ActivityMainBinding
-    private var counter = 0;
+    private var counter = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,12 +29,29 @@ class MainActivity : AppCompatActivity() {
             val value = savedInstanceState.getInt("counter")
             binding.counter.text = value.toString()
             counter = value
+            val compSaved = savedInstanceState.getString("computerChoice")
+            val usrSaved = savedInstanceState.getString("userChoice")
+            if (compSaved != null && usrSaved != null) {
+                userChoice = usrSaved
+                computerChoice = compSaved
+            }
+
+            val comp = moves.find { it.name == compSaved }
+            val usr = moves.find { it.name == usrSaved }
+            if (comp != null && usr != null) {
+                binding.userChoice.setImageResource(usr.img)
+                binding.computerChoice.setImageResource(comp.img)
+            }
+
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt("counter", counter)
+        outState.putString("computerChoice", computerChoice)
+        outState.putString("userChoice", userChoice)
+
     }
 
 
@@ -65,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         if (value == 0) {
             counter = 0
         } else {
-            counter += value;
+            counter += value
         }
         binding.counter.text = counter.toString()
     }
