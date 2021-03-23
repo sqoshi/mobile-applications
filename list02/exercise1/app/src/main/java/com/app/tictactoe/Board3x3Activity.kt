@@ -1,12 +1,18 @@
 package com.app.tictactoe
 
+import android.annotation.SuppressLint
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import java.lang.Math.pow
 import java.util.*
+import kotlin.math.pow
 
 class Board3x3Activity : AppCompatActivity() {
     lateinit var buttons: Array<Array<Button>>
@@ -54,13 +60,15 @@ class Board3x3Activity : AppCompatActivity() {
 
         val buttonReset: Button = findViewById(R.id.resetButton)
         buttonReset.setOnClickListener {
-            Toast.makeText(applicationContext, "Game reset!", Toast.LENGTH_SHORT).show()
-            player1Fields = mutableSetOf()
-            player2Fields = mutableSetOf()
+            Toast.makeText(applicationContext, "HARD RESET!!", Toast.LENGTH_SHORT).show()
             player1Turn = true
             roundCounter = 0
             player1Score = 0
             player2Score = 0
+            updateScore(player1ScoreTextView, player1Score)
+            updateScore(player2ScoreTextView, player2Score)
+            resetFields()
+            resetBoard()
         }
 
 
@@ -75,28 +83,33 @@ class Board3x3Activity : AppCompatActivity() {
     }
 
     private fun onButtonClick(button: Button, r: Int, c: Int) {
-//        Toast.makeText(applicationContext, "button ${button.id} clicked", Toast.LENGTH_SHORT).show()
         if (!isFieldBusy(button)) {
             if (player1Turn) {
                 button.text = player1Symbol
                 player1Turn = false
                 player1Fields.add(intArrayOf(r, c))
+                if (hasWin(player1Fields)) {
+                    basicAlert(findViewById(R.id.resetButton), "Player1 has won")
+                    player1Score += 1
+                    updateScore(player1ScoreTextView, player1Score)
 
-                Toast.makeText(
-                    applicationContext,
-                    hasWin(player1Fields).toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
+                }
+
             } else {
                 button.text = player2Symbol
                 player1Turn = true
                 player2Fields.add(intArrayOf(r, c))
+                if (hasWin(player2Fields)) {
+                    basicAlert(findViewById(R.id.resetButton), "Player2 has won")
+                    player2Score += 1
+                    updateScore(player2ScoreTextView, player2Score)
+                }
 
-                Toast.makeText(
-                    applicationContext,
-                    hasWin(player2Fields).toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
+            }
+
+            if ((player1Fields.size + player2Fields.size).toDouble() == size.toDouble().pow(2.0)) {
+                basicAlert(findViewById(R.id.resetButton), "Draw")
+                roundCounter++
             }
         } else {
             Toast.makeText(applicationContext, "Field is busy.", Toast.LENGTH_SHORT).show()
@@ -108,23 +121,15 @@ class Board3x3Activity : AppCompatActivity() {
         // I really can not find how to compare two Sets of Arrays in Kotlin.
 
         if (fields.size > 2) {
-            Log.i("info", "++++++++++++++++++FIELDS+++++++++++++++++++++++++")
-            Log.i("info", fields.javaClass.name)
             for (seq in winSequences) {
-
-                Log.i("info", "----------------------------------------")
-                var counter = 0;
+                var counter = 0
                 for (cords in seq) {
-                    Log.i("info", cords.contentToString())
                     for (f in fields) {
-
-                        Log.i("info", f.contentToString())
-
                         if (cords.contentToString() == f.contentToString()) {
                             counter++
-                            Log.i("info", counter.toString())
                         }
                         if (counter == size) {
+                            roundCounter++
                             return true
                         }
                     }
@@ -132,14 +137,55 @@ class Board3x3Activity : AppCompatActivity() {
 
             }
         }
+
         return false
     }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateScore(txtView: TextView, score: Int) {
+        val nick = txtView.text.split(" ")[0]
+        txtView.text = "$nick $score"
+    }
+
 
     private fun isFieldBusy(button: Button): Boolean {
         if (button.text == "O" || button.text == "X") {
             return true
         }
         return false
+    }
+
+
+    private fun resetBoard() {
+        for (i in 0 until size) {
+            for (j in 0 until size) {
+                buttons[i][j].text = ""
+            }
+        }
+    }
+
+    private fun resetFields() {
+        player1Fields = mutableSetOf()
+        player2Fields = mutableSetOf()
+    }
+
+    private val positiveButtonClick = { _: DialogInterface, _: Int ->
+        resetBoard()
+        resetFields()
+    }
+
+    private fun basicAlert(view: View, message: String) {
+        val builder = AlertDialog.Builder(this)
+        with(builder)
+        {
+            setTitle("Result")
+            setCancelable(false)
+            setMessage(message)
+            setPositiveButton("OK", DialogInterface.OnClickListener(function = positiveButtonClick))
+            show()
+        }
+
+
     }
 
 
