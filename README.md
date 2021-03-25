@@ -4,11 +4,14 @@
 	- [Layout](#layout)
 		- [Portrait](#portrait)
 		- [Landscape](#landscape)
+	- [Code Example](#code-example)
 - [TicTacToe](#tictactoe)
 	- [Layout](#layout)
 		- [Main](#main)
 		- [Board](#board3x3)
 		- [Round Win](#round-win)
+    - [Code Example](#code-example)
+
 
 
 		
@@ -59,9 +62,49 @@ Players can play kotlin.maxint rounds and still recognize who is winning.
 Example win in 5x5 board mode.
 ![](list02/exercise1/media/5x5r.png)
 
+### Code Example
+```kotlin
+    private fun onButtonClick(button: Button, r: Int, c: Int) {
+        if (!isFieldBusy(button)) {
+            if (player1Turn) {
+                button.text = player1Symbol
+                button.setBackgroundColor(Color.parseColor("#5e60ce"))
+                player1Turn = false
+                player1Fields.add(intArrayOf(r, c))
+                if (hasWin(player1Fields)) {
+                    basicAlert(findViewById(R.id.resetButton), "Player1 has won")
+                    player1Score += 1
+                    updateScore(player1ScoreTextView, player1Score)
+
+                }
+
+            } else {
+                button.text = player2Symbol
+                button.setBackgroundColor(Color.parseColor("#64dfdf"))
+                player1Turn = true
+                player2Fields.add(intArrayOf(r, c))
+                if (hasWin(player2Fields)) {
+                    basicAlert(findViewById(R.id.resetButton), "Player2 has won")
+                    player2Score += 1
+                    updateScore(player2ScoreTextView, player2Score)
+                }
+
+            }
+
+            if ((player1Fields.size + player2Fields.size).toDouble() == size.toDouble().pow(2.0)) {
+                basicAlert(findViewById(R.id.resetButton), "Draw")
+                roundCounter++
+            }
+        } else {
+            Toast.makeText(applicationContext, "Field is busy.", Toast.LENGTH_SHORT).show()
+
+        }
+    }
+```
 
 ----------------------------
 
 # [HangMan](https://github.com/sqoshi/mobile-applications/list02/exercise2)
 
 
+----------------------------
