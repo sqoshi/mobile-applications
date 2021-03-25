@@ -9,8 +9,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var buttonBoard3x3: Button
     lateinit var buttonBoard5x5: Button
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         buttonBoard3x3 = findViewById(R.id.button_3x3)
         buttonBoard5x5 = findViewById(R.id.button_5x5)

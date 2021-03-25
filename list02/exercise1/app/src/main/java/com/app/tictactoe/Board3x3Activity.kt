@@ -2,6 +2,7 @@ package com.app.tictactoe
 
 import android.annotation.SuppressLint
 import android.content.DialogInterface
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -86,17 +87,18 @@ class Board3x3Activity : AppCompatActivity() {
         if (!isFieldBusy(button)) {
             if (player1Turn) {
                 button.text = player1Symbol
+                button.setBackgroundColor(Color.parseColor("#5e60ce"))
                 player1Turn = false
                 player1Fields.add(intArrayOf(r, c))
                 if (hasWin(player1Fields)) {
                     basicAlert(findViewById(R.id.resetButton), "Player1 has won")
                     player1Score += 1
                     updateScore(player1ScoreTextView, player1Score)
-
                 }
 
             } else {
                 button.text = player2Symbol
+                button.setBackgroundColor(Color.parseColor("#64dfdf"))
                 player1Turn = true
                 player2Fields.add(intArrayOf(r, c))
                 if (hasWin(player2Fields)) {
@@ -104,7 +106,6 @@ class Board3x3Activity : AppCompatActivity() {
                     player2Score += 1
                     updateScore(player2ScoreTextView, player2Score)
                 }
-
             }
 
             if ((player1Fields.size + player2Fields.size).toDouble() == size.toDouble().pow(2.0)) {
@@ -160,6 +161,7 @@ class Board3x3Activity : AppCompatActivity() {
         for (i in 0 until size) {
             for (j in 0 until size) {
                 buttons[i][j].text = ""
+                buttons[i][j].setBackgroundColor(Color.parseColor("#C61616"))
             }
         }
     }

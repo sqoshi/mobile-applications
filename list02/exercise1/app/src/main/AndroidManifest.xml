@@ -9,8 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TicTacToe">
-        <activity android:name=".Board5x5Activity"></activity>
-        <activity android:name=".Board3x3Activity" />
+        <activity
+            android:name=".Board5x5Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Board3x3Activity"
+            android:screenOrientation="portrait" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
