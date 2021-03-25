@@ -60,6 +60,7 @@ Players can play kotlin.maxint rounds and still recognize who is winning.
 
 #### Round Win
 Example win in 5x5 board mode.
+
 ![](list02/exercise1/media/5x5r.png)
 
 ### Code Example
