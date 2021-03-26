@@ -1,0 +1,86 @@
+<resources>
+    <string name="app_name">HangMan</string>
+    <string name="hangman_next_stage_display">hangman next stage display</string>
+    <string name="A">A</string>
+    <string name="B">B</string>
+    <string name="C">C</string>
+    <string name="D">D</string>
+    <string name="E">E</string>
+    <string name="F">F</string>
+    <string name="G">G</string>
+    <string name="H">H</string>
+    <string name="I">I</string>
+    <string name="J">J</string>
+    <string name="K">K</string>
+    <string name="L">L</string>
+    <string name="M">M</string>
+    <string name="N">N</string>
+    <string name="O">O</string>
+    <string name="P">P</string>
+    <string name="Q">Q</string>
+    <string name="R">R</string>
+    <string name="S">S</string>
+    <string name="T">T</string>
+    <string name="U">U</string>
+    <string name="V">V</string>
+    <string name="W">W</string>
+    <string name="X">X</string>
+    <string name="Y">Y</string>
+    <string name="Z">Z</string>
+
+    <string-array name="words">
+        <item>ABSTRACT</item>
+        <item>ASSERT</item>
+        <item>BOOLEAN</item>
+        <item>BREAK</item>
+        <item>BYTE</item>
+        <item>CASE</item>
+        <item>CATCH</item>
+        <item>CHAR</item>
+        <item>CLASS</item>
+        <item>CONST</item>
+        <item>CONTINUE</item>
+        <item>DEFAULT</item>
+        <item>DOUBLE</item>
+        <item>DO</item>
+        <item>ELSE</item>
+        <item>ENUM</item>
+        <item>EXTENDS</item>
+        <item>FALSE</item>
+        <item>FINAL</item>
+        <item>FINALLY</item>
+        <item>FLOAT</item>
+        <item>FOR</item>
+        <item>GOTO</item>
+        <item>IF</item>
+        <item>IMPLEMENTS</item>
+        <item>IMPORT</item>
+        <item>INSTANCEOF</item>
+        <item>INT</item>
+        <item>INTERFACE</item>
+        <item>LONG</item>
+        <item>NATIVE</item>
+        <item>NEW</item>
+        <item>NULL</item>
+        <item>PACKAGE</item>
+        <item>PRIVATE</item>
+        <item>PROTECTED</item>
+        <item>PUBLIC</item>
+        <item>RETURN</item>
+        <item>SHORT</item>
+        <item>STATIC</item>
+        <item>STRICTFP</item>
+        <item>SUPER</item>
+        <item>SWITCH</item>
+        <item>SYNCHRONIZED</item>
+        <item>THIS</item>
+        <item>THROW</item>
+        <item>THROWS</item>
+        <item>TRANSIENT</item>
+        <item>TRUE</item>
+        <item>TRY</item>
+        <item>VOID</item>
+        <item>VOLATILE</item>
+        <item>WHILE</item>
+    </string-array>
+</resources>
