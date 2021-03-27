@@ -1,12 +1,12 @@
 package com.app.hangman
 
+import android.R.attr
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
-import android.view.Window
+import android.view.View.OnTouchListener
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
                 findViewById(resources.getIdentifier("button$letter", "id", packageName))
             button.setOnClickListener {
                 onButtonClick(button)
+
             }
         }
 
@@ -104,13 +105,13 @@ class MainActivity : AppCompatActivity() {
             displayNextHangmanImage()
         }
         if (hasLost()) {
-            Thread.sleep(3_000)
             nextRoundRoutine("You Lost :(")
         }
         if (hasWin()) {
             nextRoundRoutine("You Won :)")
 
         }
+
     }
 
     private fun showLetter(letter: CharSequence) {
@@ -161,7 +162,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hasLost(): Boolean {
-        return imageIndex == 12
+        return imageIndex == 13
     }
 
     private fun hasWin(): Boolean {
