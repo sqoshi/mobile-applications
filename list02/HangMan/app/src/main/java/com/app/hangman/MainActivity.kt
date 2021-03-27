@@ -1,9 +1,13 @@
 package com.app.hangman
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Gravity
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -17,18 +21,64 @@ class MainActivity : AppCompatActivity() {
     lateinit var currentWord: String
     private lateinit var binding: ActivityMainBinding
     var imageIndex = 0
-    var discovered = 0
+    var alreadyDiscoveredLetters = hashSetOf<String>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+
+        hideStatusBarTop()
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        currentWord = getRandomWord()
         initializeButtons()
-        displayHiddenWord(currentWord)
 
+        if (savedInstanceState != null) {
+            onOrientationChange(savedInstanceState)
+        } else {
+            setUpGame()
+        }
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("imageIndex", imageIndex)
+        outState.putString("currentWord", currentWord)
+        outState.putString(
+            "alreadyDiscoveredLetters",
+            alreadyDiscoveredLetters.joinToString(separator = " ")
+        )
+
+    }
+
+    private fun onOrientationChange(savedInstanceState: Bundle) {
+        imageIndex = savedInstanceState.getInt("imageIndex")
+        displayNextHangmanImage(imageIndex)
+        currentWord = savedInstanceState.getString("currentWord").toString()
+        val alreadyDiscoveredLettersAsStr = savedInstanceState.getString("alreadyDiscoveredLetters")
+        if (alreadyDiscoveredLettersAsStr != null) {
+            alreadyDiscoveredLetters = alreadyDiscoveredLettersAsStr.split(" ").toHashSet()
+        }
+        showBlurredWord(currentWord)
+        for (x in alreadyDiscoveredLetters) {
+            showLetter(x)
+        }
+
+    }
+
+    private fun hideStatusBarTop() {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
+        actionBar?.hide()
+        actionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.hide()
+        supportActionBar?.setDisplayShowTitleEnabled(false);
+        supportActionBar?.title = null;
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
     }
 
     private fun getRandomWord(): String {
@@ -47,52 +97,75 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onButtonClick(button: Button) {
-        Log.i("info", currentWord + " " + button.text)
         if (currentWord.contains(button.text)) {
-            val indexes = findIndexes(currentWord, button.text.toString())
-            val lin = findViewById<LinearLayout>(R.id.word_layout)
-
-            for (i in indexes) {
-                val btn = lin.findViewWithTag<Button>("wordCard$i")
-                btn.setBackgroundColor(Color.BLACK)
-            }
-
-
+            alreadyDiscoveredLetters.add(button.text.toString())
+            showLetter(button.text)
         } else {
-            imageIndex++;
-            binding.imageView.setImageResource(
-                resources.getIdentifier(
-                    "hangman${imageIndex}",
-                    "drawable",
-                    packageName
-                )
-            )
+            displayNextHangmanImage()
+        }
+        if (hasLost()) {
+            Thread.sleep(3_000)
+            nextRoundRoutine("You Lost :(")
+        }
+        if (hasWin()) {
+            nextRoundRoutine("You Won :)")
+
         }
     }
 
-    private fun displayHiddenWord(word: String) {
-        val constraintLayout = findViewById<LinearLayout>(R.id.word_layout)
+    private fun showLetter(letter: CharSequence) {
+        val indexes = findIndexes(currentWord, letter.toString())
+        val lin = findViewById<LinearLayout>(R.id.word_layout)
+
+        for (i in indexes) {
+            val btn = lin.findViewWithTag<Button>("wordCard$i")
+            btn.setBackgroundColor(Color.BLACK)
+        }
+    }
+
+    private fun displayNextHangmanImage(ind: Int = -999) {
+        val moveIndex = if (ind == -999) {
+            imageIndex += 1
+            imageIndex
+        } else {
+            ind
+        }
+
+        binding.imageView.setImageResource(
+            resources.getIdentifier(
+                "hangman${moveIndex}",
+                "drawable",
+                packageName
+            )
+        )
+    }
+
+    private fun showBlurredWord(word: String) {
+        val lyt = findViewById<LinearLayout>(R.id.word_layout)
         for ((i, c) in word.toCharArray().withIndex()) {
             val button = Button(this)
             button.tag = "wordCard$i"
-            button.layoutParams = LinearLayout.LayoutParams(
+            val params = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 1.0f
             )
+            params.setMargins(1, 1, 1, 1)
+            button.layoutParams = params
             button.text = c.toString()
+            button.setPadding(0, 0, 0, 0)
             button.setBackgroundColor(Color.WHITE)
             button.setTextColor(Color.WHITE)
-            constraintLayout.addView(button);
+            lyt.addView(button);
         }
     }
 
     private fun hasLost(): Boolean {
-        return imageIndex == 13
+        return imageIndex == 12
     }
 
     private fun hasWin(): Boolean {
-        return discovered == currentWord.length
+        return alreadyDiscoveredLetters.size == currentWord.toSet().size
     }
 
     private fun findIndexes(word: String, guess: String): Set<Int> {
@@ -106,4 +179,30 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun setUpGame() {
+        alreadyDiscoveredLetters = hashSetOf()
+        imageIndex = 0
+        displayNextHangmanImage(ind = imageIndex)
+        currentWord = getRandomWord()
+        showBlurredWord(currentWord)
+    }
+
+    private fun nextRoundRoutine(message: String) {
+        basicAlert(message)
+        val lyt = findViewById<LinearLayout>(R.id.word_layout)
+        lyt.removeAllViewsInLayout()
+        setUpGame()
+    }
+
+    private fun basicAlert(message: String) {
+        Thread.sleep(1_000)
+        val builder = AlertDialog.Builder(this)
+        with(builder)
+        {
+            setTitle("Result")
+            setMessage(message)
+            show()
+        }
+
+    }
 }
