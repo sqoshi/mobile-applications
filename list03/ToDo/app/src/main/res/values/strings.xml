@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">ToDo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="task_addition">task addition</string>
+    <string name="name">Name</string>
+    <string name="date">Date</string>
+    <string name="description">Description</string>
+    <string name="add">ADD</string>
+    <string name="taskname">TaskName</string>
 </resources>

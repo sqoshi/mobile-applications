@@ -8,7 +8,7 @@ import java.sql.Date
 data class Task(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val date: Date,
+    val name: String,
+    val date: String,
     val description: String,
-    val priority: String,
 )

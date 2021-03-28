@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
-    private val readAllData: LiveData<List<Task>>
+    val readAllData: LiveData<List<Task>>
     private val repository: TaskRepository
 
     init {
