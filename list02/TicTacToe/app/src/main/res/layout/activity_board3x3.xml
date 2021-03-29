@@ -24,10 +24,11 @@
 
             <TextView
                 android:id="@+id/scoreView"
-                android:layout_width="123dp"
-                android:layout_height="50dp"
+                android:layout_width="183dp"
+                android:layout_height="73dp"
                 android:foregroundGravity="center"
                 android:gravity="center"
+                android:includeFontPadding="true"
                 android:text="@string/score"
                 android:textColor="#FFEDE8E8"
                 android:textSize="24sp"
@@ -78,37 +79,6 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:backgroundTint="#C61616"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/button11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:backgroundTint="#C61616"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/button12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:backgroundTint="#C61616"
-                    tools:ignore="ButtonStyle" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="130dp"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <Button
                     android:id="@+id/button00"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -126,6 +96,37 @@
 
                 <Button
                     android:id="@+id/button02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:backgroundTint="#C61616"
+                    tools:ignore="ButtonStyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:backgroundTint="#C61616"
+                    tools:ignore="ButtonStyle" />
+
+                <Button
+                    android:id="@+id/button11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:backgroundTint="#C61616"
+                    tools:ignore="ButtonStyle" />
+
+                <Button
+                    android:id="@+id/button12"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"

@@ -4,6 +4,7 @@ import android.R.attr
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
@@ -58,13 +59,16 @@ class MainActivity : AppCompatActivity() {
         displayNextHangmanImage(imageIndex)
         currentWord = savedInstanceState.getString("currentWord").toString()
         val alreadyDiscoveredLettersAsStr = savedInstanceState.getString("alreadyDiscoveredLetters")
-        if (alreadyDiscoveredLettersAsStr != null) {
+        if (alreadyDiscoveredLettersAsStr != null && !TextUtils.isEmpty(
+                alreadyDiscoveredLettersAsStr
+            )
+        ) {
             alreadyDiscoveredLetters = alreadyDiscoveredLettersAsStr.split(" ").toHashSet()
         }
         showBlurredWord(currentWord)
-        for (x in alreadyDiscoveredLetters) {
-            showLetter(x)
-        }
+        if (alreadyDiscoveredLetters.size > 0)
+            for (x in alreadyDiscoveredLetters)
+                showLetter(x)
 
     }
 

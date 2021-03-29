@@ -11,11 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.app.todo.R
-import com.app.todo.data.Task
-import com.app.todo.data.TaskViewModel
+import com.app.todo.model.Task
+import com.app.todo.viewmodel.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
-import kotlinx.android.synthetic.main.fragment_list.view.*
 import java.sql.Date
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -39,6 +38,7 @@ class AddFragment : Fragment() {
     }
 
     private fun insertDataToDataBase() {
+        //TODO PARSE STR TO DATE
         val desc = editTextDesc.text.toString()
         val date = editTextDate.text.toString()
         val name = editTextName.text.toString()

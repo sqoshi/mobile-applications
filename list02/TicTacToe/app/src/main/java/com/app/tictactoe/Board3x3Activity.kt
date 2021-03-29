@@ -25,6 +25,7 @@ class Board3x3Activity : AppCompatActivity() {
         setOf(
             setOf(intArrayOf(0, 0), intArrayOf(1, 1), intArrayOf(2, 2)),
             setOf(intArrayOf(0, 2), intArrayOf(1, 1), intArrayOf(2, 0)),
+
             setOf(intArrayOf(0, 0), intArrayOf(0, 1), intArrayOf(0, 2)),
             setOf(intArrayOf(1, 0), intArrayOf(1, 1), intArrayOf(1, 2)),
             setOf(intArrayOf(2, 0), intArrayOf(2, 1), intArrayOf(2, 2)),

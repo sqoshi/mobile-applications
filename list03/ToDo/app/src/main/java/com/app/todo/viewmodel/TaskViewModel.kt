@@ -1,9 +1,12 @@
-package com.app.todo.data
+package com.app.todo.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.app.todo.data.TaskDatabase
+import com.app.todo.repository.TaskRepository
+import com.app.todo.model.Task
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -20,6 +23,23 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     fun addTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.addTask(task)
+        }
+    }
+    fun updateTask(task: Task) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateTask(task)
+        }
+    }
+
+    fun deleteTask(task: Task) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteTask(task)
+        }
+    }
+
+    fun deleteAllTasks() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllTasks()
         }
     }
 }

@@ -3,9 +3,10 @@ package com.app.todo.fragments.list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.app.todo.R
-import com.app.todo.data.Task
+import com.app.todo.model.Task
 import kotlinx.android.synthetic.main.task_row.view.*
 
 
@@ -31,6 +32,12 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         holder.itemView.taskName.text = currItem.name.toString()
         holder.itemView.textViewDate.text = currItem.date.toString()
         holder.itemView.textViewDesc.text = currItem.description.toString()
+
+
+        holder.itemView.rowLayout.setOnClickListener{
+            val action = ListFragmentDirections.actionListFragmentToUpdateFragment(currItem)
+            holder.itemView.findNavController().navigate(action)
+        }
     }
 
     fun setData(task: List<Task>) {
