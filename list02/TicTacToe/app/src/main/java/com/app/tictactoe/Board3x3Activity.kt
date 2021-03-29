@@ -85,6 +85,7 @@ class Board3x3Activity : AppCompatActivity() {
     }
 
     private fun onButtonClick(button: Button, r: Int, c: Int) {
+        var win = false
         if (!isFieldBusy(button)) {
             if (player1Turn) {
                 button.text = player1Symbol
@@ -95,6 +96,7 @@ class Board3x3Activity : AppCompatActivity() {
                     basicAlert(findViewById(R.id.resetButton), "Player1 has won")
                     player1Score += 1
                     updateScore(player1ScoreTextView, player1Score)
+                    win = true
                 }
 
             } else {
@@ -106,10 +108,13 @@ class Board3x3Activity : AppCompatActivity() {
                     basicAlert(findViewById(R.id.resetButton), "Player2 has won")
                     player2Score += 1
                     updateScore(player2ScoreTextView, player2Score)
+                    win = true
                 }
             }
 
-            if ((player1Fields.size + player2Fields.size).toDouble() == size.toDouble().pow(2.0)) {
+            if (!win && (player1Fields.size + player2Fields.size).toDouble() == size.toDouble()
+                    .pow(2.0)
+            ) {
                 basicAlert(findViewById(R.id.resetButton), "Draw")
                 roundCounter++
             }
