@@ -11,8 +11,10 @@ import androidx.navigation.fragment.navArgs
 import com.app.todo.R
 import com.app.todo.model.Task
 import com.app.todo.viewmodel.TaskViewModel
+import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_update.*
 import kotlinx.android.synthetic.main.fragment_update.view.*
+import java.util.Date
 
 class UpdateFragment : Fragment() {
 
@@ -28,7 +30,12 @@ class UpdateFragment : Fragment() {
 
         mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
 
-        view.editTextUpdateDate.setText(args.currentTask.date)
+//        view.updateDatePicker.init(
+//            args.currentTask.date.year,
+//            args.currentTask.date.month,
+//            args.currentTask.date.day,
+//            null
+//        )
         view.editTextUpdateDesc.setText(args.currentTask.description)
         view.editTextUpdateName.setText(args.currentTask.name)
 
@@ -44,11 +51,12 @@ class UpdateFragment : Fragment() {
     private fun updateItem() {
         val name = editTextUpdateName.text.toString()
         val desc = editTextUpdateDesc.text.toString()
-        val date = editTextUpdateDate.text.toString()
+        val date1 = Date(datePicker.year, datePicker.month, datePicker.dayOfMonth)
+
 
         //TODO: CHECK INPUT
 
-        val updatedTask = Task(args.currentTask.id, name = name, description = desc, date = date)
+        val updatedTask = Task(args.currentTask.id, name = name, description = desc, date = date1)
 
         mTaskViewModel.updateTask(updatedTask)
         findNavController().navigate(R.id.action_updateFragment_to_listFragment)

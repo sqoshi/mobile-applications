@@ -35,11 +35,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
         initializeButtons()
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null)
             onOrientationChange(savedInstanceState)
-        } else {
+        else
             setUpGame()
-        }
+
 
     }
 
@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
         if (hasLost()) {
             nextRoundRoutine("You Lost :(")
         }
-        if (hasWin()) {
+        else if (hasWin()) {
             nextRoundRoutine("You Won :)")
 
         }

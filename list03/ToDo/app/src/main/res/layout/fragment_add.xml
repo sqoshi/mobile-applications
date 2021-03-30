@@ -29,7 +29,24 @@
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:text="@string/name" />
+            android:hint="@string/name" />
+
+        <DatePicker
+            android:id="@+id/datePicker"
+            android:layout_width="match_parent"
+            android:layout_height="155dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner"
+            android:ems="10"
+            android:inputType="date"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp" />
 
         <EditText
             android:id="@+id/editTextDate"
@@ -45,7 +62,7 @@
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:text="@string/date" />
+            android:hint="@string/date" />
 
         <EditText
             android:id="@+id/editTextDesc"
@@ -57,12 +74,12 @@
             android:layout_marginBottom="10dp"
             android:ems="10"
             android:gravity="start|top"
-            android:inputType="textMultiLine"
+            android:inputType="textLongMessage"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:text="@string/description" />
+            android:hint="@string/description" />
 
         <Button
             android:id="@+id/buttonAdd"
@@ -74,6 +91,7 @@
             android:layout_marginBottom="10dp"
             android:background="#251A1A"
             android:includeFontPadding="true"
+            android:paddingBottom="10dp"
             android:shadowColor="#FFFFFF"
             android:text="@string/add" />
     </LinearLayout>
