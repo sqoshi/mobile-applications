@@ -1,12 +1,13 @@
 package com.app.todo.fragments.add
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -33,12 +34,15 @@ class AddFragment : Fragment() {
             insertDataToDataBase()
         }
 
+        view.buttonSetIcon.setOnClickListener {
+            displayDialog()
+        }
+
         return view
 
     }
 
     private fun insertDataToDataBase() {
-        //TODO PARSE STR TO DATE
         val desc = editTextDesc.text.toString()
         val name = editTextName.text.toString()
         val date = Date(datePicker.year, datePicker.month, datePicker.dayOfMonth)
@@ -51,13 +55,39 @@ class AddFragment : Fragment() {
             Toast.makeText(requireContext(), "Task added.", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_addFragment_to_listFragment)
         } else
-            Toast.makeText(requireContext(), "Please input the name of the task.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                "Please input the name of the task.",
+                Toast.LENGTH_SHORT
+            ).show()
 
     }
 
 
     private fun inputCheck(name: String): Boolean {
         return !(TextUtils.isEmpty(name))
+    }
+
+    private fun displayDialog() {
+        val dialogView: View = LayoutInflater.from(requireContext()).inflate(R.layout.alert_dialog, null)
+        val el: LinearLayout = dialogView.findViewById(R.id.work_option)
+
+
+
+        val dialog: AlertDialog = AlertDialog.Builder(
+            requireContext()
+        )
+            .setTitle("Choose icon")
+            .setMessage("Set icon for task.")
+            .setView(dialogView)
+            .setNegativeButton("Cancel", null)
+            .create()
+        dialog.show()
+        el.setOnClickListener {
+            Toast.makeText(requireContext(), "test", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+
+        }
     }
 
 

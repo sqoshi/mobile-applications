@@ -10,4 +10,6 @@
     <string name="taskname">TaskName</string>
     <string name="update">update</string>
     <string name="delete_task">Delete Task</string>
+    <string name="change_icon">Change Icon</string>
+    <dimen name="box_size">128dp</dimen>
 </resources>

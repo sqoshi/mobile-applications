@@ -29,12 +29,13 @@
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:hint="@string/name" />
+            android:hint="@string/name"
+            android:importantForAutofill="no" />
 
         <DatePicker
             android:id="@+id/datePicker"
             android:layout_width="match_parent"
-            android:layout_height="155dp"
+            android:layout_height="136dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
@@ -49,50 +50,50 @@
             android:paddingBottom="10dp" />
 
         <EditText
-            android:id="@+id/editTextDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:ems="10"
-            android:inputType="date"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:hint="@string/date" />
-
-        <EditText
             android:id="@+id/editTextDesc"
             android:layout_width="match_parent"
-            android:layout_height="146dp"
+            android:layout_height="103dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
             android:ems="10"
             android:gravity="start|top"
+            android:hint="@string/description"
             android:inputType="textLongMessage"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:hint="@string/description" />
+            android:autofillHints="" />
+
+        <Button
+            android:id="@+id/buttonSetIcon"
+            android:layout_width="@dimen/box_size"
+            android:layout_height="@dimen/box_size"
+
+            android:layout_gravity="center"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:includeFontPadding="true"
+            android:text="@string/change_icon" />
 
         <Button
             android:id="@+id/buttonAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginLeft="80dp"
             android:layout_marginTop="60dp"
             android:layout_marginRight="80dp"
             android:layout_marginBottom="10dp"
             android:background="#251A1A"
+            android:foregroundGravity="center"
+            android:gravity="center"
             android:includeFontPadding="true"
             android:paddingBottom="10dp"
             android:shadowColor="#FFFFFF"
             android:text="@string/add" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
