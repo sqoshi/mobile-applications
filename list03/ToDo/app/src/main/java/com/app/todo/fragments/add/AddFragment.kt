@@ -3,10 +3,12 @@ package com.app.todo.fragments.add
 import android.app.AlertDialog
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -35,7 +37,7 @@ class AddFragment : Fragment() {
         }
 
         view.buttonSetIcon.setOnClickListener {
-            displayDialog()
+            displayDialog(view)
         }
 
         return view
@@ -46,10 +48,10 @@ class AddFragment : Fragment() {
         val desc = editTextDesc.text.toString()
         val name = editTextName.text.toString()
         val date = Date(datePicker.year, datePicker.month, datePicker.dayOfMonth)
-
+        val type = iconImageView.tag.toString()
         if (inputCheck(name)) {
 
-            val task = Task(0, name = name, date = date, description = desc)
+            val task = Task(0, name = name, date = date, description = desc, type = type)
             mTaskViewModel.addTask(task)
 
             Toast.makeText(requireContext(), "Task added.", Toast.LENGTH_SHORT).show()
@@ -68,10 +70,9 @@ class AddFragment : Fragment() {
         return !(TextUtils.isEmpty(name))
     }
 
-    private fun displayDialog() {
-        val dialogView: View = LayoutInflater.from(requireContext()).inflate(R.layout.alert_dialog, null)
-        val el: LinearLayout = dialogView.findViewById(R.id.work_option)
-
+    private fun displayDialog(view: View) {
+        val dialogView: View =
+            LayoutInflater.from(requireContext()).inflate(R.layout.alert_dialog, null)
 
 
         val dialog: AlertDialog = AlertDialog.Builder(
@@ -82,21 +83,37 @@ class AddFragment : Fragment() {
             .setView(dialogView)
             .setNegativeButton("Cancel", null)
             .create()
-        dialog.show()
-        el.setOnClickListener {
-            Toast.makeText(requireContext(), "test", Toast.LENGTH_SHORT).show()
-            dialog.dismiss()
+
+        val o1: LinearLayout = dialogView.findViewById(R.id.pets_option)
+        o1.setOnClickListener {
+            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_pets_24)
+            view.iconImageView.tag = "ic_baseline_pets_24"
+        }
+        val o2: LinearLayout = dialogView.findViewById(R.id.school_option)
+        o2.setOnClickListener {
+            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_school_24)
+            view.iconImageView.tag = "ic_baseline_school_24"
 
         }
+        val o3: LinearLayout = dialogView.findViewById(R.id.work_option)
+        o3.setOnClickListener {
+            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_work_24)
+            view.iconImageView.tag = "ic_baseline_work_24"
+
+        }
+        val o4: LinearLayout = dialogView.findViewById(R.id.person_option)
+        o4.setOnClickListener {
+            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_person_24)
+            view.iconImageView.tag = "ic_baseline_person_24"
+
+        }
+        dialog.show()
+    }
+
+    private fun dialogListItemOnClick(view: View, dialog: AlertDialog, draw: Int) {
+        view.iconImageView.setImageResource(draw)
+        dialog.dismiss()
     }
 
 
-    private fun getDateFromDatePicker(datePicker: DatePicker): Date {
-        val day = datePicker.dayOfMonth
-        val month = datePicker.month
-        val year = datePicker.year
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.set(year, month, day)
-        return calendar.time
-    }
 }

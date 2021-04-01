@@ -56,7 +56,7 @@ class UpdateFragment : Fragment() {
 
         //TODO: CHECK INPUT
 
-        val updatedTask = Task(args.currentTask.id, name = name, description = desc, date = date1)
+        val updatedTask = Task(args.currentTask.id, name = name, description = desc, date = date1,type="test")
 
         mTaskViewModel.updateTask(updatedTask)
         findNavController().navigate(R.id.action_updateFragment_to_listFragment)

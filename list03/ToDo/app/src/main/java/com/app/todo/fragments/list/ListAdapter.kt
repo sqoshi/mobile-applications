@@ -1,6 +1,7 @@
 package com.app.todo.fragments.list
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.app.todo.R
 import com.app.todo.model.Task
-import kotlinx.android.synthetic.main.fragment_add.view.*
 import kotlinx.android.synthetic.main.task_row.view.*
 
 
@@ -37,6 +37,12 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         holder.itemView.textViewDate.text = currItem.date.year.toString() +
                 "-" + addZeroPrefix(currItem.date.month.toString()) +
                 "-" + addZeroPrefix(currItem.date.day.toString())
+
+        val resources: Resources = holder.itemView.context.resources
+        val resourceId = resources.getIdentifier(currItem.type, "drawable",
+            holder.itemView.context.packageName);
+
+        holder.itemView.iconRowImageView.setImageResource(resourceId)
 
 
         holder.itemView.rowLayout.setOnClickListener {
