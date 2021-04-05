@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,46 +15,65 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/iconImageView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="icon preview"
-            android:src="@drawable/ic_baseline_school_24" />
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/editTextName"
-            android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/iconImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:contentDescription="@string/icon_preview"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_baseline_school_24" />
+
+            <EditText
+                android:id="@+id/editTextName"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="3"
+                android:ems="10"
+                android:hint="@string/name"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:hint="@string/name"
-            android:importantForAutofill="no" />
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:weightSum="100">
 
-        <DatePicker
-            android:id="@+id/datePicker"
-            android:layout_width="match_parent"
-            android:layout_height="136dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:calendarViewShown="false"
-            android:datePickerMode="spinner"
-            android:ems="10"
-            android:inputType="date"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp" />
+            <DatePicker
+                android:id="@+id/datePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner" />
+
+            <TimePicker
+                android:id="@+id/timePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:timePickerMode="spinner" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/editTextDesc"
@@ -64,6 +83,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
+            android:layout_weight="2"
+            android:autofillHints=""
             android:ems="10"
             android:gravity="start|top"
             android:hint="@string/description"
@@ -71,36 +92,40 @@
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
             android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:autofillHints="" />
+            android:paddingBottom="10dp" />
 
-        <Button
-            android:id="@+id/buttonSetIcon"
-            android:layout_width="@dimen/box_size"
-            android:layout_height="@dimen/box_size"
 
-            android:layout_gravity="center"
-            android:foregroundGravity="center"
-            android:gravity="center"
-            android:includeFontPadding="true"
-            android:text="@string/change_icon" />
 
-        <Button
-            android:id="@+id/buttonAdd"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="80dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginRight="80dp"
-            android:layout_marginBottom="10dp"
-            android:background="#251A1A"
-            android:foregroundGravity="center"
-            android:gravity="center"
-            android:includeFontPadding="true"
-            android:paddingBottom="10dp"
-            android:shadowColor="#FFFFFF"
-            android:text="@string/add" />
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/prioritySpinner"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:includeFontPadding="true"
+                android:spinnerMode="dialog"
+                android:layout_width="0dp"/>
+
+            <Button
+                android:id="@+id/buttonAdd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="#251A1A"
+                android:foregroundGravity="center"
+                android:gravity="center"
+                android:includeFontPadding="true"
+                android:paddingBottom="10dp"
+                android:shadowColor="#FFFFFF"
+                android:text="@string/add" />
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

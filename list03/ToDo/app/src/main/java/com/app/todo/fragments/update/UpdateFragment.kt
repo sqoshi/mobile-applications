@@ -2,9 +2,10 @@ package com.app.todo.fragments.update
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.*
 import androidx.fragment.app.Fragment
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -12,8 +13,10 @@ import com.app.todo.R
 import com.app.todo.model.Task
 import com.app.todo.viewmodel.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
+import kotlinx.android.synthetic.main.fragment_add.view.*
 import kotlinx.android.synthetic.main.fragment_update.*
 import kotlinx.android.synthetic.main.fragment_update.view.*
+import kotlinx.android.synthetic.main.task_row.view.*
 import java.util.Date
 
 class UpdateFragment : Fragment() {
@@ -29,40 +32,120 @@ class UpdateFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_update, container, false)
 
         mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+        view.datePickerUpdate.init(
+            args.currentTask.date.year,
+            args.currentTask.date.month,
+            args.currentTask.date.day,
+            null
+        )
+        view.timePickerUpdate.setIs24HourView(true)
+        view.timePickerUpdate.hour = args.currentTask.date.hours
+        view.timePickerUpdate.minute = args.currentTask.date.minutes
 
-//        view.updateDatePicker.init(
-//            args.currentTask.date.year,
-//            args.currentTask.date.month,
-//            args.currentTask.date.day,
-//            null
-//        )
+
         view.editTextUpdateDesc.setText(args.currentTask.description)
         view.editTextUpdateName.setText(args.currentTask.name)
+
+        val resourceId = resources.getIdentifier(
+            args.currentTask.type, "drawable",
+            activity?.packageName
+        );
+        view.iconImageViewUpdate.tag = args.currentTask.type
+        view.iconImageViewUpdate.setImageResource(resourceId)
+
+        view.iconImageViewUpdate.setOnClickListener {
+            displayDialog(view)
+        }
+
+
 
         view.buttonUpdate.setOnClickListener {
             updateItem()
         }
 
         setHasOptionsMenu(true)
+
+
+        installSpinner(view)
+
+
+
         return view
+    }
+
+    private fun installSpinner(view: View) {
+        val priorities = resources.getStringArray(R.array.priorities)
+
+        val spinner = view.findViewById<Spinner>(R.id.prioritySpinnerUpdate)
+        if (spinner != null) {
+            val adapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_item, priorities
+            )
+            spinner.adapter = adapter
+
+            spinner.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View, position: Int, id: Long
+                ) {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.selected_item) + " " +
+                                "" + priorities[position], Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // write code to perform some action
+                }
+            }
+            prioritySpinnerUpdate.setSelection(adapter.getPosition(args.currentTask.priority));        }
     }
 
 
     private fun updateItem() {
         val name = editTextUpdateName.text.toString()
         val desc = editTextUpdateDesc.text.toString()
-        val date1 = Date(datePicker.year, datePicker.month, datePicker.dayOfMonth)
+        val date = Date(
+            datePickerUpdate.year,
+            datePickerUpdate.month,
+            datePickerUpdate.dayOfMonth,
+            timePickerUpdate.hour,
+            timePickerUpdate.minute
+        )
+        val type = iconImageViewUpdate.tag.toString()
+        val priority = prioritySpinner.selectedItem.toString()
 
 
-        //TODO: CHECK INPUT
+        if (inputCheck(name, desc, date, type)) {
+            val updatedTask =
+                Task(
+                    args.currentTask.id,
+                    name = name,
+                    description = desc,
+                    date = date,
+                    type = type,
+                    priority = priority
+                )
+            mTaskViewModel.updateTask(updatedTask)
 
-        val updatedTask = Task(args.currentTask.id, name = name, description = desc, date = date1,type="test")
-
-        mTaskViewModel.updateTask(updatedTask)
-        findNavController().navigate(R.id.action_updateFragment_to_listFragment)
-        Toast.makeText(requireContext(), "Successfully updated task", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_updateFragment_to_listFragment)
+            Toast.makeText(requireContext(), "Successfully updated task", Toast.LENGTH_SHORT).show()
+        } else
+            Toast.makeText(
+                requireContext(),
+                "Please, change any field.",
+                Toast.LENGTH_SHORT
+            ).show()
 
     }
+
+    private fun inputCheck(name: String, desc: String, date: Date, type: String): Boolean {
+        return (args.currentTask.description != desc || args.currentTask.name != name || args.currentTask.type != type || args.currentTask.date.toString() != date.toString())
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.delete_menu, menu)
@@ -91,5 +174,50 @@ class UpdateFragment : Fragment() {
         builder.setMessage("Are you sure you want to delete ${args.currentTask.name}?")
         builder.create()
         builder.show()
+    }
+
+    private fun displayDialog(view: View) {
+        val dialogView: View =
+            LayoutInflater.from(requireContext()).inflate(R.layout.alert_dialog, null)
+
+
+        val dialog: AlertDialog = AlertDialog.Builder(
+            requireContext()
+        )
+            .setTitle("Choose icon")
+            .setMessage("Set icon for task.")
+            .setView(dialogView)
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        val o1: LinearLayout = dialogView.findViewById(R.id.pets_option)
+        o1.setOnClickListener {
+            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_pets_24)
+            view.iconImageViewUpdate.tag = "ic_baseline_pets_24"
+        }
+        val o2: LinearLayout = dialogView.findViewById(R.id.school_option)
+        o2.setOnClickListener {
+            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_school_24)
+            view.iconImageViewUpdate.tag = "ic_baseline_school_24"
+
+        }
+        val o3: LinearLayout = dialogView.findViewById(R.id.work_option)
+        o3.setOnClickListener {
+            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_work_24)
+            view.iconImageViewUpdate.tag = "ic_baseline_work_24"
+
+        }
+        val o4: LinearLayout = dialogView.findViewById(R.id.person_option)
+        o4.setOnClickListener {
+            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_person_24)
+            view.iconImageViewUpdate.tag = "ic_baseline_person_24"
+
+        }
+        dialog.show()
+    }
+
+    private fun dialogListItemOnClick(view: View, dialog: AlertDialog, draw: Int) {
+        view.iconImageViewUpdate.setImageResource(draw)
+        dialog.dismiss()
     }
 }

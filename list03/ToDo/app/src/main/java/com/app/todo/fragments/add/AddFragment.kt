@@ -1,16 +1,15 @@
 package com.app.todo.fragments.add
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -19,6 +18,7 @@ import com.app.todo.model.Task
 import com.app.todo.viewmodel.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
+import kotlinx.android.synthetic.main.fragment_update.*
 import java.util.*
 
 
@@ -36,24 +36,77 @@ class AddFragment : Fragment() {
             insertDataToDataBase()
         }
 
-        view.buttonSetIcon.setOnClickListener {
+        view.iconImageView.tag = "ic_baseline_school_24"
+
+        view.iconImageView.setOnClickListener {
             displayDialog(view)
         }
 
+        view.timePicker.setIs24HourView(true)
+
+
+        installSpinner(view)
+
         return view
+
+    }
+
+    private fun installSpinner(view: View) {
+        val priorities = resources.getStringArray(R.array.priorities)
+
+        val spinner = view.findViewById<Spinner>(R.id.prioritySpinner)
+        if (spinner != null) {
+            val adapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_item, priorities
+            )
+            spinner.adapter = adapter
+
+            spinner.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>,
+                    view: View, position: Int, id: Long
+                ) {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.selected_item) + " " +
+                                "" + priorities[position], Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                    // write code to perform some action
+                }
+            }
+            prioritySpinner.setSelection(0); }
 
     }
 
     private fun insertDataToDataBase() {
         val desc = editTextDesc.text.toString()
         val name = editTextName.text.toString()
-        val date = Date(datePicker.year, datePicker.month, datePicker.dayOfMonth)
+        val date = Date(
+            datePicker.year,
+            datePicker.month,
+            datePicker.dayOfMonth,
+            timePicker.hour,
+            timePicker.minute
+        )
+        val priority = prioritySpinner.selectedItem
         val type = iconImageView.tag.toString()
+
         if (inputCheck(name)) {
-
-            val task = Task(0, name = name, date = date, description = desc, type = type)
+            val task =
+                Task(
+                    0,
+                    name = name,
+                    date = date,
+                    description = desc,
+                    type = type,
+                    priority = priority.toString()
+                )
             mTaskViewModel.addTask(task)
-
             Toast.makeText(requireContext(), "Task added.", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_addFragment_to_listFragment)
         } else

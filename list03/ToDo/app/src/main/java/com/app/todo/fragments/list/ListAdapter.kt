@@ -2,6 +2,8 @@ package com.app.todo.fragments.list
 
 import android.annotation.SuppressLint
 import android.content.res.Resources
+import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +15,7 @@ import kotlinx.android.synthetic.main.task_row.view.*
 
 
 class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
-    private var taskList = emptyList<Task>()
+    var taskList = emptyList<Task>()
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -44,10 +46,16 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
         holder.itemView.iconRowImageView.setImageResource(resourceId)
 
-
-        holder.itemView.rowLayout.setOnClickListener {
+        holder.itemView.rowLayout.setOnLongClickListener() {
             val action = ListFragmentDirections.actionListFragmentToUpdateFragment(currItem)
             holder.itemView.findNavController().navigate(action)
+
+            true
+        }
+
+        holder.itemView.rowLayout.setOnClickListener(){
+            Log.i("info","test")
+            holder.itemView.setBackgroundColor(Color.BLUE)
         }
     }
 
@@ -55,6 +63,7 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         this.taskList = task
         notifyDataSetChanged()
     }
+
 
     private fun addZeroPrefix(string: String): String {
         return if (string.length == 1)

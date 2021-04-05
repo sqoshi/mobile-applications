@@ -11,5 +11,14 @@
     <string name="update">update</string>
     <string name="delete_task">Delete Task</string>
     <string name="change_icon">Change Icon</string>
+    <string name="icon_preview">icon preview</string>
     <dimen name="box_size">128dp</dimen>
+
+    <string name="selected_item">Selected item:</string>
+
+    <string-array name="priorities">
+        <item>HIGH</item>
+        <item>MEDIUM</item>
+        <item>LOW</item>
+    </string-array>
 </resources>

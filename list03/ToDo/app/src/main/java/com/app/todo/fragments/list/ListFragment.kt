@@ -2,20 +2,24 @@ package com.app.todo.fragments.list
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.todo.R
+import com.app.todo.model.Task
 import com.app.todo.viewmodel.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_list.view.*
 
 
 class ListFragment : Fragment() {
     private lateinit var mTaskViewModel: TaskViewModel
+    private val adapter = ListAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,7 +28,6 @@ class ListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
 
         val recView = view.recyclerView
-        val adapter = ListAdapter()
         recView.adapter = adapter
         recView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -38,16 +41,30 @@ class ListFragment : Fragment() {
         }
 
         setHasOptionsMenu(true)
+
         return view
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.delete_menu, menu)
+        inflater.inflate(R.menu.sort_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_delete) {
             deleteAllTasks()
+        } else if (item.itemId == R.id.type_sort) {
+            mTaskViewModel.sortedByType.observe(viewLifecycleOwner, Observer { task ->
+                adapter.setData(task)
+            })
+        } else if (item.itemId == R.id.name_sort) {
+            mTaskViewModel.sortedByName.observe(viewLifecycleOwner, Observer { task ->
+                adapter.setData(task)
+            })
+        } else if (item.itemId == R.id.date_sort) {
+            mTaskViewModel.sortedByDate.observe(viewLifecycleOwner, Observer { task ->
+                adapter.setData(task)
+            })
         }
         return super.onOptionsItemSelected(item)
     }

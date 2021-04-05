@@ -12,19 +12,31 @@ import kotlinx.coroutines.launch
 
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
     val readAllData: LiveData<List<Task>>
+    val sortedByName: LiveData<List<Task>>
+    val sortedByType: LiveData<List<Task>>
+    val sortedByDate: LiveData<List<Task>>
+    val sortedByPriority: LiveData<List<Task>>
     private val repository: TaskRepository
 
     init {
         val taskDao = TaskDatabase.getDatabase(application).taskDao()
         repository = TaskRepository(taskDao)
         readAllData = repository.readAllData
+        sortedByName = repository.sortedByName
+        sortedByType = repository.sortedByType
+        sortedByDate = repository.sortedByDate
+        sortedByPriority = repository.sortedByPriority
+
+
     }
+
 
     fun addTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.addTask(task)
         }
     }
+
     fun updateTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateTask(task)
@@ -42,4 +54,5 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             repository.deleteAllTasks()
         }
     }
+
 }
