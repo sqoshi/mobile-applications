@@ -28,25 +28,26 @@ class AddFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_add, container, false)
-        mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
 
-        view.buttonAdd.setOnClickListener {
-            insertDataToDataBase()
+        val view: View? = inflater.inflate(R.layout.fragment_add, container, false)
+//        Log.i("info", view.toString())
+        if (view != null) {
+            mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+            view.buttonAdd.setOnClickListener {
+                insertDataToDataBase()
+            }
+
+            view.iconImageView.tag = "ic_baseline_school_24"
+
+            view.iconImageView.setOnClickListener {
+                displayDialog(view)
+            }
+
+            view.timePicker.setIs24HourView(true)
+            view.datePicker.minDate = System.currentTimeMillis() - 1000
+
+            installSpinner(view)
         }
-
-        view.iconImageView.tag = "ic_baseline_school_24"
-
-        view.iconImageView.setOnClickListener {
-            displayDialog(view)
-        }
-
-        view.timePicker.setIs24HourView(true)
-        view.datePicker.minDate = System.currentTimeMillis() - 1000
-
-
-        installSpinner(view)
-
         return view
 
     }
@@ -66,7 +67,7 @@ class AddFragment : Fragment() {
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
+                    view: View?, position: Int, id: Long
                 ) {
                     Toast.makeText(
                         requireContext(),

@@ -16,7 +16,7 @@ import com.app.todo.notifications.NotificationReceiver
 import com.app.todo.R
 import com.app.todo.model.Task
 import com.app.todo.viewmodel.TaskViewModel
-import kotlinx.android.synthetic.main.fragment_add.*
+import kotlinx.android.synthetic.main.fragment_add.view.*
 import kotlinx.android.synthetic.main.fragment_update.*
 import kotlinx.android.synthetic.main.fragment_update.view.*
 import java.util.*
@@ -39,7 +39,11 @@ class UpdateFragment : Fragment() {
             args.currentTask.date.year,
             args.currentTask.date.month,
             args.currentTask.date.day,
-            null)
+            null
+        )
+
+        view.datePickerUpdate.minDate = System.currentTimeMillis() - 1000
+
 
         view.timePickerUpdate.setIs24HourView(true)
         view.timePickerUpdate.hour = args.currentTask.date.hours
@@ -59,8 +63,6 @@ class UpdateFragment : Fragment() {
         view.iconImageViewUpdate.setOnClickListener {
             displayDialog(view)
         }
-
-
 
         view.buttonUpdate.setOnClickListener {
             updateItem()
@@ -89,7 +91,7 @@ class UpdateFragment : Fragment() {
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
+                    view: View?, position: Int, id: Long
                 ) {
                     Toast.makeText(
                         requireContext(),
@@ -102,7 +104,7 @@ class UpdateFragment : Fragment() {
                     // write code to perform some action
                 }
             }
-            view.prioritySpinnerUpdate.setSelection(adapter.getPosition(args.currentTask.priority));        }
+            view.prioritySpinnerUpdate.setSelection(adapter.getPosition(args.currentTask.priority)); }
     }
 
 
@@ -117,7 +119,7 @@ class UpdateFragment : Fragment() {
             timePickerUpdate.minute
         )
         val type = iconImageViewUpdate.tag.toString()
-        val priority = prioritySpinner.selectedItem.toString()
+        val priority = prioritySpinnerUpdate.selectedItem.toString()
 
 
         if (inputCheck(name, desc, date, type)) {
@@ -133,11 +135,11 @@ class UpdateFragment : Fragment() {
 
             mTaskViewModel.updateTask(updatedTask)
             setUpNotification(
-                year = datePicker.year,
-                month = datePicker.month,
-                day = datePicker.dayOfMonth,
-                hour = timePicker.hour,
-                minute = timePicker.minute - 1
+                year = datePickerUpdate.year,
+                month = datePickerUpdate.month,
+                day = datePickerUpdate.dayOfMonth,
+                hour = timePickerUpdate.hour,
+                minute = timePickerUpdate.minute - 1
             )
             findNavController().navigate(R.id.action_updateFragment_to_listFragment)
             Toast.makeText(requireContext(), "Successfully updated task", Toast.LENGTH_SHORT).show()

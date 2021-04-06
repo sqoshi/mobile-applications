@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_list.view.*
 class ListFragment : Fragment() {
     private lateinit var mTaskViewModel: TaskViewModel
     private val adapter = ListAdapter()
+    private var sortedBy = "default"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,20 +38,29 @@ class ListFragment : Fragment() {
         recView.layoutManager = LinearLayoutManager(requireContext())
 
         mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
-        mTaskViewModel.readAllData.observe(viewLifecycleOwner, Observer { task ->
-            adapter.setData(task)
-        })
+
+        if (savedInstanceState != null) {
+            sortedBy = savedInstanceState.getString("sortedBy").toString()
+            restoreListOrder()
+        } else {
+            mTaskViewModel.readAllData.observe(viewLifecycleOwner, Observer { task ->
+                adapter.setData(task)
+            })
+        }
 
         view.floatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_addFragment)
         }
 
         setHasOptionsMenu(true)
-
-
         return view
     }
 
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("sortedBy", sortedBy)
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -59,20 +69,36 @@ class ListFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_delete) {
-            deleteAllTasks()
-        } else if (item.itemId == R.id.type_sort) {
-            mTaskViewModel.sortedByType.observe(viewLifecycleOwner, Observer { task ->
-                adapter.setData(task)
-            })
-        } else if (item.itemId == R.id.name_sort) {
-            mTaskViewModel.sortedByName.observe(viewLifecycleOwner, Observer { task ->
-                adapter.setData(task)
-            })
-        } else if (item.itemId == R.id.date_sort) {
-            mTaskViewModel.sortedByDate.observe(viewLifecycleOwner, Observer { task ->
-                adapter.setData(task)
-            })
+        when (item.itemId) {
+            R.id.menu_delete -> {
+                deleteAllTasks()
+            }
+            R.id.type_sort -> {
+                mTaskViewModel.sortedByType.observe(viewLifecycleOwner, Observer { task ->
+                    adapter.setData(task)
+                })
+                sortedBy = "type"
+            }
+            R.id.name_sort -> {
+                mTaskViewModel.sortedByName.observe(viewLifecycleOwner, Observer { task ->
+                    adapter.setData(task)
+                })
+                sortedBy = "name"
+            }
+            R.id.date_sort -> {
+                mTaskViewModel.sortedByDate.observe(viewLifecycleOwner, Observer { task ->
+                    adapter.setData(task)
+                })
+                sortedBy = "date"
+
+            }
+            R.id.priority_sort -> {
+                mTaskViewModel.sortedByPriority.observe(viewLifecycleOwner, Observer { task ->
+                    adapter.setData(task)
+                })
+                sortedBy = "priority"
+
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -93,5 +119,35 @@ class ListFragment : Fragment() {
         builder.setMessage("Are you sure you want to permanently delete all tasks?")
         builder.create()
         builder.show()
+    }
+
+    private fun restoreListOrder() {
+        when (sortedBy) {
+            "default" -> {
+                mTaskViewModel.readAllData.observe(viewLifecycleOwner, Observer { task ->
+                    adapter.setData(task)
+                })
+            }
+            "type" -> {
+                mTaskViewModel.sortedByType.observe(viewLifecycleOwner, Observer { task ->
+                    adapter.setData(task)
+                })
+            }
+            "priority" -> {
+                mTaskViewModel.sortedByPriority.observe(viewLifecycleOwner, Observer { task ->
+                    adapter.setData(task)
+                })
+            }
+            "date" -> {
+                mTaskViewModel.sortedByDate.observe(viewLifecycleOwner, Observer { task ->
+                    adapter.setData(task)
+                })
+            }
+            "name" -> {
+                mTaskViewModel.sortedByName.observe(viewLifecycleOwner, Observer { task ->
+                    adapter.setData(task)
+                })
+            }
+        }
     }
 }
