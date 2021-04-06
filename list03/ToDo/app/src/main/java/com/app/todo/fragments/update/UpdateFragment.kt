@@ -1,23 +1,25 @@
 package com.app.todo.fragments.update
 
+import android.app.AlarmManager
 import android.app.AlertDialog
+import android.app.PendingIntent
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.app.todo.notifications.NotificationReceiver
 import com.app.todo.R
 import com.app.todo.model.Task
 import com.app.todo.viewmodel.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
-import kotlinx.android.synthetic.main.fragment_add.view.*
 import kotlinx.android.synthetic.main.fragment_update.*
 import kotlinx.android.synthetic.main.fragment_update.view.*
-import kotlinx.android.synthetic.main.task_row.view.*
-import java.util.Date
+import java.util.*
 
 class UpdateFragment : Fragment() {
 
@@ -32,12 +34,13 @@ class UpdateFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_update, container, false)
 
         mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+
         view.datePickerUpdate.init(
             args.currentTask.date.year,
             args.currentTask.date.month,
             args.currentTask.date.day,
-            null
-        )
+            null)
+
         view.timePickerUpdate.setIs24HourView(true)
         view.timePickerUpdate.hour = args.currentTask.date.hours
         view.timePickerUpdate.minute = args.currentTask.date.minutes
@@ -67,8 +70,6 @@ class UpdateFragment : Fragment() {
 
 
         installSpinner(view)
-
-
 
         return view
     }
@@ -101,7 +102,7 @@ class UpdateFragment : Fragment() {
                     // write code to perform some action
                 }
             }
-            prioritySpinnerUpdate.setSelection(adapter.getPosition(args.currentTask.priority));        }
+            view.prioritySpinnerUpdate.setSelection(adapter.getPosition(args.currentTask.priority));        }
     }
 
 
@@ -129,8 +130,15 @@ class UpdateFragment : Fragment() {
                     type = type,
                     priority = priority
                 )
-            mTaskViewModel.updateTask(updatedTask)
 
+            mTaskViewModel.updateTask(updatedTask)
+            setUpNotification(
+                year = datePicker.year,
+                month = datePicker.month,
+                day = datePicker.dayOfMonth,
+                hour = timePicker.hour,
+                minute = timePicker.minute - 1
+            )
             findNavController().navigate(R.id.action_updateFragment_to_listFragment)
             Toast.makeText(requireContext(), "Successfully updated task", Toast.LENGTH_SHORT).show()
         } else
@@ -219,5 +227,31 @@ class UpdateFragment : Fragment() {
     private fun dialogListItemOnClick(view: View, dialog: AlertDialog, draw: Int) {
         view.iconImageViewUpdate.setImageResource(draw)
         dialog.dismiss()
+    }
+
+    private fun setUpNotification(hour: Int, minute: Int, day: Int, month: Int, year: Int) {
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, hour)
+        calendar.set(Calendar.MINUTE, minute)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, month)
+        calendar.set(Calendar.DAY_OF_MONTH, day)
+        if (calendar.time < Date()) calendar.add(Calendar.DAY_OF_MONTH, 1)
+        val intent = Intent(activity?.applicationContext, NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            activity?.applicationContext,
+            (0..2147483647).random(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val alarmManager =
+            activity?.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
     }
 }

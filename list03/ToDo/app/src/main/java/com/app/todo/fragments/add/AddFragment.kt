@@ -1,24 +1,23 @@
 package com.app.todo.fragments.add
 
-import android.app.AlertDialog
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+import android.app.*
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.app.todo.notifications.NotificationReceiver
 import com.app.todo.R
 import com.app.todo.model.Task
 import com.app.todo.viewmodel.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
-import kotlinx.android.synthetic.main.fragment_update.*
 import java.util.*
 
 
@@ -43,6 +42,7 @@ class AddFragment : Fragment() {
         }
 
         view.timePicker.setIs24HourView(true)
+        view.datePicker.minDate = System.currentTimeMillis() - 1000
 
 
         installSpinner(view)
@@ -79,8 +79,35 @@ class AddFragment : Fragment() {
                     // write code to perform some action
                 }
             }
-            prioritySpinner.setSelection(0); }
+            view.prioritySpinner.setSelection(0);
+        }
 
+    }
+
+    private fun setUpNotification(hour: Int, minute: Int, day: Int, month: Int, year: Int) {
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, hour)
+        calendar.set(Calendar.MINUTE, minute)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, month)
+        calendar.set(Calendar.DAY_OF_MONTH, day)
+        if (calendar.time < Date()) calendar.add(Calendar.DAY_OF_MONTH, 1)
+        val intent = Intent(activity?.applicationContext, NotificationReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            activity?.applicationContext,
+            (0..2147483647).random(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val alarmManager =
+            activity?.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
     }
 
     private fun insertDataToDataBase() {
@@ -97,15 +124,23 @@ class AddFragment : Fragment() {
         val type = iconImageView.tag.toString()
 
         if (inputCheck(name)) {
-            val task =
-                Task(
-                    0,
-                    name = name,
-                    date = date,
-                    description = desc,
-                    type = type,
-                    priority = priority.toString()
-                )
+            val task = Task(
+                0,
+                name = name,
+                date = date,
+                description = desc,
+                type = type,
+                priority = priority.toString()
+            )
+
+            // TODO: time check should be added here
+            setUpNotification(
+                year = datePicker.year,
+                month = datePicker.month,
+                day = datePicker.dayOfMonth,
+                hour = timePicker.hour,
+                minute = timePicker.minute - 1
+            )
             mTaskViewModel.addTask(task)
             Toast.makeText(requireContext(), "Task added.", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_addFragment_to_listFragment)
@@ -115,7 +150,6 @@ class AddFragment : Fragment() {
                 "Please input the name of the task.",
                 Toast.LENGTH_SHORT
             ).show()
-
     }
 
 
