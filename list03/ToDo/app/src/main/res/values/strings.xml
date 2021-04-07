@@ -16,6 +16,7 @@
 
     <string name="selected_item">Selected item:</string>
     <string name="time">Time</string>
+    <string name="type_icon">type icon</string>
 
     <string-array name="priorities">
         <item>HIGH</item>

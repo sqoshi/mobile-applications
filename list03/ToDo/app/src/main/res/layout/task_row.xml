@@ -5,6 +5,11 @@
     android:id="@+id/rowLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/task_tile"
     android:padding="24sp">
 
     <RelativeLayout
@@ -30,16 +35,19 @@
                     android:id="@+id/iconRowImageView"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:contentDescription="@string/type_icon"
                     android:cropToPadding="true"
                     tools:srcCompat="@tools:sample/avatars" />
 
                 <TextView
                     android:id="@+id/taskName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="200dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="2"
                     android:autoSizeTextType="uniform"
+                    android:foregroundGravity="center"
+                    android:gravity="center"
                     android:includeFontPadding="true"
                     android:text="@string/taskname"
                     android:textSize="20sp" />
@@ -47,8 +55,8 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="2">
+                    android:layout_weight="2"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/textViewDate"
@@ -57,6 +65,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:autoSizeTextType="uniform"
+                        android:foregroundGravity="center"
+                        android:gravity="center"
                         android:includeFontPadding="true"
                         android:text="@string/date"
                         android:textSize="16sp" />
@@ -68,6 +78,8 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:autoSizeTextType="uniform"
+                        android:foregroundGravity="center"
+                        android:gravity="center"
                         android:includeFontPadding="true"
                         android:text="@string/time"
                         android:textSize="16sp" />
@@ -82,6 +94,7 @@
                 android:layout_height="61dp"
                 android:layout_gravity="center"
                 android:includeFontPadding="true"
+                android:paddingTop="10dp"
                 android:text="@string/description" />
         </LinearLayout>
 

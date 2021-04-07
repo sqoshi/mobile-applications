@@ -3,6 +3,7 @@ package com.app.todo.fragments.list
 import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.todo.R
 import com.app.todo.model.Task
 import kotlinx.android.synthetic.main.task_row.view.*
+import java.util.*
 
 
 class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
@@ -36,13 +38,18 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         val currItem = taskList[position]
         holder.itemView.taskName.text = currItem.name
         holder.itemView.textViewDesc.text = currItem.description
-        holder.itemView.textViewDate.text = currItem.date.year.toString() +
-                "-" + addZeroPrefix(currItem.date.month.toString()) +
-                "-" + addZeroPrefix(currItem.date.day.toString())
+        holder.itemView.textViewDate.text = currItem.date.day.toString() +
+                "/" + addZeroPrefix(currItem.date.month.toString()) +
+                "/" + addZeroPrefix(currItem.date.year.toString())
+        holder.itemView.textViewTime.text = currItem.date.hours.toString() +
+                ":" + addZeroPrefix(currItem.date.minutes.toString())
 
+        setBackgroundColor(holder.itemView, currItem.priority)
         val resources: Resources = holder.itemView.context.resources
-        val resourceId = resources.getIdentifier(currItem.type, "drawable",
-            holder.itemView.context.packageName);
+        val resourceId = resources.getIdentifier(
+            currItem.type, "drawable",
+            holder.itemView.context.packageName
+        );
 
         holder.itemView.iconRowImageView.setImageResource(resourceId)
 
@@ -53,10 +60,34 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
             true
         }
 
-        holder.itemView.rowLayout.setOnClickListener(){
-            Log.i("info","test")
-            holder.itemView.setBackgroundColor(Color.BLUE)
+//        holder.itemView.rowLayout.setOnClickListener(){
+//            holder.itemView.setBackgroundColor(Color.BLUE)
+//        }
+    }
+
+    private fun setBackgroundColor(itView: View, priority: String) {
+        when {
+            priority.toUpperCase(Locale.getDefault()) == "HIGH" -> {
+                itView.background.setColorFilter(
+                    Color.parseColor("#293250"),
+                    PorterDuff.Mode.SRC_ATOP
+                )
+            }
+            priority.toUpperCase(Locale.getDefault()) == "MEDIUM" -> {
+                itView.background.setColorFilter(
+                    Color.parseColor("#FFD55A"),
+                    PorterDuff.Mode.SRC_ATOP
+                )
+            }
+            priority.toUpperCase(Locale.getDefault()) == "LOW" -> {
+                itView.background.setColorFilter(
+                    Color.parseColor("#6DD47E"),
+                    PorterDuff.Mode.SRC_ATOP
+                )
+
+            }
         }
+
     }
 
     fun setData(task: List<Task>) {
