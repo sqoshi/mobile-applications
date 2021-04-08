@@ -38,7 +38,7 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         val currItem = taskList[position]
         holder.itemView.taskName.text = currItem.name
         holder.itemView.textViewDesc.text = currItem.description
-        holder.itemView.textViewDate.text = currItem.date.day.toString() +
+        holder.itemView.textViewDate.text = addZeroPrefix(currItem.date.day.toString()) +
                 "/" + addZeroPrefix(currItem.date.month.toString()) +
                 "/" + addZeroPrefix(currItem.date.year.toString())
         holder.itemView.textViewTime.text = currItem.date.hours.toString() +

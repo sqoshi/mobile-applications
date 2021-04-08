@@ -28,7 +28,7 @@ interface TaskDao {
     @Query("SELECT * FROM task_table ORDER BY type ASC")
     fun sortedByType(): LiveData<List<Task>>
 
-    @Query("SELECT * FROM task_table ORDER BY date DESC")
+    @Query("SELECT * FROM task_table ORDER BY date ASC")
     fun sortedByDate(): LiveData<List<Task>>
 
     @Query("SELECT * FROM task_table ORDER BY priority ASC")
