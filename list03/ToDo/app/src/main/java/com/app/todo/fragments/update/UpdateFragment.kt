@@ -16,6 +16,7 @@ import com.app.todo.notifications.NotificationReceiver
 import com.app.todo.R
 import com.app.todo.model.Task
 import com.app.todo.viewmodel.TaskViewModel
+import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
 import kotlinx.android.synthetic.main.fragment_update.*
 import kotlinx.android.synthetic.main.fragment_update.view.*
@@ -34,6 +35,42 @@ class UpdateFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_update, container, false)
 
         mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+
+        if (savedInstanceState != null) {
+            val t = savedInstanceState.getString("type")
+            val y = savedInstanceState.getInt("year")
+            val month = savedInstanceState.getInt("month")
+            val d = savedInstanceState.getInt("day")
+            val h = savedInstanceState.getInt("hour")
+            val minute = savedInstanceState.getInt("minute")
+            val desc = savedInstanceState.getString("desc")
+            val name = savedInstanceState.getString("name")
+            val priority = savedInstanceState.getString("priority")
+            setValues(
+                view, h, minute, d, month, y, desc.toString(),
+                priority.toString(), t.toString(),
+                name.toString()
+            )
+        } else
+            setValuesFromDatabase(view)
+
+        view.iconImageViewUpdate.setOnClickListener {
+            displayDialog(view)
+        }
+
+        view.buttonUpdate.setOnClickListener {
+            updateItem()
+        }
+
+        setHasOptionsMenu(true)
+
+
+        installSpinner(view)
+
+        return view
+    }
+
+    private fun setValuesFromDatabase(view: View) {
 
         view.datePickerUpdate.init(
             args.currentTask.date.year,
@@ -60,20 +97,58 @@ class UpdateFragment : Fragment() {
         view.iconImageViewUpdate.tag = args.currentTask.type
         view.iconImageViewUpdate.setImageResource(resourceId)
 
-        view.iconImageViewUpdate.setOnClickListener {
-            displayDialog(view)
-        }
+    }
 
-        view.buttonUpdate.setOnClickListener {
-            updateItem()
-        }
+    private fun setValues(
+        view: View,
+        hour: Int,
+        minute: Int,
+        day: Int, month: Int,
+        year: Int,
+        desc: String,
+        priority: String,
+        type: String,
+        name: String,
+    ) {
+        view.datePickerUpdate.init(
+            args.currentTask.date.year,
+            args.currentTask.date.month,
+            args.currentTask.date.day,
+            null
+        )
 
-        setHasOptionsMenu(true)
+        view.datePickerUpdate.minDate = System.currentTimeMillis() - 1000
 
 
-        installSpinner(view)
+        view.timePickerUpdate.setIs24HourView(true)
+        view.timePickerUpdate.hour = args.currentTask.date.hours
+        view.timePickerUpdate.minute = args.currentTask.date.minutes
 
-        return view
+
+        view.editTextUpdateDesc.setText(args.currentTask.description)
+        view.editTextUpdateName.setText(args.currentTask.name)
+
+        val resourceId = resources.getIdentifier(
+            args.currentTask.type, "drawable",
+            activity?.packageName
+        );
+        view.iconImageViewUpdate.tag = args.currentTask.type
+        view.iconImageViewUpdate.setImageResource(resourceId)
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("type", iconImageViewUpdate.tag.toString())
+        outState.putInt("year", datePickerUpdate.year)
+        outState.putInt("month", datePickerUpdate.month)
+        outState.putInt("day", datePickerUpdate.dayOfMonth)
+        outState.putInt("hour", timePickerUpdate.hour)
+        outState.putInt("minute", timePickerUpdate.minute)
+        outState.putString("desc", editTextUpdateDesc.text.toString())
+        outState.putString("name", editTextUpdateName.text.toString())
+        outState.putString("priority", prioritySpinnerUpdate.selectedItem.toString())
+
     }
 
     private fun installSpinner(view: View) {

@@ -3,7 +3,9 @@ package com.app.todo.fragments.add
 import android.app.*
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +20,24 @@ import com.app.todo.model.Task
 import com.app.todo.viewmodel.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
+import kotlinx.android.synthetic.main.fragment_update.view.*
 import java.util.*
 
 
 class AddFragment : Fragment() {
     private lateinit var mTaskViewModel: TaskViewModel
+
+    data class DatabaseRow(
+        val hour: Int,
+        val minute: Int,
+        val day: Int,
+        val month: Int,
+        val year: Int,
+        val desc: String,
+        val priority: String,
+        val type: String,
+        val name: String,
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +45,6 @@ class AddFragment : Fragment() {
     ): View? {
 
         val view: View? = inflater.inflate(R.layout.fragment_add, container, false)
-//        Log.i("info", view.toString())
         if (view != null) {
             mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
             view.buttonAdd.setOnClickListener {
@@ -47,8 +61,79 @@ class AddFragment : Fragment() {
             view.datePicker.minDate = System.currentTimeMillis() - 1000
 
             installSpinner(view)
+            if (savedInstanceState != null) {
+                val t = savedInstanceState.getString("type")
+                val y = savedInstanceState.getInt("year")
+                val month = savedInstanceState.getInt("month")
+                val d = savedInstanceState.getInt("day")
+                val h = savedInstanceState.getInt("hour")
+                val minute = savedInstanceState.getInt("minute")
+                val desc = savedInstanceState.getString("desc")
+                val name = savedInstanceState.getString("name")
+                val priority = savedInstanceState.getString("priority")
+                setValues(
+                    view, h, minute, d, month, y, desc.toString(),
+                    priority.toString(), t.toString(),
+                    name.toString()
+                )
+
+            }
         }
         return view
+
+    }
+
+    private fun setValues(
+        view: View,
+        hour: Int,
+        minute: Int,
+        day: Int, month: Int,
+        year: Int,
+        desc: String,
+        priority: String,
+        type: String,
+        name: String,
+    ) {
+
+        view.datePicker.init(
+            year,
+            month,
+            day,
+            null
+        )
+
+        view.datePicker.minDate = System.currentTimeMillis() - 1000
+
+
+        view.timePicker.setIs24HourView(true)
+        view.timePicker.hour = hour
+        view.timePicker.minute = minute
+
+
+        view.editTextDesc.setText(desc)
+        view.editTextName.setText(name)
+
+        val resourceId = resources.getIdentifier(
+            type, "drawable",
+            activity?.packageName
+        );
+        view.iconImageView.tag = type
+        view.iconImageView.setImageResource(resourceId)
+
+    }
+
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("type", iconImageView.tag.toString())
+        outState.putInt("year", datePicker.year)
+        outState.putInt("month", datePicker.month)
+        outState.putInt("day", datePicker.dayOfMonth)
+        outState.putInt("hour", timePicker.hour)
+        outState.putInt("minute", timePicker.minute)
+        outState.putString("desc", editTextDesc.text.toString())
+        outState.putString("name", editTextName.text.toString())
+        outState.putString("priority", prioritySpinner.selectedItem.toString())
 
     }
 
@@ -203,5 +288,9 @@ class AddFragment : Fragment() {
         dialog.dismiss()
     }
 
+
+}
+
+private fun Bundle.putParcelable(s: String, databaseRow: AddFragment.DatabaseRow) {
 
 }
