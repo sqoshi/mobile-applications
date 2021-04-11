@@ -19,9 +19,14 @@
       - [Landscape](#landscape-1)
       - [Lost Popup](#lost-popup)
     - [Code Example](#code-example-2)
-  - [ToDo](#todo)
+- [ToDo](#todo)
     - [Introduction](#introduction)
     - [General Info](#general-info)
+      - [Sorts](#sorts)
+      - [Filter by priority](#filter-by-priority)
+      - [Task structure](#task-structure)
+      - [Icon chooser](#icon-chooser)
+      - [Calendar](#calendar)
     - [Layout](#layout-3)
       - [Portrait](#portrait-2)
         - [Tasks list](#tasks-list)
@@ -157,20 +162,36 @@ Example win in 5x5 board mode.
     }
 ```
 ----------------------------
-## [ToDo](https://github.com/sqoshi/mobile-applications/tree/master/list03/ToDo)
+# [ToDo](https://github.com/sqoshi/mobile-applications/tree/master/list03/ToDo)
 
 ### Introduction
-Simple implementation of task list in kotlin. This app may be usefull for android users that sometimes forgot about their schedule. 
+ToDo application in kotlin. This app may be usefull for android users who sometimes forgot about their schedule. 
 
 ### General Info
-Application allow to add tasks to mutable list which is displayed as main fragment of program. After task addition program adds `alarm` by alarm manager to our phone. When task is close to expiration date phone vibrates, ringing and user face clickable popup that leads to `ToDo` app activity or creates new one.
+Application allow to add tasks to table in `Room` abstract database (database is instantinated using `singleton pattern`) which is displayed on main fragment of program. During task inserting procedure program adds `alarm` by alarm manager to our phone, so when task is close to expiration date phone vibrates, ringing and user face clickable popup that leads to `ToDo` app activity or creates new one.
 
-User can perform operations as `read`,`add`,`delete`,`update`, `delete-all` and `sort` by every field in task table so we can say that app handles CRUD requests.
 
-Sorts:
+User can perform operations as `read`,`add`,`delete`,`update`, `delete-all`, `filter` and `sort` by every field in task table so we can say that app handles CRUD requests.
+
+Few of them can be found inside menu bar.
+![](list03/ToDo/media/menu_bar.png)
+
+
+Application save instances values in outState and remembers thats how configuration of state after rotation.
+
+User can set priority and type of the task.
+
+#### Sorts
+
 ![](list03/ToDo/media/sorts.png)
 
-Application stores every task in `Room` abstract database. 
+
+#### Filter by priority
+Priority is an `Enum(HIGH,MEDIUM,LOW)` each value correspond to the appropriate color of task.
+
+![](list03/ToDo/media/filters.png)
+
+#### Task structure
 Task structure: 
 ```kotlin
 data class Task(
@@ -184,22 +205,20 @@ data class Task(
 ) : Parcelable
 ```
 
-Application handles saves instances values in outState and remembers thats how remeber configuration state after rotation.
 
-User can set priority and type of the task.
-
-Priority is an `Enum(HIGH,MEDIUM,LOW)` where the priority correspond to the appropriate color of task.
-
+#### Icon chooser
 Type is responsible for an icon app allows for types as on the screen below:
 ![](list03/ToDo/media/icon_chooser.png)
 
+#### Calendar
+All tasks can also be viewed via Calendar. Date click lists all tasks assigned to this day as LiveData.
+![](list03/ToDo/media/calendar.png)
 ### Layout
 Application handles both landscape and portrait layouts.
 
 #### Portrait
 ##### Tasks list
 ![](list03/ToDo/media/list.png)
-
 ##### Task update
 ![](list03/ToDo/media/update.png)
 ##### Task deletion
@@ -240,6 +259,8 @@ private fun setUpNotification(hour: Int, minute: Int, day: Int, month: Int, year
             pendingIntent
         )
     }
-    ```
+```
+
+
 
 ----------------------------
