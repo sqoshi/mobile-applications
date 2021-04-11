@@ -1,16 +1,21 @@
 package com.app.todo.viewmodel
 
+import android.annotation.SuppressLint
 import android.app.Application
+import android.os.AsyncTask
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.app.todo.data.TaskDatabase
-import com.app.todo.repository.TaskRepository
 import com.app.todo.model.Task
+import com.app.todo.repository.TaskRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class TaskViewModel(application: Application) : AndroidViewModel(application) {
+
+class TaskViewModel(application: Application, private val state: SavedStateHandle) :
+    AndroidViewModel(application) {
     val readAllData: LiveData<List<Task>>
     val sortedByName: LiveData<List<Task>>
     val sortedByType: LiveData<List<Task>>
@@ -26,10 +31,16 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         sortedByType = repository.sortedByType
         sortedByDate = repository.sortedByDate
         sortedByPriority = repository.sortedByPriority
-
-
     }
 
+    fun saveState() {
+        state.set("readAllData", readAllData.value)
+    }
+
+
+    fun getTasksFrom(year: Int, month: Int, day: Int): LiveData<List<Task>> {
+        return repository.getTasksFrom(year, month, day)
+    }
 
     fun addTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -54,5 +65,18 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             repository.deleteAllTasks()
         }
     }
+
+    fun readTasks(): List<Task>? {
+        return AsyncGet().execute().get()
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    inner class AsyncGet : AsyncTask<Void, Void, List<Task>>() {
+        override fun doInBackground(vararg params: Void?): List<Task> {
+            return repository.readTasks()
+        }
+
+    }
+
 
 }

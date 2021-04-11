@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +16,11 @@ import java.util.*
 
 
 class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
-    var taskList = emptyList<Task>()
+    private var taskList = emptyList<Task>()
 
-    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListAdapter.MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.task_row, parent, false)
         )
@@ -34,35 +31,33 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: ListAdapter.MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currItem = taskList[position]
         holder.itemView.taskName.text = currItem.name
         holder.itemView.textViewDesc.text = currItem.description
-        holder.itemView.textViewDate.text = addZeroPrefix(currItem.date.day.toString()) +
-                "/" + addZeroPrefix(currItem.date.month.toString()) +
-                "/" + addZeroPrefix(currItem.date.year.toString())
-        holder.itemView.textViewTime.text = currItem.date.hours.toString() +
-                ":" + addZeroPrefix(currItem.date.minutes.toString())
+        holder.itemView.textViewDate.text = addZeroPrefix(currItem.day.toString()) +
+                "/" + addZeroPrefix(currItem.month.toString()) +
+                "/" + addZeroPrefix(currItem.year.toString())
+
+        holder.itemView.textViewTime.text = currItem.hour.toString() +
+                ":" + addZeroPrefix(currItem.minute.toString())
 
         setBackgroundColor(holder.itemView, currItem.priority)
         val resources: Resources = holder.itemView.context.resources
         val resourceId = resources.getIdentifier(
             currItem.type, "drawable",
             holder.itemView.context.packageName
-        );
+        )
 
         holder.itemView.iconRowImageView.setImageResource(resourceId)
 
-        holder.itemView.rowLayout.setOnLongClickListener() {
+        holder.itemView.rowLayout.setOnLongClickListener {
             val action = ListFragmentDirections.actionListFragmentToUpdateFragment(currItem)
             holder.itemView.findNavController().navigate(action)
 
             true
         }
 
-//        holder.itemView.rowLayout.setOnClickListener(){
-//            holder.itemView.setBackgroundColor(Color.BLUE)
-//        }
     }
 
     private fun setBackgroundColor(itView: View, priority: String) {

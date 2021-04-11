@@ -17,7 +17,6 @@ import com.app.todo.R
 import com.app.todo.model.Task
 import com.app.todo.viewmodel.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
-import kotlinx.android.synthetic.main.fragment_add.view.*
 import kotlinx.android.synthetic.main.fragment_update.*
 import kotlinx.android.synthetic.main.fragment_update.view.*
 import java.util.*
@@ -36,23 +35,7 @@ class UpdateFragment : Fragment() {
 
         mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
 
-        if (savedInstanceState != null) {
-            val t = savedInstanceState.getString("type")
-            val y = savedInstanceState.getInt("year")
-            val month = savedInstanceState.getInt("month")
-            val d = savedInstanceState.getInt("day")
-            val h = savedInstanceState.getInt("hour")
-            val minute = savedInstanceState.getInt("minute")
-            val desc = savedInstanceState.getString("desc")
-            val name = savedInstanceState.getString("name")
-            val priority = savedInstanceState.getString("priority")
-            setValues(
-                view, h, minute, d, month, y, desc.toString(),
-                priority.toString(), t.toString(),
-                name.toString()
-            )
-        } else
-            setValuesFromDatabase(view)
+
 
         view.iconImageViewUpdate.setOnClickListener {
             displayDialog(view)
@@ -70,37 +53,38 @@ class UpdateFragment : Fragment() {
         return view
     }
 
-    private fun setValuesFromDatabase(view: View) {
+    private fun setValuesFromDatabase(view: View?) {
+        if (view != null) {
+            view.datePickerUpdate.init(
+                args.currentTask.year,
+                args.currentTask.month,
+                args.currentTask.day,
+                null
+            )
 
-        view.datePickerUpdate.init(
-            args.currentTask.date.year,
-            args.currentTask.date.month,
-            args.currentTask.date.day,
-            null
-        )
-
-        view.datePickerUpdate.minDate = System.currentTimeMillis() - 1000
-
-
-        view.timePickerUpdate.setIs24HourView(true)
-        view.timePickerUpdate.hour = args.currentTask.date.hours
-        view.timePickerUpdate.minute = args.currentTask.date.minutes
+            view.datePickerUpdate.minDate = System.currentTimeMillis() - 1000
 
 
-        view.editTextUpdateDesc.setText(args.currentTask.description)
-        view.editTextUpdateName.setText(args.currentTask.name)
+            view.timePickerUpdate.setIs24HourView(true)
+            view.timePickerUpdate.hour = args.currentTask.hour
+            view.timePickerUpdate.minute = args.currentTask.minute
 
-        val resourceId = resources.getIdentifier(
-            args.currentTask.type, "drawable",
-            activity?.packageName
-        );
-        view.iconImageViewUpdate.tag = args.currentTask.type
-        view.iconImageViewUpdate.setImageResource(resourceId)
+
+            view.editTextUpdateDesc.setText(args.currentTask.description)
+            view.editTextUpdateName.setText(args.currentTask.name)
+
+            val resourceId = resources.getIdentifier(
+                args.currentTask.type, "drawable",
+                activity?.packageName
+            )
+            view.iconImageViewUpdate.tag = args.currentTask.type
+            view.iconImageViewUpdate.setImageResource(resourceId)
+        }
 
     }
 
     private fun setValues(
-        view: View,
+        view: View?,
         hour: Int,
         minute: Int,
         day: Int, month: Int,
@@ -110,30 +94,32 @@ class UpdateFragment : Fragment() {
         type: String,
         name: String,
     ) {
-        view.datePickerUpdate.init(
-            args.currentTask.date.year,
-            args.currentTask.date.month,
-            args.currentTask.date.day,
-            null
-        )
+        if (view != null) {
+            view.datePickerUpdate.init(
+                year,
+                month,
+                day,
+                null
+            )
 
-        view.datePickerUpdate.minDate = System.currentTimeMillis() - 1000
-
-
-        view.timePickerUpdate.setIs24HourView(true)
-        view.timePickerUpdate.hour = args.currentTask.date.hours
-        view.timePickerUpdate.minute = args.currentTask.date.minutes
+            view.datePickerUpdate.minDate = System.currentTimeMillis() - 1000
 
 
-        view.editTextUpdateDesc.setText(args.currentTask.description)
-        view.editTextUpdateName.setText(args.currentTask.name)
+            view.timePickerUpdate.setIs24HourView(true)
+            view.timePickerUpdate.hour = hour
+            view.timePickerUpdate.minute = minute
 
-        val resourceId = resources.getIdentifier(
-            args.currentTask.type, "drawable",
-            activity?.packageName
-        );
-        view.iconImageViewUpdate.tag = args.currentTask.type
-        view.iconImageViewUpdate.setImageResource(resourceId)
+
+            view.editTextUpdateDesc.setText(desc)
+            view.editTextUpdateName.setText(name)
+
+            val resourceId = resources.getIdentifier(
+                type, "drawable",
+                activity?.packageName
+            )
+            view.iconImageViewUpdate.tag = type
+            view.iconImageViewUpdate.setImageResource(resourceId)
+        }
 
     }
 
@@ -148,6 +134,26 @@ class UpdateFragment : Fragment() {
         outState.putString("desc", editTextUpdateDesc.text.toString())
         outState.putString("name", editTextUpdateName.text.toString())
         outState.putString("priority", prioritySpinnerUpdate.selectedItem.toString())
+
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if (savedInstanceState != null) {
+            setValues(
+                view,
+                savedInstanceState.getInt("hour"),
+                savedInstanceState.getInt("minute"),
+                savedInstanceState.getInt("day"),
+                savedInstanceState.getInt("month"),
+                savedInstanceState.getInt("year"),
+                savedInstanceState.getString("desc").toString(),
+                savedInstanceState.getString("priority").toString(),
+                savedInstanceState.getString("type").toString(),
+                savedInstanceState.getString("name").toString()
+            )
+        } else
+            setValuesFromDatabase(view)
 
     }
 
@@ -168,16 +174,9 @@ class UpdateFragment : Fragment() {
                     parent: AdapterView<*>,
                     view: View?, position: Int, id: Long
                 ) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.selected_item) + " " +
-                                "" + priorities[position], Toast.LENGTH_SHORT
-                    ).show()
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                    // write code to perform some action
-                }
+                override fun onNothingSelected(parent: AdapterView<*>) {}
             }
             view.prioritySpinnerUpdate.setSelection(adapter.getPosition(args.currentTask.priority)); }
     }
@@ -186,26 +185,23 @@ class UpdateFragment : Fragment() {
     private fun updateItem() {
         val name = editTextUpdateName.text.toString()
         val desc = editTextUpdateDesc.text.toString()
-        val date = Date(
-            datePickerUpdate.year,
-            datePickerUpdate.month,
-            datePickerUpdate.dayOfMonth,
-            timePickerUpdate.hour,
-            timePickerUpdate.minute
-        )
         val type = iconImageViewUpdate.tag.toString()
         val priority = prioritySpinnerUpdate.selectedItem.toString()
 
 
-        if (inputCheck(name, desc, date, type)) {
+        if (inputCheck(name, desc, type)) {
             val updatedTask =
                 Task(
                     args.currentTask.id,
                     name = name,
                     description = desc,
-                    date = date,
                     type = type,
-                    priority = priority
+                    priority = priority,
+                    year = datePickerUpdate.year,
+                    month = datePicker.month + 1,
+                    day = datePickerUpdate.dayOfMonth,
+                    hour = timePickerUpdate.hour,
+                    minute = timePickerUpdate.minute
                 )
 
             mTaskViewModel.updateTask(updatedTask)
@@ -227,8 +223,8 @@ class UpdateFragment : Fragment() {
 
     }
 
-    private fun inputCheck(name: String, desc: String, date: Date, type: String): Boolean {
-        return (args.currentTask.description != desc || args.currentTask.name != name || args.currentTask.type != type || args.currentTask.date.toString() != date.toString())
+    private fun inputCheck(name: String, desc: String, type: String): Boolean {
+        return (args.currentTask.description != desc || args.currentTask.name != name || args.currentTask.type != type)
     }
 
 

@@ -1,4 +1,4 @@
-package com.app.todo
+package com.app.todo.data
 
 import androidx.room.TypeConverter
 

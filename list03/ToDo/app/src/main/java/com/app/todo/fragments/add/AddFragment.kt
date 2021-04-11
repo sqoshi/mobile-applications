@@ -1,11 +1,11 @@
 package com.app.todo.fragments.add
 
-import android.app.*
+import android.app.AlarmManager
+import android.app.AlertDialog
+import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,30 +14,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.app.todo.notifications.NotificationReceiver
 import com.app.todo.R
 import com.app.todo.model.Task
+import com.app.todo.notifications.NotificationReceiver
 import com.app.todo.viewmodel.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
-import kotlinx.android.synthetic.main.fragment_update.view.*
 import java.util.*
 
 
 class AddFragment : Fragment() {
     private lateinit var mTaskViewModel: TaskViewModel
 
-    data class DatabaseRow(
-        val hour: Int,
-        val minute: Int,
-        val day: Int,
-        val month: Int,
-        val year: Int,
-        val desc: String,
-        val priority: String,
-        val type: String,
-        val name: String,
-    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,30 +49,14 @@ class AddFragment : Fragment() {
             view.datePicker.minDate = System.currentTimeMillis() - 1000
 
             installSpinner(view)
-            if (savedInstanceState != null) {
-                val t = savedInstanceState.getString("type")
-                val y = savedInstanceState.getInt("year")
-                val month = savedInstanceState.getInt("month")
-                val d = savedInstanceState.getInt("day")
-                val h = savedInstanceState.getInt("hour")
-                val minute = savedInstanceState.getInt("minute")
-                val desc = savedInstanceState.getString("desc")
-                val name = savedInstanceState.getString("name")
-                val priority = savedInstanceState.getString("priority")
-                setValues(
-                    view, h, minute, d, month, y, desc.toString(),
-                    priority.toString(), t.toString(),
-                    name.toString()
-                )
 
-            }
         }
         return view
 
     }
 
     private fun setValues(
-        view: View,
+        view: View?,
         hour: Int,
         minute: Int,
         day: Int, month: Int,
@@ -94,46 +66,70 @@ class AddFragment : Fragment() {
         type: String,
         name: String,
     ) {
+        if (view != null) {
+            view.datePicker.init(
+                year,
+                month,
+                day,
+                null
+            )
 
-        view.datePicker.init(
-            year,
-            month,
-            day,
-            null
-        )
-
-        view.datePicker.minDate = System.currentTimeMillis() - 1000
-
-
-        view.timePicker.setIs24HourView(true)
-        view.timePicker.hour = hour
-        view.timePicker.minute = minute
+            view.datePicker.minDate = System.currentTimeMillis() - 1000
 
 
-        view.editTextDesc.setText(desc)
-        view.editTextName.setText(name)
+            view.timePicker.setIs24HourView(true)
+            view.timePicker.hour = hour
+            view.timePicker.minute = minute
 
-        val resourceId = resources.getIdentifier(
-            type, "drawable",
-            activity?.packageName
-        );
-        view.iconImageView.tag = type
-        view.iconImageView.setImageResource(resourceId)
+
+            view.editTextDesc.setText(desc)
+            view.editTextName.setText(name)
+
+            val resourceId = resources.getIdentifier(
+                type, "drawable",
+                activity?.packageName
+            )
+            view.iconImageView.tag = type
+            view.iconImageView.setImageResource(resourceId)
+        }
 
     }
 
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("type", iconImageView.tag.toString())
-        outState.putInt("year", datePicker.year)
-        outState.putInt("month", datePicker.month)
-        outState.putInt("day", datePicker.dayOfMonth)
-        outState.putInt("hour", timePicker.hour)
-        outState.putInt("minute", timePicker.minute)
-        outState.putString("desc", editTextDesc.text.toString())
-        outState.putString("name", editTextName.text.toString())
-        outState.putString("priority", prioritySpinner.selectedItem.toString())
+        if (iconImageView != null && datePicker != null && timePicker != null) {
+            outState.putString("type", iconImageView.tag.toString())
+            outState.putInt("year", datePicker.year)
+            outState.putInt("month", datePicker.month)
+            outState.putInt("day", datePicker.dayOfMonth)
+            outState.putInt("hour", timePicker.hour)
+            outState.putInt("minute", timePicker.minute)
+            outState.putString("desc", editTextDesc.text.toString())
+            outState.putString("name", editTextName.text.toString())
+            outState.putString("priority", prioritySpinner.selectedItem.toString())
+        }
+
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if (savedInstanceState != null) {
+            val t = savedInstanceState.getString("type")
+            val y = savedInstanceState.getInt("year")
+            val month = savedInstanceState.getInt("month")
+            val d = savedInstanceState.getInt("day")
+            val h = savedInstanceState.getInt("hour")
+            val minute = savedInstanceState.getInt("minute")
+            val desc = savedInstanceState.getString("desc")
+            val name = savedInstanceState.getString("name")
+            val priority = savedInstanceState.getString("priority")
+            setValues(
+                view, h, minute, d, month, y, desc.toString(),
+                priority.toString(), t.toString(),
+                name.toString()
+            )
+
+        }
 
     }
 
@@ -154,18 +150,11 @@ class AddFragment : Fragment() {
                     parent: AdapterView<*>,
                     view: View?, position: Int, id: Long
                 ) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.selected_item) + " " +
-                                "" + priorities[position], Toast.LENGTH_SHORT
-                    ).show()
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                    // write code to perform some action
-                }
+                override fun onNothingSelected(parent: AdapterView<*>) {}
             }
-            view.prioritySpinner.setSelection(0);
+            view.prioritySpinner.setSelection(0)
         }
 
     }
@@ -199,13 +188,6 @@ class AddFragment : Fragment() {
     private fun insertDataToDataBase() {
         val desc = editTextDesc.text.toString()
         val name = editTextName.text.toString()
-        val date = Date(
-            datePicker.year,
-            datePicker.month,
-            datePicker.dayOfMonth,
-            timePicker.hour,
-            timePicker.minute
-        )
         val priority = prioritySpinner.selectedItem
         val type = iconImageView.tag.toString()
 
@@ -213,10 +195,14 @@ class AddFragment : Fragment() {
             val task = Task(
                 0,
                 name = name,
-                date = date,
                 description = desc,
                 type = type,
-                priority = priority.toString()
+                priority = priority.toString(),
+                year = datePicker.year,
+                month = datePicker.month + 1,
+                day = datePicker.dayOfMonth,
+                hour = timePicker.hour,
+                minute = timePicker.minute
             )
 
             // TODO: time check should be added here
@@ -291,6 +277,3 @@ class AddFragment : Fragment() {
 
 }
 
-private fun Bundle.putParcelable(s: String, databaseRow: AddFragment.DatabaseRow) {
-
-}

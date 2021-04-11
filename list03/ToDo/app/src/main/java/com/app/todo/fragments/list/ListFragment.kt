@@ -1,19 +1,11 @@
 package com.app.todo.fragments.list
 
 import android.app.AlertDialog
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,16 +29,8 @@ class ListFragment : Fragment() {
         recView.adapter = adapter
         recView.layoutManager = LinearLayoutManager(requireContext())
 
-        mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
 
-        if (savedInstanceState != null) {
-            sortedBy = savedInstanceState.getString("sortedBy").toString()
-            restoreListOrder()
-        } else {
-            mTaskViewModel.readAllData.observe(viewLifecycleOwner, Observer { task ->
-                adapter.setData(task)
-            })
-        }
+        mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
 
         view.floatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_addFragment)
@@ -58,12 +42,26 @@ class ListFragment : Fragment() {
 
 
     override fun onSaveInstanceState(outState: Bundle) {
+        if(::mTaskViewModel.isInitialized)
+            mTaskViewModel.saveState()
         super.onSaveInstanceState(outState)
         outState.putString("sortedBy", sortedBy)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if (savedInstanceState != null) {
+            sortedBy = savedInstanceState.getString("sortedBy").toString()
+            restoreListOrder()
+        } else
+            mTaskViewModel.readAllData.observe(viewLifecycleOwner, { task ->
+                adapter.setData(task)
+            })
+
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.calendar_menu, menu)
         inflater.inflate(R.menu.delete_menu, menu)
         inflater.inflate(R.menu.sort_menu, menu)
     }
@@ -73,27 +71,30 @@ class ListFragment : Fragment() {
             R.id.menu_delete -> {
                 deleteAllTasks()
             }
+            R.id.menu_calendar -> {
+                findNavController().navigate(R.id.action_listFragment_to_calendarFragment)
+            }
             R.id.type_sort -> {
-                mTaskViewModel.sortedByType.observe(viewLifecycleOwner, Observer { task ->
+                mTaskViewModel.sortedByType.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
                 sortedBy = "type"
             }
             R.id.name_sort -> {
-                mTaskViewModel.sortedByName.observe(viewLifecycleOwner, Observer { task ->
+                mTaskViewModel.sortedByName.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
                 sortedBy = "name"
             }
             R.id.date_sort -> {
-                mTaskViewModel.sortedByDate.observe(viewLifecycleOwner, Observer { task ->
+                mTaskViewModel.sortedByDate.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
                 sortedBy = "date"
 
             }
             R.id.priority_sort -> {
-                mTaskViewModel.sortedByPriority.observe(viewLifecycleOwner, Observer { task ->
+                mTaskViewModel.sortedByPriority.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
                 sortedBy = "priority"
@@ -124,27 +125,27 @@ class ListFragment : Fragment() {
     private fun restoreListOrder() {
         when (sortedBy) {
             "default" -> {
-                mTaskViewModel.readAllData.observe(viewLifecycleOwner, Observer { task ->
+                mTaskViewModel.readAllData.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
             }
             "type" -> {
-                mTaskViewModel.sortedByType.observe(viewLifecycleOwner, Observer { task ->
+                mTaskViewModel.sortedByType.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
             }
             "priority" -> {
-                mTaskViewModel.sortedByPriority.observe(viewLifecycleOwner, Observer { task ->
+                mTaskViewModel.sortedByPriority.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
             }
             "date" -> {
-                mTaskViewModel.sortedByDate.observe(viewLifecycleOwner, Observer { task ->
+                mTaskViewModel.sortedByDate.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
             }
             "name" -> {
-                mTaskViewModel.sortedByName.observe(viewLifecycleOwner, Observer { task ->
+                mTaskViewModel.sortedByName.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
             }

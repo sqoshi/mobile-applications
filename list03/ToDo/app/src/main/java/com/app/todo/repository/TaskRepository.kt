@@ -12,6 +12,14 @@ class TaskRepository(private val taskDao: TaskDao) {
     val sortedByPriority: LiveData<List<Task>> = taskDao.sortedByPriority()
 
 
+    fun getTasksFrom(year: Int, month: Int, day: Int): LiveData<List<Task>> {
+        return taskDao.getTasksFrom(year, month, day)
+    }
+
+    fun readTasks(): List<Task> {
+        return taskDao.readTasks()
+    }
+
     suspend fun addTask(task: Task) {
         taskDao.addTask(task)
     }

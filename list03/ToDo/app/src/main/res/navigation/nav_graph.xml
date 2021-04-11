@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_listFragment_to_updateFragment"
             app:destination="@id/updateFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_calendarFragment"
+            app:destination="@id/calendarFragment" />
     </fragment>
     <fragment
         android:id="@+id/addFragment"
@@ -37,5 +40,14 @@
         <argument
             android:name="currentTask"
             app:argType="com.app.todo.model.Task" />
+    </fragment>
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.app.todo.fragments.calendar.CalendarFragment"
+        android:label="Calendar"
+        tools:layout="@layout/fragment_calendar">
+        <action
+            android:id="@+id/action_calendarFragment_to_listFragment"
+            app:destination="@id/listFragment" />
     </fragment>
 </navigation>
