@@ -5,24 +5,24 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
 <item
     android:id="@+id/overflowMenu"
     android:icon="@drawable/ic_baseline_sort_24"
-    android:title="Sort by"
-    app:showAsAction="always">
+    android:title="@string/sort_by"
+    app:showAsAction="always|withText">
     <menu>
         <item
             android:id="@+id/type_sort"
-            android:title="Type"
+            android:title="@string/type"
             />
         <item
             android:id="@+id/name_sort"
-            android:title="Name"
+            android:title="@string/name"
             />
         <item
             android:id="@+id/date_sort"
-            android:title="Date"
+            android:title="@string/date"
             />
         <item
             android:id="@+id/priority_sort"
-            android:title="Priority"
+            android:title="@string/priority"
             />
     </menu>
 </item>

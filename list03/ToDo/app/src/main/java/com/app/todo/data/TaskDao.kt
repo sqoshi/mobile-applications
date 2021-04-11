@@ -25,6 +25,9 @@ interface TaskDao {
     @Query("DELETE FROM task_table")
     suspend fun deleteAllTasks()
 
+    @Query("SELECT * FROM task_table WHERE priority = :priority")
+    fun filterByPriority(priority: String): LiveData<List<Task>>
+
     @Query("SELECT * FROM task_table ORDER BY name ASC")
     fun sortedByName(): LiveData<List<Task>>
 

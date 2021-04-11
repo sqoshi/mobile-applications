@@ -18,6 +18,7 @@ class ListFragment : Fragment() {
     private lateinit var mTaskViewModel: TaskViewModel
     private val adapter = ListAdapter()
     private var sortedBy = "default"
+    private var filteredBy = "default"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,16 +43,18 @@ class ListFragment : Fragment() {
 
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if(::mTaskViewModel.isInitialized)
+        if (::mTaskViewModel.isInitialized)
             mTaskViewModel.saveState()
         super.onSaveInstanceState(outState)
         outState.putString("sortedBy", sortedBy)
+        outState.putString("filteredBy", filteredBy)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (savedInstanceState != null) {
             sortedBy = savedInstanceState.getString("sortedBy").toString()
+            filteredBy = savedInstanceState.getString("filteredBy").toString()
             restoreListOrder()
         } else
             mTaskViewModel.readAllData.observe(viewLifecycleOwner, { task ->
@@ -63,6 +66,7 @@ class ListFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.calendar_menu, menu)
         inflater.inflate(R.menu.delete_menu, menu)
+        inflater.inflate(R.menu.filter_menu, menu)
         inflater.inflate(R.menu.sort_menu, menu)
     }
 
@@ -99,6 +103,30 @@ class ListFragment : Fragment() {
                 })
                 sortedBy = "priority"
 
+            }
+            R.id.high_filter -> {
+                mTaskViewModel.filterByPriority("HIGH").observe(viewLifecycleOwner, { task ->
+                    adapter.setData(task)
+                })
+                filteredBy = "high"
+            }
+            R.id.medium_filter -> {
+                mTaskViewModel.filterByPriority("MEDIUM").observe(viewLifecycleOwner, { task ->
+                    adapter.setData(task)
+                })
+                filteredBy = "medium"
+            }
+            R.id.low_filter -> {
+                mTaskViewModel.filterByPriority("LOW").observe(viewLifecycleOwner, { task ->
+                    adapter.setData(task)
+                })
+                filteredBy = "low"
+            }
+            R.id.show_all -> {
+                mTaskViewModel.readAllData.observe(viewLifecycleOwner, { task ->
+                    adapter.setData(task)
+                })
+                filteredBy = "default"
             }
         }
         return super.onOptionsItemSelected(item)
@@ -146,6 +174,28 @@ class ListFragment : Fragment() {
             }
             "name" -> {
                 mTaskViewModel.sortedByName.observe(viewLifecycleOwner, { task ->
+                    adapter.setData(task)
+                })
+            }
+        }
+        when (filteredBy) {
+            "high" -> {
+                mTaskViewModel.filterByPriority("HIGH").observe(viewLifecycleOwner, { task ->
+                    adapter.setData(task)
+                })
+            }
+            "medium" -> {
+                mTaskViewModel.filterByPriority("MEDIUM").observe(viewLifecycleOwner, { task ->
+                    adapter.setData(task)
+                })
+            }
+            "low" -> {
+                mTaskViewModel.filterByPriority("LOW").observe(viewLifecycleOwner, { task ->
+                    adapter.setData(task)
+                })
+            }
+            "default" -> {
+                mTaskViewModel.readAllData.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
             }

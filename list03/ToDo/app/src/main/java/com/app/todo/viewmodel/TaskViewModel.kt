@@ -38,6 +38,10 @@ class TaskViewModel(application: Application, private val state: SavedStateHandl
     }
 
 
+    fun filterByPriority(priority: String): LiveData<List<Task>> {
+        return repository.filterByPriority(priority)
+    }
+
     fun getTasksFrom(year: Int, month: Int, day: Int): LiveData<List<Task>> {
         return repository.getTasksFrom(year, month, day)
     }
