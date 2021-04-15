@@ -31,6 +31,9 @@ class MainActivity : AppCompatActivity() {
         return navC.navigateUp() || super.onSupportNavigateUp()
     }
 
+    /**
+     * Wraps setupRecurringWork call with coroutine.
+     */
     private fun delayedInit() {
         applicationScope.launch {
             Timber.plant(Timber.DebugTree())
@@ -39,6 +42,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets worker to work periodically.
+     */
     private fun setupRecurringWork() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED)
@@ -61,4 +67,4 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    }
+}

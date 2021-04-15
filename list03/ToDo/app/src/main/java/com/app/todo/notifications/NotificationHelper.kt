@@ -14,6 +14,10 @@ import com.app.todo.MainActivity
 import com.app.todo.R
 
 
+/**
+ * Responsible for creating a channel within notification
+ * can be communicated with a receiver.
+ */
 internal class NotificationHelper(context: Context) {
     private val mContext: Context = context
 

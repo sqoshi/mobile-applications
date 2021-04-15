@@ -19,7 +19,10 @@ import sun.bob.mcalendarview.listeners.OnDateClickListener
 import sun.bob.mcalendarview.views.ExpCalendarView
 import sun.bob.mcalendarview.vo.DateData
 
-
+/**
+ * Function display clickable calendar and a list preview.
+ * List can be filtered to special date by clicking date in calendar.
+ */
 class CalendarFragment : Fragment() {
     private val adapter = ListAdapter()
     private lateinit var mTaskViewModel: TaskViewModel
@@ -49,12 +52,17 @@ class CalendarFragment : Fragment() {
         return view
     }
 
+    /**
+     * Reload state before rotation change.
+     */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         calendarView.init(activity)
         //TODO: no way to saveInstance of calendar date, just no way
     }
-
+    /**
+     * Filter task list by date when clicking on date in calendar.
+     */
     inner class DateClickerListener : OnDateClickListener() {
         override fun onDateClick(view: View?, date: DateData?) {
             if (date != null)

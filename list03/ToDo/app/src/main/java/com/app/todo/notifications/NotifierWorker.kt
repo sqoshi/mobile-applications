@@ -16,6 +16,9 @@ import com.app.todo.data.TaskDatabase
 import com.app.todo.repository.TaskRepository
 import timber.log.Timber
 
+/**
+ * Responsible for working in background and ringing periodically till task expiration date.
+ */
 class NotifierWorker(appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params) {
     private val CHANNEL_ID = "channel_id_example_01"
@@ -25,12 +28,13 @@ class NotifierWorker(appContext: Context, params: WorkerParameters) :
         const val WORK_NAME = "com.app.todo.notifications.NotifierWorker"
     }
 
+    /**
+     * Connects with database checks all expiration dates and sends
+     * Notification if it is close to expiration date.
+     */
     override suspend fun doWork(): Result {
         val taskDao = TaskDatabase.getDatabase(applicationContext).taskDao()
         val repository: TaskRepository = TaskRepository(taskDao)
-
-
-
         try {
             Timber.d("Work request for sync is run %s", repository.readAllData.toString())
             createNotificationChannel()
@@ -43,7 +47,9 @@ class NotifierWorker(appContext: Context, params: WorkerParameters) :
         return Result.success()
     }
 
-
+    /**
+     * Open communication channel.
+     */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Task expires."
@@ -58,6 +64,10 @@ class NotifierWorker(appContext: Context, params: WorkerParameters) :
         }
     }
 
+    /**
+     *  Send notification that click leads to new activity or current one.
+     *  Dialog contains Information about task.
+     */
     private fun sendNotification() {
         val intent = Intent(applicationContext, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

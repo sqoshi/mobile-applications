@@ -6,6 +6,10 @@ import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 import java.util.Date
 
+/**
+ * Abstract table.
+ * Each argument of class is a column inside task_table.
+ */
 @Parcelize
 @Entity(tableName = "task_table")
 data class Task(

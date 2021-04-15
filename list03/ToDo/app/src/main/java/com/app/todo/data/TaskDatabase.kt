@@ -7,6 +7,10 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.app.todo.model.Task
 
+
+/**
+ * Room database using singleton pattern to create a connection with a database.
+ */
 @Database(entities = [Task::class], version = 1, exportSchema = false)
 @TypeConverters(DateTypeConverter::class)
 abstract class TaskDatabase : RoomDatabase() {
@@ -17,6 +21,9 @@ abstract class TaskDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: TaskDatabase? = null
 
+        /**
+         * Using singleton pattern creates and return database.
+         */
         fun getDatabase(context: Context): TaskDatabase {
             val tempInstance = INSTANCE
             if (tempInstance != null) {

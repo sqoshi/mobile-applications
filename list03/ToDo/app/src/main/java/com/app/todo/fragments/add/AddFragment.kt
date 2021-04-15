@@ -22,7 +22,9 @@ import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
 import java.util.*
 
-
+/**
+ * Fragment responsible for adding a new task to database.
+ */
 class AddFragment : Fragment() {
     private lateinit var mTaskViewModel: TaskViewModel
 
@@ -36,7 +38,7 @@ class AddFragment : Fragment() {
         if (view != null) {
             mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
             view.buttonAdd.setOnClickListener {
-                insertDataToDataBase()
+                insertDataToDatabase()
             }
 
             view.iconImageView.tag = "ic_baseline_school_24"
@@ -55,6 +57,9 @@ class AddFragment : Fragment() {
 
     }
 
+    /**
+     * Set xml elements' values to passed arguments.
+     */
     private fun setValues(
         view: View?,
         hour: Int,
@@ -95,6 +100,9 @@ class AddFragment : Fragment() {
 
     }
 
+    /**
+     * Handling save on rotation change.
+     */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         if (iconImageView != null && datePicker != null && timePicker != null) {
@@ -111,6 +119,9 @@ class AddFragment : Fragment() {
 
     }
 
+    /**
+     * Handling load on rotation change.
+     */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (savedInstanceState != null) {
@@ -133,6 +144,9 @@ class AddFragment : Fragment() {
 
     }
 
+    /**
+     * Set up spinner and adding functionality as displaying dialog on element click.
+     */
     private fun installSpinner(view: View) {
         val priorities = resources.getStringArray(R.array.priorities)
 
@@ -159,6 +173,9 @@ class AddFragment : Fragment() {
 
     }
 
+    /**
+     * Setting alarm before task expiration date.
+     */
     private fun setUpNotification(hour: Int, minute: Int, day: Int, month: Int, year: Int) {
         val calendar: Calendar = Calendar.getInstance()
         calendar.set(Calendar.HOUR_OF_DAY, hour)
@@ -185,7 +202,10 @@ class AddFragment : Fragment() {
         )
     }
 
-    private fun insertDataToDataBase() {
+    /**
+     * Inserting a new Task to a database.
+     */
+    private fun insertDataToDatabase() {
         val desc = editTextDesc.text.toString()
         val name = editTextName.text.toString()
         val priority = prioritySpinner.selectedItem
@@ -205,7 +225,6 @@ class AddFragment : Fragment() {
                 minute = timePicker.minute
             )
 
-            // TODO: time check should be added here
             setUpNotification(
                 year = datePicker.year,
                 month = datePicker.month,
@@ -225,10 +244,16 @@ class AddFragment : Fragment() {
     }
 
 
+    /**
+     * Check if data passed by user is correct and enough to insert.
+     */
     private fun inputCheck(name: String): Boolean {
         return !(TextUtils.isEmpty(name))
     }
 
+    /**
+     * Display dialog within user can choose icon for a new task.
+     */
     private fun displayDialog(view: View) {
         val dialogView: View =
             LayoutInflater.from(requireContext()).inflate(R.layout.alert_dialog, null)
@@ -269,6 +294,9 @@ class AddFragment : Fragment() {
         dialog.show()
     }
 
+    /**
+     * When icon is clicked inside special dialog setup preview and hide dialog.
+     */
     private fun dialogListItemOnClick(view: View, dialog: AlertDialog, draw: Int) {
         view.iconImageView.setImageResource(draw)
         dialog.dismiss()

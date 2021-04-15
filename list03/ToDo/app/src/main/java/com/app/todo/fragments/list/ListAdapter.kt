@@ -15,6 +15,12 @@ import kotlinx.android.synthetic.main.task_row.view.*
 import java.util.*
 
 
+/**
+ * Adapter for list.
+ * List elements can be displayed as specified in this class.
+ * We have special `row.xml` file that specify style for a row of a task list.
+ * Class filling template `row.xml` with values from database. ( currItem)
+ */
 class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
     private var taskList = emptyList<Task>()
 
@@ -30,6 +36,9 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         return taskList.size
     }
 
+    /**
+     * Add functionality and data to row template for each element in list.
+     */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currItem = taskList[position]
@@ -60,6 +69,9 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
     }
 
+    /**
+     * Functionality to change color of list- element background.
+     */
     private fun setBackgroundColor(itView: View, priority: String) {
         when {
             priority.toUpperCase(Locale.getDefault()) == "HIGH" -> {

@@ -41,7 +41,9 @@ class ListFragment : Fragment() {
         return view
     }
 
-
+    /**
+     * Saves on orientation change last sort and filter type.
+     */
     override fun onSaveInstanceState(outState: Bundle) {
         if (::mTaskViewModel.isInitialized)
             mTaskViewModel.saveState()
@@ -50,6 +52,9 @@ class ListFragment : Fragment() {
         outState.putString("filteredBy", filteredBy)
     }
 
+    /**
+     * Loads data after orientation change setting filter and sort.
+     */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (savedInstanceState != null) {
@@ -63,13 +68,19 @@ class ListFragment : Fragment() {
 
     }
 
+    /**
+     * Inflates menu options.
+     */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.calendar_menu, menu)
         inflater.inflate(R.menu.delete_menu, menu)
-        inflater.inflate(R.menu.filter_menu, menu)
+//        inflater.inflate(R.menu.filter_menu, menu)
         inflater.inflate(R.menu.sort_menu, menu)
     }
 
+    /**
+     * Map menu options  on click to appropriate action.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_delete -> {
@@ -132,7 +143,10 @@ class ListFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-
+    /**
+     * Remove all tasks from database.
+     * Displays reassuring/ warning acceptance dialog.
+     */
     private fun deleteAllTasks() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes") { _, _ ->
@@ -150,6 +164,10 @@ class ListFragment : Fragment() {
         builder.show()
     }
 
+    /**
+     * After rotation change data order need to be restored.
+     * Restore sort and filtering config.
+     */
     private fun restoreListOrder() {
         when (sortedBy) {
             "default" -> {

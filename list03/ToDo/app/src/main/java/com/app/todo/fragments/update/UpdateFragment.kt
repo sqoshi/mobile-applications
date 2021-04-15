@@ -21,6 +21,9 @@ import kotlinx.android.synthetic.main.fragment_update.*
 import kotlinx.android.synthetic.main.fragment_update.view.*
 import java.util.*
 
+/**
+ * Responsible for editing existing in database task.
+ */
 class UpdateFragment : Fragment() {
 
     private val args by navArgs<UpdateFragmentArgs>()
@@ -53,6 +56,9 @@ class UpdateFragment : Fragment() {
         return view
     }
 
+    /**
+     * Loads data from database and display it.
+     */
     private fun setValuesFromDatabase(view: View?) {
         if (view != null) {
             view.datePickerUpdate.init(
@@ -83,6 +89,9 @@ class UpdateFragment : Fragment() {
 
     }
 
+    /**
+     * Set xml elements' values to passed arguments.
+     */
     private fun setValues(
         view: View?,
         hour: Int,
@@ -123,6 +132,9 @@ class UpdateFragment : Fragment() {
 
     }
 
+    /**
+     * Saves data on orientation change.
+     */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString("type", iconImageViewUpdate.tag.toString())
@@ -137,6 +149,9 @@ class UpdateFragment : Fragment() {
 
     }
 
+    /**
+     * Loads data on orientation change.
+     */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (savedInstanceState != null) {
@@ -157,6 +172,9 @@ class UpdateFragment : Fragment() {
 
     }
 
+    /**
+     * Set up spinner and adding functionality as displaying dialog on element click.
+     */
     private fun installSpinner(view: View) {
         val priorities = resources.getStringArray(R.array.priorities)
 
@@ -181,7 +199,9 @@ class UpdateFragment : Fragment() {
             view.prioritySpinnerUpdate.setSelection(adapter.getPosition(args.currentTask.priority)); }
     }
 
-
+    /**
+     * Updates task in database after providing changes.
+     */
     private fun updateItem() {
         val name = editTextUpdateName.text.toString()
         val desc = editTextUpdateDesc.text.toString()
@@ -223,23 +243,34 @@ class UpdateFragment : Fragment() {
 
     }
 
+    /**
+     * Check if data passed by user is correct and enough to insert.
+     */
     private fun inputCheck(name: String, desc: String, type: String): Boolean {
         return (args.currentTask.description != desc || args.currentTask.name != name || args.currentTask.type != type)
     }
 
-
+    /**
+     * Add menu icon to delete current task.
+     */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.delete_menu, menu)
     }
 
+    /**
+     * On menu `delete` option click adding task deletion functionality.
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_delete) {
-            deleteUser()
+            deleteTask()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun deleteUser() {
+    /**
+     * Remove task from a database.
+     */
+    private fun deleteTask() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes") { _, _ ->
             mTaskViewModel.deleteTask(task = args.currentTask)
@@ -257,6 +288,9 @@ class UpdateFragment : Fragment() {
         builder.show()
     }
 
+    /**
+     * Display dialog within user can choose icon for a updated task.
+     */
     private fun displayDialog(view: View) {
         val dialogView: View =
             LayoutInflater.from(requireContext()).inflate(R.layout.alert_dialog, null)
@@ -297,11 +331,17 @@ class UpdateFragment : Fragment() {
         dialog.show()
     }
 
+    /**
+     * Sets icon on in-dialog icon click.
+     */
     private fun dialogListItemOnClick(view: View, dialog: AlertDialog, draw: Int) {
         view.iconImageViewUpdate.setImageResource(draw)
         dialog.dismiss()
     }
 
+    /**
+     * set Up notification for updated task.
+     */
     private fun setUpNotification(hour: Int, minute: Int, day: Int, month: Int, year: Int) {
         val calendar: Calendar = Calendar.getInstance()
         calendar.set(Calendar.HOUR_OF_DAY, hour)
