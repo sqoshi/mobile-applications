@@ -10,17 +10,20 @@ import android.os.Build
 import android.provider.Settings
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.Builder
+import com.app.todo.BuildConfig
 import com.app.todo.MainActivity
 import com.app.todo.R
 
 
 /**
- * Responsible for creating a channel within notification
- * can be communicated with a receiver.
+ * Responsible for creating a channel within notification can be communicated with a receiver.
  */
-internal class NotificationHelper(context: Context) {
+internal class NotificationService(context: Context) {
     private val mContext: Context = context
 
+    /**
+     * Creates notification popup and display it.
+     */
     fun createNotification() {
         val intent = Intent(mContext, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -30,14 +33,16 @@ internal class NotificationHelper(context: Context) {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val mBuilder: NotificationCompat.Builder = Builder(mContext, NOTIFICATION_CHANNEL_ID)
-        mBuilder.setSmallIcon(R.drawable.ic_launcher_foreground)
-        mBuilder.setContentTitle("Title")
-            .setContentText("Content")
+        mBuilder.setSmallIcon(R.drawable.ic_baseline_calendar_today_24)
+        mBuilder.setContentTitle("ToDo")
+            .setContentText("Hey, your task expires in few minutes!")
             .setAutoCancel(false)
             .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
             .setContentIntent(resultPendingIntent)
+
         val mNotificationManager =
             mContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_HIGH
             val notificationChannel = NotificationChannel(
@@ -50,11 +55,9 @@ internal class NotificationHelper(context: Context) {
             notificationChannel.enableVibration(true)
             notificationChannel.vibrationPattern =
                 longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
-            assert(mNotificationManager != null)
             mBuilder.setChannelId(NOTIFICATION_CHANNEL_ID)
             mNotificationManager.createNotificationChannel(notificationChannel)
         }
-        assert(mNotificationManager != null)
         mNotificationManager.notify(0 /* Request Code */, mBuilder.build())
     }
 

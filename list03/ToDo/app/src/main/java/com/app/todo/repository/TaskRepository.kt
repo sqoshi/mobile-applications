@@ -1,8 +1,10 @@
 package com.app.todo.repository
 
 import androidx.lifecycle.LiveData
+import com.app.todo.Auxiliary
 import com.app.todo.data.TaskDao
 import com.app.todo.model.Task
+import java.util.*
 
 /**
  * Access to multiple data sourced. Handles data operations.
@@ -24,8 +26,16 @@ class TaskRepository(private val taskDao: TaskDao) {
     /**
      * Return tasks from specified date.
      */
-    fun getTasksFrom(year: Int, month: Int, day: Int): LiveData<List<Task>> {
-        return taskDao.getTasksFrom(year, month, day)
+    fun getTasksFrom(date: Calendar): LiveData<List<Task>> {
+        val date2 = Auxiliary.getCalendarWithDate(
+            date.get(Calendar.YEAR),
+            date.get(Calendar.MONTH),
+            date.get(Calendar.DAY_OF_MONTH),
+            date.get(Calendar.HOUR_OF_DAY),
+            date.get(Calendar.MINUTE)
+        )
+        date2.add(Calendar.DATE, 1)
+        return taskDao.getTasksFrom(date, date2)
     }
 
     /**

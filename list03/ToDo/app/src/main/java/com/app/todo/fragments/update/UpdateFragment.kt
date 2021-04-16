@@ -1,22 +1,23 @@
 package com.app.todo.fragments.update
 
-import android.app.AlarmManager
 import android.app.AlertDialog
-import android.app.PendingIntent
-import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.app.todo.notifications.NotificationReceiver
+import com.app.todo.Auxiliary.Companion.displayDialog
+import com.app.todo.Auxiliary.Companion.getCalendarWithDate
+import com.app.todo.Auxiliary.Companion.installSpinner
+import com.app.todo.Auxiliary.Companion.setUpNotification
+import com.app.todo.Auxiliary.Companion.setValues
 import com.app.todo.R
 import com.app.todo.model.Task
 import com.app.todo.viewmodel.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_add.*
+import kotlinx.android.synthetic.main.fragment_add.view.*
 import kotlinx.android.synthetic.main.fragment_update.*
 import kotlinx.android.synthetic.main.fragment_update.view.*
 import java.util.*
@@ -39,9 +40,10 @@ class UpdateFragment : Fragment() {
         mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
 
 
+        view.iconImageViewUpdate.tag = args.currentTask.type
 
         view.iconImageViewUpdate.setOnClickListener {
-            displayDialog(view)
+            displayDialog(requireContext(), view.iconImageViewUpdate)
         }
 
         view.buttonUpdate.setOnClickListener {
@@ -49,87 +51,17 @@ class UpdateFragment : Fragment() {
         }
 
         setHasOptionsMenu(true)
+        view.timePickerUpdate.setIs24HourView(true)
 
-
-        installSpinner(view)
-
+        installSpinner(
+            requireContext(),
+            view,
+            resources,
+            R.id.prioritySpinnerUpdate,
+            view.prioritySpinnerUpdate,
+            args.currentTask.priority
+        )
         return view
-    }
-
-    /**
-     * Loads data from database and display it.
-     */
-    private fun setValuesFromDatabase(view: View?) {
-        if (view != null) {
-            view.datePickerUpdate.init(
-                args.currentTask.year,
-                args.currentTask.month,
-                args.currentTask.day,
-                null
-            )
-
-            view.datePickerUpdate.minDate = System.currentTimeMillis() - 1000
-
-
-            view.timePickerUpdate.setIs24HourView(true)
-            view.timePickerUpdate.hour = args.currentTask.hour
-            view.timePickerUpdate.minute = args.currentTask.minute
-
-
-            view.editTextUpdateDesc.setText(args.currentTask.description)
-            view.editTextUpdateName.setText(args.currentTask.name)
-
-            val resourceId = resources.getIdentifier(
-                args.currentTask.type, "drawable",
-                activity?.packageName
-            )
-            view.iconImageViewUpdate.tag = args.currentTask.type
-            view.iconImageViewUpdate.setImageResource(resourceId)
-        }
-
-    }
-
-    /**
-     * Set xml elements' values to passed arguments.
-     */
-    private fun setValues(
-        view: View?,
-        hour: Int,
-        minute: Int,
-        day: Int, month: Int,
-        year: Int,
-        desc: String,
-        priority: String,
-        type: String,
-        name: String,
-    ) {
-        if (view != null) {
-            view.datePickerUpdate.init(
-                year,
-                month,
-                day,
-                null
-            )
-
-            view.datePickerUpdate.minDate = System.currentTimeMillis() - 1000
-
-
-            view.timePickerUpdate.setIs24HourView(true)
-            view.timePickerUpdate.hour = hour
-            view.timePickerUpdate.minute = minute
-
-
-            view.editTextUpdateDesc.setText(desc)
-            view.editTextUpdateName.setText(name)
-
-            val resourceId = resources.getIdentifier(
-                type, "drawable",
-                activity?.packageName
-            )
-            view.iconImageViewUpdate.tag = type
-            view.iconImageViewUpdate.setImageResource(resourceId)
-        }
-
     }
 
     /**
@@ -156,48 +88,49 @@ class UpdateFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         if (savedInstanceState != null) {
             setValues(
+                resources,
+                activity,
                 view,
-                savedInstanceState.getInt("hour"),
-                savedInstanceState.getInt("minute"),
-                savedInstanceState.getInt("day"),
-                savedInstanceState.getInt("month"),
-                savedInstanceState.getInt("year"),
+                view?.datePickerUpdate,
+                view?.timePickerUpdate,
+                view?.iconImageViewUpdate,
+                view?.editTextUpdateName,
+                view?.editTextUpdateDesc,
+                getCalendarWithDate(
+                    savedInstanceState.getInt("year"),
+                    savedInstanceState.getInt("month"),
+                    savedInstanceState.getInt("day"),
+                    savedInstanceState.getInt("hour"),
+                    savedInstanceState.getInt("minute"),
+                ),
                 savedInstanceState.getString("desc").toString(),
-                savedInstanceState.getString("priority").toString(),
                 savedInstanceState.getString("type").toString(),
                 savedInstanceState.getString("name").toString()
             )
         } else
-            setValuesFromDatabase(view)
-
-    }
-
-    /**
-     * Set up spinner and adding functionality as displaying dialog on element click.
-     */
-    private fun installSpinner(view: View) {
-        val priorities = resources.getStringArray(R.array.priorities)
-
-        val spinner = view.findViewById<Spinner>(R.id.prioritySpinnerUpdate)
-        if (spinner != null) {
-            val adapter = ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_spinner_item, priorities
+            setValues(
+                resources,
+                activity,
+                view,
+                view?.datePickerUpdate,
+                view?.timePickerUpdate,
+                view?.iconImageViewUpdate,
+                view?.editTextUpdateName,
+                view?.editTextUpdateDesc,
+                getCalendarWithDate(
+                    args.currentTask.date.get(Calendar.YEAR),
+                    args.currentTask.date.get(Calendar.MONTH),
+                    args.currentTask.date.get(Calendar.DAY_OF_MONTH),
+                    args.currentTask.date.get(Calendar.HOUR_OF_DAY),
+                    args.currentTask.date.get(Calendar.MINUTE),
+                ),
+                args.currentTask.description,
+                args.currentTask.type,
+                args.currentTask.name,
             )
-            spinner.adapter = adapter
 
-            spinner.onItemSelectedListener = object :
-                AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View?, position: Int, id: Long
-                ) {
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>) {}
-            }
-            view.prioritySpinnerUpdate.setSelection(adapter.getPosition(args.currentTask.priority)); }
     }
+
 
     /**
      * Updates task in database after providing changes.
@@ -208,6 +141,13 @@ class UpdateFragment : Fragment() {
         val type = iconImageViewUpdate.tag.toString()
         val priority = prioritySpinnerUpdate.selectedItem.toString()
 
+        val year = datePickerUpdate.year
+        val month = datePickerUpdate.month
+        val day = datePickerUpdate.dayOfMonth
+        val hour = timePickerUpdate.hour
+        val minute = timePickerUpdate.minute
+        val calendar: Calendar = getCalendarWithDate(year, month, day, hour, minute)
+
 
         if (inputCheck(name, desc, type)) {
             val updatedTask =
@@ -217,29 +157,22 @@ class UpdateFragment : Fragment() {
                     description = desc,
                     type = type,
                     priority = priority,
-                    year = datePickerUpdate.year,
-                    month = datePicker.month + 1,
-                    day = datePickerUpdate.dayOfMonth,
-                    hour = timePickerUpdate.hour,
-                    minute = timePickerUpdate.minute
+                    date = calendar
                 )
 
             mTaskViewModel.updateTask(updatedTask)
             setUpNotification(
-                year = datePickerUpdate.year,
-                month = datePickerUpdate.month,
-                day = datePickerUpdate.dayOfMonth,
-                hour = timePickerUpdate.hour,
-                minute = timePickerUpdate.minute - 1
+                activity = activity,
+                year = year,
+                month = month,
+                day = day,
+                hour = hour,
+                minute = minute - 1
             )
             findNavController().navigate(R.id.action_updateFragment_to_listFragment)
             Toast.makeText(requireContext(), "Successfully updated task", Toast.LENGTH_SHORT).show()
         } else
-            Toast.makeText(
-                requireContext(),
-                "Please, change any field.",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(requireContext(), "Please, change any field.", Toast.LENGTH_SHORT).show()
 
     }
 
@@ -288,83 +221,5 @@ class UpdateFragment : Fragment() {
         builder.show()
     }
 
-    /**
-     * Display dialog within user can choose icon for a updated task.
-     */
-    private fun displayDialog(view: View) {
-        val dialogView: View =
-            LayoutInflater.from(requireContext()).inflate(R.layout.alert_dialog, null)
 
-
-        val dialog: AlertDialog = AlertDialog.Builder(
-            requireContext()
-        )
-            .setTitle("Choose icon")
-            .setMessage("Set icon for task.")
-            .setView(dialogView)
-            .setNegativeButton("Cancel", null)
-            .create()
-
-        val o1: LinearLayout = dialogView.findViewById(R.id.pets_option)
-        o1.setOnClickListener {
-            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_pets_24)
-            view.iconImageViewUpdate.tag = "ic_baseline_pets_24"
-        }
-        val o2: LinearLayout = dialogView.findViewById(R.id.school_option)
-        o2.setOnClickListener {
-            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_school_24)
-            view.iconImageViewUpdate.tag = "ic_baseline_school_24"
-
-        }
-        val o3: LinearLayout = dialogView.findViewById(R.id.work_option)
-        o3.setOnClickListener {
-            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_work_24)
-            view.iconImageViewUpdate.tag = "ic_baseline_work_24"
-
-        }
-        val o4: LinearLayout = dialogView.findViewById(R.id.person_option)
-        o4.setOnClickListener {
-            dialogListItemOnClick(view, dialog, R.drawable.ic_baseline_person_24)
-            view.iconImageViewUpdate.tag = "ic_baseline_person_24"
-
-        }
-        dialog.show()
-    }
-
-    /**
-     * Sets icon on in-dialog icon click.
-     */
-    private fun dialogListItemOnClick(view: View, dialog: AlertDialog, draw: Int) {
-        view.iconImageViewUpdate.setImageResource(draw)
-        dialog.dismiss()
-    }
-
-    /**
-     * set Up notification for updated task.
-     */
-    private fun setUpNotification(hour: Int, minute: Int, day: Int, month: Int, year: Int) {
-        val calendar: Calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, hour)
-        calendar.set(Calendar.MINUTE, minute)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.YEAR, year)
-        calendar.set(Calendar.MONTH, month)
-        calendar.set(Calendar.DAY_OF_MONTH, day)
-        if (calendar.time < Date()) calendar.add(Calendar.DAY_OF_MONTH, 1)
-        val intent = Intent(activity?.applicationContext, NotificationReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            activity?.applicationContext,
-            (0..2147483647).random(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        val alarmManager =
-            activity?.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
-    }
 }

@@ -2,7 +2,6 @@ package com.app.todo.fragments.list
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -166,7 +165,7 @@ class ListFragment : Fragment() {
 
     /**
      * After rotation change data order need to be restored.
-     * Restore sort and filtering config.
+     * Restore sort and filtering order.
      */
     private fun restoreListOrder() {
         when (sortedBy) {
@@ -196,27 +195,27 @@ class ListFragment : Fragment() {
                 })
             }
         }
-        when (filteredBy) {
-            "high" -> {
-                mTaskViewModel.filterByPriority("HIGH").observe(viewLifecycleOwner, { task ->
-                    adapter.setData(task)
-                })
-            }
-            "medium" -> {
-                mTaskViewModel.filterByPriority("MEDIUM").observe(viewLifecycleOwner, { task ->
-                    adapter.setData(task)
-                })
-            }
-            "low" -> {
-                mTaskViewModel.filterByPriority("LOW").observe(viewLifecycleOwner, { task ->
-                    adapter.setData(task)
-                })
-            }
-            "default" -> {
-                mTaskViewModel.readAllData.observe(viewLifecycleOwner, { task ->
-                    adapter.setData(task)
-                })
-            }
-        }
+//        when (filteredBy) {
+//            "high" -> {
+//                mTaskViewModel.filterByPriority("HIGH").observe(viewLifecycleOwner, { task ->
+//                    adapter.setData(task)
+//                })
+//            }
+//            "medium" -> {
+//                mTaskViewModel.filterByPriority("MEDIUM").observe(viewLifecycleOwner, { task ->
+//                    adapter.setData(task)
+//                })
+//            }
+//            "low" -> {
+//                mTaskViewModel.filterByPriority("LOW").observe(viewLifecycleOwner, { task ->
+//                    adapter.setData(task)
+//                })
+//            }
+//            "default" -> {
+//                mTaskViewModel.readAllData.observe(viewLifecycleOwner, { task ->
+//                    adapter.setData(task)
+//                })
+//            }
+//        }
     }
 }

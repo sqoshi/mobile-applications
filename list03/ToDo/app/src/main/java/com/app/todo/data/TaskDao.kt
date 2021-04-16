@@ -3,6 +3,7 @@ package com.app.todo.data
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.app.todo.model.Task
+import java.util.*
 
 /**
  * Interface provides abstract access to app's database.
@@ -52,6 +53,28 @@ interface TaskDao {
     @Query("SELECT * FROM task_table WHERE priority = :priority")
     fun filterByPriority(priority: String): LiveData<List<Task>>
 
+
+    /**
+     * Read tasks with specified priority sorted by name.
+     */
+    @Query("SELECT * FROM task_table WHERE priority = :priority ORDER BY name ASC")
+    fun filterBySortedByName(priority: String): LiveData<List<Task>>
+
+
+    /**
+     * Read tasks with specified priority sorted by name.
+     */
+    @Query("SELECT * FROM task_table WHERE priority = :priority ORDER BY type ASC")
+    fun filterBySortedByType(priority: String): LiveData<List<Task>>
+
+
+    /**
+     * Read task with specified priority sorted by date.
+     */
+//    @Query("SELECT * FROM task_table WHERE priority = :priority ORDER BY (SELECT DATEFROMPARTS(year, month, day) as T from task_table) ASC")
+//    fun filterBySortedByDate(priority: String): LiveData<List<Task>>
+
+
     /**
      * Read all tasks sorted by name.
      */
@@ -67,7 +90,7 @@ interface TaskDao {
     /**
      * Read all tasks sorted by year.
      */
-    @Query("SELECT * FROM task_table ORDER BY year ASC")
+    @Query("SELECT * FROM task_table ORDER BY date ASC")
     fun sortedByDate(): LiveData<List<Task>>
 
     /**
@@ -79,7 +102,7 @@ interface TaskDao {
     /**
      * Read all tasks sorted by name.
      */
-    @Query("SELECT * FROM task_table WHERE year = :year AND  month = :month AND day = :day")
-    fun getTasksFrom(year: Int, month: Int, day: Int): LiveData<List<Task>>
+    @Query("SELECT * FROM task_table WHERE date > :date1 AND date < :date2")
+    fun getTasksFrom(date1: Calendar, date2: Calendar): LiveData<List<Task>>
 
 }

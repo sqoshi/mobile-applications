@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,12 +45,14 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
         val currItem = taskList[position]
         holder.itemView.taskName.text = currItem.name
         holder.itemView.textViewDesc.text = currItem.description
-        holder.itemView.textViewDate.text = addZeroPrefix(currItem.day.toString()) +
-                "/" + addZeroPrefix(currItem.month.toString()) +
-                "/" + addZeroPrefix(currItem.year.toString())
+        holder.itemView.textViewDate.text =
+            addZeroPrefix(currItem.date.get(Calendar.DAY_OF_MONTH).toString()) +
+                    "/" + addZeroPrefix(currItem.date.get(Calendar.MONTH).toString()) +
+                    "/" + addZeroPrefix(currItem.date.get(Calendar.YEAR).toString())
 
-        holder.itemView.textViewTime.text = currItem.hour.toString() +
-                ":" + addZeroPrefix(currItem.minute.toString())
+        holder.itemView.textViewTime.text = currItem.date.get(Calendar.HOUR_OF_DAY).toString() +
+                ":" + addZeroPrefix(currItem.date.get(Calendar.MINUTE).toString())
+
 
         setBackgroundColor(holder.itemView, currItem.priority)
         val resources: Resources = holder.itemView.context.resources
@@ -97,12 +100,17 @@ class ListAdapter : RecyclerView.Adapter<ListAdapter.MyViewHolder>() {
 
     }
 
+    /**
+     * Append data to adapter.
+     */
     fun setData(task: List<Task>) {
         this.taskList = task
         notifyDataSetChanged()
     }
 
-
+    /**
+     * If string has length equal to 1, then adds zero prefix to string.
+     */
     private fun addZeroPrefix(string: String): String {
         return if (string.length == 1)
             "0$string"

@@ -1,9 +1,7 @@
 package com.app.todo.data
 
 import androidx.room.TypeConverter
-
-
-import java.util.Date
+import java.util.*
 
 /***
  * Converts date before database insertion, read.
@@ -14,8 +12,13 @@ class DateTypeConverter {
      * out of <- database
      */
     @TypeConverter
-    fun fromTimestamp(value: Long?): Date? {
-        return if (value == null) null else Date(value)
+    fun fromTimestamp(value: Long?): Calendar? {
+        val cal = Calendar.getInstance()
+        if (value != null) {
+            cal.timeInMillis = value
+            return cal
+        }
+        return null
 
     }
 
@@ -24,8 +27,8 @@ class DateTypeConverter {
      * to -> database
      */
     @TypeConverter
-    fun dateToTimestamp(date: Date?): Long? {
-        return date?.time
+    fun dateToTimestamp(date: Calendar?): Long? {
+        return date?.timeInMillis
     }
 
 }

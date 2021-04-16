@@ -3,8 +3,10 @@ package com.app.todo.model
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
+import com.app.todo.data.DateTypeConverter
 import kotlinx.android.parcel.Parcelize
-import java.util.Date
+import java.util.*
 
 /**
  * Abstract table.
@@ -19,9 +21,5 @@ data class Task(
     val description: String,
     val type: String,
     val priority: String,
-    val year: Int,
-    val month: Int,
-    val day: Int,
-    val hour: Int,
-    val minute: Int,
+    val date: Calendar,
 ) : Parcelable

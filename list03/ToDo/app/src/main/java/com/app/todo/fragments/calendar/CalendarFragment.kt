@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.findFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.todo.Auxiliary
 import com.app.todo.R
 import com.app.todo.fragments.list.ListAdapter
 import com.app.todo.viewmodel.TaskViewModel
@@ -18,6 +19,7 @@ import kotlinx.android.synthetic.main.fragment_update.view.*
 import sun.bob.mcalendarview.listeners.OnDateClickListener
 import sun.bob.mcalendarview.views.ExpCalendarView
 import sun.bob.mcalendarview.vo.DateData
+import java.util.*
 
 /**
  * Function display clickable calendar and a list preview.
@@ -45,7 +47,11 @@ class CalendarFragment : Fragment() {
 
 
         for (task in mTaskViewModel.readTasks()!!) {
-            calendarView.markDate(task.year, task.month, task.day)
+            calendarView.markDate(
+                task.date.get(Calendar.YEAR),
+                task.date.get(Calendar.MONTH),
+                task.date.get(Calendar.DAY_OF_MONTH)
+            )
         }
 
 
@@ -60,16 +66,25 @@ class CalendarFragment : Fragment() {
         calendarView.init(activity)
         //TODO: no way to saveInstance of calendar date, just no way
     }
+
     /**
      * Filter task list by date when clicking on date in calendar.
      */
     inner class DateClickerListener : OnDateClickListener() {
         override fun onDateClick(view: View?, date: DateData?) {
-            if (date != null)
-                mTaskViewModel.getTasksFrom(date.year, date.month, date.day)
+            if (date != null) {
+                val cal = Auxiliary.getCalendarWithDate(
+                    date.year,
+                    date.month,
+                    date.day,
+                    0,
+                    0
+                )
+                mTaskViewModel.getTasksFrom(cal)
                     .observe(viewLifecycleOwner, { task ->
                         adapter.setData(task)
                     })
+            }
         }
 
     }
