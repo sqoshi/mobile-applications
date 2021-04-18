@@ -1,10 +1,12 @@
 package com.app.todo.fragments.calendar
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CalendarView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.findFragment
 import androidx.lifecycle.ViewModelProvider
@@ -31,9 +33,11 @@ class CalendarFragment : Fragment() {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        //TODO: comment below line to unlock landscape
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         val view = inflater.inflate(R.layout.fragment_calendar, container, false)
 
         val recView = view.recViewDayShort
@@ -42,7 +46,7 @@ class CalendarFragment : Fragment() {
         mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
 
 
-        val calendarView = view.findViewById(R.id.calendarView) as ExpCalendarView
+        val calendarView: ExpCalendarView = view.findViewById(R.id.calendarView)
         calendarView.setOnDateClickListener(DateClickerListener())
 
 
@@ -53,7 +57,6 @@ class CalendarFragment : Fragment() {
                 task.date.get(Calendar.DAY_OF_MONTH)
             )
         }
-
 
         return view
     }

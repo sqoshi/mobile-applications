@@ -16,6 +16,18 @@ class TaskRepository(private val taskDao: TaskDao) {
     val sortedByDate: LiveData<List<Task>> = taskDao.sortedByDate()
     val sortedByPriority: LiveData<List<Task>> = taskDao.sortedByPriority()
 
+
+    fun filterByPrioritySortedBy(
+        priority: String,
+        sortType: Auxiliary.Companion.SortType
+    ): LiveData<List<Task>> {
+        return when (sortType) {
+            Auxiliary.Companion.SortType.DATE -> taskDao.filterBySortedByDate(priority)
+            Auxiliary.Companion.SortType.NAME -> taskDao.filterBySortedByName(priority)
+            Auxiliary.Companion.SortType.TYPE -> taskDao.filterBySortedByType(priority)
+        }
+    }
+
     /**
      * Return live data list filtered by priority.
      */

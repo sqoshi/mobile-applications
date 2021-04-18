@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.os.AsyncTask
 import androidx.lifecycle.*
+import com.app.todo.Auxiliary
 import com.app.todo.data.TaskDatabase
 import com.app.todo.model.Task
 import com.app.todo.repository.TaskRepository
@@ -23,8 +24,6 @@ class TaskViewModel(application: Application, private val state: SavedStateHandl
     val sortedByDate: LiveData<List<Task>>
     val sortedByPriority: LiveData<List<Task>>
     private val repository: TaskRepository
-    var allItemsFiltered: LiveData<List<Task>>
-    var filter = MutableLiveData<String>("%")
 
     init {
         val taskDao = TaskDatabase.getDatabase(application).taskDao()
@@ -35,19 +34,7 @@ class TaskViewModel(application: Application, private val state: SavedStateHandl
         sortedByDate = repository.sortedByDate
         sortedByPriority = repository.sortedByPriority
 
-        allItemsFiltered = Transformations.switchMap(filter) { filter ->
-            repository.filterByPriority(filter)
-        }
 
-    }
-
-    fun setFilter(newFilter: String) {
-        // optional: add wildcards to the filter
-        val f = when {
-            newFilter.isEmpty() -> "%"
-            else -> "%$newFilter%"
-        }
-        filter.postValue(f) // apply the filter
     }
 
 
@@ -58,6 +45,16 @@ class TaskViewModel(application: Application, private val state: SavedStateHandl
         state.set("readAllData", readAllData.value)
     }
 
+
+    /**
+     * Filter elements by priority and sorts by sort type passed as arg.
+     */
+    fun filterByPrioritySortedBy(
+        priority: String,
+        sortType: Auxiliary.Companion.SortType
+    ): LiveData<List<Task>> {
+        return repository.filterByPrioritySortedBy(priority, sortType)
+    }
 
     /**
      * Filter elements by priority passed as arg.

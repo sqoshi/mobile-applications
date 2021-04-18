@@ -71,8 +71,8 @@ interface TaskDao {
     /**
      * Read task with specified priority sorted by date.
      */
-//    @Query("SELECT * FROM task_table WHERE priority = :priority ORDER BY (SELECT DATEFROMPARTS(year, month, day) as T from task_table) ASC")
-//    fun filterBySortedByDate(priority: String): LiveData<List<Task>>
+    @Query("SELECT * FROM task_table WHERE priority = :priority ORDER BY date ASC")
+    fun filterBySortedByDate(priority: String): LiveData<List<Task>>
 
 
     /**

@@ -1,6 +1,7 @@
 package com.app.todo.fragments.list
 
 import android.app.AlertDialog
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -16,14 +17,15 @@ import kotlinx.android.synthetic.main.fragment_list.view.*
 class ListFragment : Fragment() {
     private lateinit var mTaskViewModel: TaskViewModel
     private val adapter = ListAdapter()
-    private var sortedBy = "default"
-    private var filteredBy = "default"
+    private var orderFilter = "default"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
+
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
 
         val recView = view.recyclerView
         recView.adapter = adapter
@@ -47,8 +49,7 @@ class ListFragment : Fragment() {
         if (::mTaskViewModel.isInitialized)
             mTaskViewModel.saveState()
         super.onSaveInstanceState(outState)
-        outState.putString("sortedBy", sortedBy)
-        outState.putString("filteredBy", filteredBy)
+        outState.putString("orderFilter", orderFilter)
     }
 
     /**
@@ -57,8 +58,7 @@ class ListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (savedInstanceState != null) {
-            sortedBy = savedInstanceState.getString("sortedBy").toString()
-            filteredBy = savedInstanceState.getString("filteredBy").toString()
+            orderFilter = savedInstanceState.getString("orderFilter").toString()
             restoreListOrder()
         } else
             mTaskViewModel.readAllData.observe(viewLifecycleOwner, { task ->
@@ -73,7 +73,7 @@ class ListFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.calendar_menu, menu)
         inflater.inflate(R.menu.delete_menu, menu)
-//        inflater.inflate(R.menu.filter_menu, menu)
+        inflater.inflate(R.menu.filter_menu, menu)
         inflater.inflate(R.menu.sort_menu, menu)
     }
 
@@ -92,51 +92,51 @@ class ListFragment : Fragment() {
                 mTaskViewModel.sortedByType.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
-                sortedBy = "type"
+                orderFilter = "type"
             }
             R.id.name_sort -> {
                 mTaskViewModel.sortedByName.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
-                sortedBy = "name"
+                orderFilter = "name"
             }
             R.id.date_sort -> {
                 mTaskViewModel.sortedByDate.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
-                sortedBy = "date"
+                orderFilter = "date"
 
             }
             R.id.priority_sort -> {
                 mTaskViewModel.sortedByPriority.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
-                sortedBy = "priority"
+                orderFilter = "priority"
 
             }
             R.id.high_filter -> {
                 mTaskViewModel.filterByPriority("HIGH").observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
-                filteredBy = "high"
+                orderFilter = "high"
             }
             R.id.medium_filter -> {
                 mTaskViewModel.filterByPriority("MEDIUM").observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
-                filteredBy = "medium"
+                orderFilter = "medium"
             }
             R.id.low_filter -> {
                 mTaskViewModel.filterByPriority("LOW").observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
-                filteredBy = "low"
+                orderFilter = "low"
             }
             R.id.show_all -> {
                 mTaskViewModel.readAllData.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
                 })
-                filteredBy = "default"
+                orderFilter = "default"
             }
         }
         return super.onOptionsItemSelected(item)
@@ -168,7 +168,7 @@ class ListFragment : Fragment() {
      * Restore sort and filtering order.
      */
     private fun restoreListOrder() {
-        when (sortedBy) {
+        when (orderFilter) {
             "default" -> {
                 mTaskViewModel.readAllData.observe(viewLifecycleOwner, { task ->
                     adapter.setData(task)
@@ -194,28 +194,21 @@ class ListFragment : Fragment() {
                     adapter.setData(task)
                 })
             }
+            "high" -> {
+                mTaskViewModel.filterByPriority("HIGH").observe(viewLifecycleOwner, { task ->
+                    adapter.setData(task)
+                })
+            }
+            "medium" -> {
+                mTaskViewModel.filterByPriority("MEDIUM").observe(viewLifecycleOwner, { task ->
+                    adapter.setData(task)
+                })
+            }
+            "low" -> {
+                mTaskViewModel.filterByPriority("LOW").observe(viewLifecycleOwner, { task ->
+                    adapter.setData(task)
+                })
+            }
         }
-//        when (filteredBy) {
-//            "high" -> {
-//                mTaskViewModel.filterByPriority("HIGH").observe(viewLifecycleOwner, { task ->
-//                    adapter.setData(task)
-//                })
-//            }
-//            "medium" -> {
-//                mTaskViewModel.filterByPriority("MEDIUM").observe(viewLifecycleOwner, { task ->
-//                    adapter.setData(task)
-//                })
-//            }
-//            "low" -> {
-//                mTaskViewModel.filterByPriority("LOW").observe(viewLifecycleOwner, { task ->
-//                    adapter.setData(task)
-//                })
-//            }
-//            "default" -> {
-//                mTaskViewModel.readAllData.observe(viewLifecycleOwner, { task ->
-//                    adapter.setData(task)
-//                })
-//            }
-//        }
     }
 }

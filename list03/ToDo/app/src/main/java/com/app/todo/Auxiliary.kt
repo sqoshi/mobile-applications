@@ -12,11 +12,19 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.app.todo.notifications.NotificationReceiver
-import kotlinx.android.synthetic.main.fragment_update.view.*
 import java.util.*
 
 class Auxiliary {
     companion object {
+
+
+        enum class SortType {
+            TYPE, DATE, NAME
+        }
+
+        /**
+         * Return calendar with specified date.
+         */
         fun getCalendarWithDate(
             year: Int,
             month: Int,
