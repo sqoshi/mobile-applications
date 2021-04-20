@@ -164,8 +164,8 @@ class Auxiliary {
                     type, "drawable",
                     activity?.packageName
                 )
-                iconImageView?.tag = type
                 iconImageView?.setImageResource(resourceId)
+                iconImageView?.tag = type
             }
 
         }

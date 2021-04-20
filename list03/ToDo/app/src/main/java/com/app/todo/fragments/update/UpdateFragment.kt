@@ -35,12 +35,11 @@ class UpdateFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        view?.iconImageViewUpdate?.tag = args.currentTask.type
         val view = inflater.inflate(R.layout.fragment_update, container, false)
 
         mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
 
-
-        view.iconImageViewUpdate.tag = args.currentTask.type
 
         view.iconImageViewUpdate.setOnClickListener {
             displayDialog(requireContext(), view.iconImageViewUpdate)
@@ -69,16 +68,23 @@ class UpdateFragment : Fragment() {
      */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("type", iconImageViewUpdate.tag.toString())
-        outState.putInt("year", datePickerUpdate.year)
-        outState.putInt("month", datePickerUpdate.month)
-        outState.putInt("day", datePickerUpdate.dayOfMonth)
-        outState.putInt("hour", timePickerUpdate.hour)
-        outState.putInt("minute", timePickerUpdate.minute)
-        outState.putString("desc", editTextUpdateDesc.text.toString())
-        outState.putString("name", editTextUpdateName.text.toString())
-        outState.putString("priority", prioritySpinnerUpdate.selectedItem.toString())
-
+        if (iconImageViewUpdate != null &&
+            datePickerUpdate != null &&
+            timePickerUpdate != null &&
+            editTextUpdateDesc != null &&
+            editTextUpdateName != null &&
+            prioritySpinnerUpdate != null
+        ) {
+            outState.putString("type", iconImageViewUpdate.tag.toString())
+            outState.putInt("year", datePickerUpdate.year)
+            outState.putInt("month", datePickerUpdate.month)
+            outState.putInt("day", datePickerUpdate.dayOfMonth)
+            outState.putInt("hour", timePickerUpdate.hour)
+            outState.putInt("minute", timePickerUpdate.minute)
+            outState.putString("desc", editTextUpdateDesc.text.toString())
+            outState.putString("name", editTextUpdateName.text.toString())
+            outState.putString("priority", prioritySpinnerUpdate.selectedItem.toString())
+        }
     }
 
     /**
@@ -107,7 +113,7 @@ class UpdateFragment : Fragment() {
                 savedInstanceState.getString("type").toString(),
                 savedInstanceState.getString("name").toString()
             )
-        } else
+        } else {
             setValues(
                 resources,
                 activity,
@@ -128,7 +134,7 @@ class UpdateFragment : Fragment() {
                 args.currentTask.type,
                 args.currentTask.name,
             )
-
+        }
     }
 
 
