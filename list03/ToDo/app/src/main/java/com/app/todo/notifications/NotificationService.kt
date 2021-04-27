@@ -32,6 +32,7 @@ internal class NotificationService(context: Context) {
             0 /* Request code */, intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
+
         val mBuilder: NotificationCompat.Builder = Builder(mContext, NOTIFICATION_CHANNEL_ID)
         mBuilder.setSmallIcon(R.drawable.ic_baseline_calendar_today_24)
         mBuilder.setContentTitle("ToDo")
