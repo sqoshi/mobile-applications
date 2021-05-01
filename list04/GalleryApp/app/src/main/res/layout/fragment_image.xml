@@ -4,19 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:flow_horizontalGap="10dp"
-    app:flow_verticalGap="10dp"
-    tools:context=".GalleryFragment">
+    tools:context=".ImageFragment">
 
-    <GridLayout
-        android:id="@+id/gridPreview"
+    <LinearLayout
+        android:id="@+id/imageContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:alignmentMode="alignBounds"
-        android:columnCount="3"
-        android:foregroundGravity="center"
-        android:useDefaultMargins="true">
+        android:orientation="horizontal">
 
-    </GridLayout>
+    </LinearLayout>
+
 </FrameLayout>
