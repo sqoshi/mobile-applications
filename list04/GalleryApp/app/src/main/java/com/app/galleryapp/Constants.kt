@@ -27,7 +27,23 @@ object Constants {
             REQUEST_CODE_PERMISSIONS
         )
     }
+
+    fun verifyCamera(activity: Activity) {
+//        val permission =
+//            ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//        if (permission != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(
+            activity,
+            REQUIRED_PERMISSIONS,
+            REQUEST_CODE_PERMISSIONS
+        )
+    }
 //    }
+
+    fun verifyAll(activity: Activity) {
+        verifyStorage(activity)
+        verifyCamera(activity)
+    }
 
 
 }

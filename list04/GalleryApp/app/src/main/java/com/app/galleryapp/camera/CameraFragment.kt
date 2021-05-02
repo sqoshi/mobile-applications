@@ -1,23 +1,28 @@
-package com.app.galleryapp
+package com.app.galleryapp.camera
 
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.app.galleryapp.databinding.FragmentCameraBinding
+import androidx.lifecycle.ViewModelProvider
+import com.app.galleryapp.Constants
+import com.app.galleryapp.R
+import com.app.galleryapp.database.model.Image
+import com.app.galleryapp.database.viewmodel.ImageViewModel
 import java.io.File
 import java.lang.Exception
 import java.text.SimpleDateFormat
@@ -25,7 +30,9 @@ import java.util.*
 
 class CameraFragment : Fragment() {
     private lateinit var outputDirectory: File
-    private lateinit var binding: FragmentCameraBinding
+    private lateinit var mImageViewModel: ImageViewModel
+
+    private lateinit var currView: View
     private var imageCapture: ImageCapture? = null
 
 
@@ -34,17 +41,16 @@ class CameraFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val currView = inflater.inflate(R.layout.fragment_camera, container, false)
-        binding = FragmentCameraBinding.inflate(layoutInflater)
-        requireActivity().setContentView(binding.root)
+        currView = inflater.inflate(R.layout.fragment_camera, container, false)
+        val stbtn = currView.findViewById<Button>(R.id.shootButton)
+        mImageViewModel = ViewModelProvider(this).get(ImageViewModel::class.java)
 
         outputDirectory = getOutputDirectory()
 
 
-        // handle camera
         if (allPermissionGranted()) {
             startCamera()
-            Toast.makeText(requireContext(), "We have permissions", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), "We have permissions", Toast.LENGTH_SHORT).show()
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(),
@@ -54,11 +60,19 @@ class CameraFragment : Fragment() {
         }
 
 
-        binding.shootButton.setOnClickListener {
+        stbtn.setOnClickListener {
             takePhoto()
         }
 
+
+
         return currView
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startCamera()
+
     }
 
 
@@ -83,18 +97,29 @@ class CameraFragment : Fragment() {
             ).format(System.currentTimeMillis()) + ".jpg"
         )
 
+        val savedUri = Uri.fromFile(photoFile)
+
+
         val outputOption = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
         imageCapture.takePicture(
             outputOption, ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
                     val msg = "Photo saved"
                     Toast.makeText(
                         requireActivity(),
-                        "$msg $savedUri", Toast.LENGTH_SHORT
+                        "$msg ", Toast.LENGTH_SHORT
                     ).show()
+
+                    // insert image to database
+                    val img = Image(
+                        0,
+                        path = savedUri.path!!,
+                        description = null,
+                        rating = null
+                    )
+                    mImageViewModel.addImage(img)
 
                 }
 
@@ -129,8 +154,10 @@ class CameraFragment : Fragment() {
         cameraProviderFeature.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFeature.get()
             val preview = Preview.Builder().build().also { mPreview ->
+                val item = currView.findViewById<PreviewView>(R.id.cameraPreview)
+
                 mPreview.setSurfaceProvider(
-                    binding.cameraPreview.surfaceProvider
+                    item.surfaceProvider
                 )
             }
             imageCapture = ImageCapture.Builder().build()

@@ -1,9 +1,10 @@
-package com.app.galleryapp
+package com.app.galleryapp.image_inspection
 
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.app.galleryapp.R
 import java.io.File
 
 class InspectionActivity : FragmentActivity() {
@@ -13,13 +14,13 @@ class InspectionActivity : FragmentActivity() {
         setContentView(R.layout.activity_inspection)
         viewPager = findViewById(R.id.inspectionViewPager);
         val index = intent.getIntExtra("index", 0)
-        Log.d("INTENT", index.toString())
-        val files = intent.getSerializableExtra("files") as ArrayList<File>
 
+        Log.d("INSPECTACT", index.toString())
 
-        viewPager.adapter = ImagesAdapter(this, files)
+        viewPager.adapter = ImagesAdapter(this)
+        Log.d("INSPECTACTx2", index.toString())
 
-        viewPager.currentItem = index
+        viewPager.setCurrentItem(index, false)
     }
 
     override fun onBackPressed() {
