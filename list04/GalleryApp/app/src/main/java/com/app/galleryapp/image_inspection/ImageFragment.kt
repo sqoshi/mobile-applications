@@ -1,15 +1,9 @@
 package com.app.galleryapp.image_inspection
 
-import android.app.ActionBar
 import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
@@ -19,8 +13,15 @@ import com.app.galleryapp.database.model.Image
 import com.app.galleryapp.database.viewmodel.ImageViewModel
 import kotlinx.android.synthetic.main.fragment_image.view.*
 
+
 class ImageFragment(val image: Image) : Fragment() {
     private lateinit var mImageViewModel: ImageViewModel
+
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setHasOptionsMenu(true)
+//
+//    }
 
 
     override fun onCreateView(
@@ -28,10 +29,7 @@ class ImageFragment(val image: Image) : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_image, container, false)
-//        Constants.verifyStorage(requireActivity())
-
         mImageViewModel = ViewModelProvider(this).get(ImageViewModel::class.java)
-
 
         val layout = view.findViewById<LinearLayout>(R.id.imageContainer)
         val imageView = ImageView(requireContext())
@@ -44,7 +42,6 @@ class ImageFragment(val image: Image) : Fragment() {
             updateImage()
         }
 
-        Log.d("FRAGMENT", image.path.toString())
         val myBitmap = BitmapFactory.decodeFile(image.path)
         imageView.setImageBitmap(myBitmap)
         layout.addView(imageView)
@@ -59,12 +56,15 @@ class ImageFragment(val image: Image) : Fragment() {
 
     private fun updateImage() {
         val desc = view?.descriptionText?.text.toString()
-        val rating = view?.ratingBar?.rating?.toFloat()
-        Log.d("FRAGMENT", rating.toString())
-        Log.d("FRAGMENT", desc.toString())
+        val rating = view?.ratingBar?.rating
         val img = Image(image.id, image.path, desc, rating)
         mImageViewModel.updateImage(img)
     }
+
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.back_menu, menu)
+//        super.onCreateOptionsMenu(menu, inflater)
+//    }
 
 
 }
