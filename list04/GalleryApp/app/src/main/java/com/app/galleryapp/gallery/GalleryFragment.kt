@@ -1,7 +1,6 @@
 package com.app.galleryapp.gallery
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,9 @@ import kotlinx.android.synthetic.main.fragment_gallery.view.*
 import java.io.File
 
 
+/**
+ * Fragment contains collection of short, compressed images.
+ */
 class GalleryFragment : Fragment() {
     private lateinit var mImageViewModel: ImageViewModel
     private lateinit var adapter: GalleryAdapter
@@ -35,8 +37,8 @@ class GalleryFragment : Fragment() {
         recView.adapter = adapter
         recView.layoutManager = GridLayoutManager(requireContext(), 3)
 
-        mImageViewModel.readAllData.observe(viewLifecycleOwner, { task ->
-            adapter.setData(task)
+        mImageViewModel.readAllData.observe(viewLifecycleOwner, { imageElement ->
+            adapter.setData(imageElement)
         })
 
         outputDirectory = getOutputDirectory()
@@ -44,22 +46,30 @@ class GalleryFragment : Fragment() {
         return view
     }
 
+    /**
+     * Refresh recycler view items ( after addition, deletion)
+     */
     override fun onResume() {
         super.onResume()
-        mImageViewModel.readAllData.observe(viewLifecycleOwner, { task ->
-            adapter.setData(task)
+        mImageViewModel.readAllData.observe(viewLifecycleOwner, { imageElement ->
+            adapter.setData(imageElement)
         })
     }
 
+    /**
+     * Assign data to an adapter of recycler view
+     */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mImageViewModel.readAllData.observe(viewLifecycleOwner, { task ->
-            adapter.setData(task)
+        mImageViewModel.readAllData.observe(viewLifecycleOwner, { imageElement ->
+            adapter.setData(imageElement)
         })
 
     }
 
-
+    /**
+     * Find output directory path.
+     */
     private fun getOutputDirectory(): File {
         val mediaDir = requireActivity().externalMediaDirs.firstOrNull()?.let { mFile ->
             File(mFile, resources.getString(R.string.app_name)).apply {

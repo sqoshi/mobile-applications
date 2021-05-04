@@ -37,6 +37,14 @@
         - [Tasks list](#tasks-list-1)
         - [Task addition](#task-addition)
     - [Code Example](#code-example-3)
+- [Snapgram](#Snapgram)
+    - [Introduction](#introduction)
+    - [General Info](#general-info)
+    - [Layout](#layout-4)
+        - [Gallery](#gallery)
+        - [Camera](#camera)
+        - [Image](#image)
+    - [Code Example](#code-example-4)
 
 
 
@@ -263,4 +271,80 @@ private fun setUpNotification(hour: Int, minute: Int, day: Int, month: Int, year
 
 
 
+----------------------------
+
+## Snapgram
+### Introduction
+Application is some way similar to `instagram`. Users of application can take images, rate them and comment.
+### General Info
+Main activity handles viewpager2 that switches between gallery and camera page.
+
+Clicking any image object in gallery, which is compressed to achieve better average performance, carries us out with a new intent to a new activity.
+New activity handles next viewpager2, that represents detailed objects from gallery.
+
+Images are stored in a special directory under media/thisApp path, when details are stored in room database.
+
+Screenshots are available in Layout section. 
+### Layout
+_*[CAUTION\] Layout requires a little more work*_
+#### Gallery
+Gallery contains all objects stored in special directory.
+![](list04/GalleryApp/media/gallery.png)
+#### Camera
+Camera is viewpager2's page that allow user to make images and store them in special path + details in room.
+![](list04/GalleryApp/media/camera.png)
+#### Image
+Section represent single image stored in application, user has possibility to rate photos and comment them. 
+![](list04/GalleryApp/media/image.png)
+### CodeExample
+```kotlin
+private fun takePhoto() {
+
+        val imageCapture = imageCapture ?: return
+        Log.d(Constants.TAG, outputDirectory.toString())
+        val photoFile = File(
+            outputDirectory,
+            SimpleDateFormat(
+                Constants.FILE_NAME_FORMAT,
+                Locale.getDefault()
+            ).format(System.currentTimeMillis()) + ".jpg"
+        )
+
+        val savedUri = Uri.fromFile(photoFile)
+
+
+        val outputOption = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        imageCapture.takePicture(
+            outputOption, ContextCompat.getMainExecutor(requireContext()),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    val msg = "Photo saved"
+                    Toast.makeText(
+                        requireActivity(),
+                        "$msg ", Toast.LENGTH_SHORT
+                    ).show()
+
+                    // insert image to database
+                    val img = Image(
+                        0,
+                        path = savedUri.path!!,
+                        description = null,
+                        rating = null
+                    )
+                    mImageViewModel.addImage(img)
+
+                }
+
+                override fun onError(exception: ImageCaptureException) {
+                    Log.d(Constants.TAG, "onError: ${exception.message}", exception)
+                }
+
+            }
+        )
+
+    }
+```
+
+----------------------------
 ----------------------------

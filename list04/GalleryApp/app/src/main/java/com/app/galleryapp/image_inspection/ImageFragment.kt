@@ -13,16 +13,12 @@ import com.app.galleryapp.database.model.Image
 import com.app.galleryapp.database.viewmodel.ImageViewModel
 import kotlinx.android.synthetic.main.fragment_image.view.*
 
-
+/**
+ * Contains high quality image and its details.
+ * Represents page of viewpager
+ */
 class ImageFragment(val image: Image) : Fragment() {
     private lateinit var mImageViewModel: ImageViewModel
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setHasOptionsMenu(true)
-//
-//    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,17 +50,14 @@ class ImageFragment(val image: Image) : Fragment() {
         return view
     }
 
+    /**
+     * Updates row-image in database.
+     */
     private fun updateImage() {
         val desc = view?.descriptionText?.text.toString()
         val rating = view?.ratingBar?.rating
         val img = Image(image.id, image.path, desc, rating)
         mImageViewModel.updateImage(img)
     }
-
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.back_menu, menu)
-//        super.onCreateOptionsMenu(menu, inflater)
-//    }
-
 
 }

@@ -1,12 +1,10 @@
 package com.app.galleryapp.gallery
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
-import android.util.Log
 import com.app.galleryapp.R
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.galleryapp.database.model.Image
 import com.app.galleryapp.image_inspection.InspectionActivity
 import kotlinx.android.synthetic.main.image_small.view.*
-import java.io.File
 
+
+/**
+ * Adapter allow to show images stored in room database.
+ */
 class GalleryAdapter(val context: Context) :
     RecyclerView.Adapter<GalleryAdapter.MyViewHolder>() {
     private var imagesList = emptyList<Image>()
@@ -50,7 +51,9 @@ class GalleryAdapter(val context: Context) :
 
     }
 
-
+    /**
+     * Quantity of rows in image table.
+     */
     override fun getItemCount(): Int {
         return imagesList.size
     }

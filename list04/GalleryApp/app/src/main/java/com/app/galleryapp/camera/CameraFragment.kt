@@ -28,6 +28,10 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Fragment contain cameraX object that allow to make images and store them in
+ * responding path.
+ */
 class CameraFragment : Fragment() {
     private lateinit var outputDirectory: File
     private lateinit var mImageViewModel: ImageViewModel
@@ -69,13 +73,17 @@ class CameraFragment : Fragment() {
         return currView
     }
 
+    /**
+     * Restart camera on resume.
+     */
     override fun onResume() {
         super.onResume()
         startCamera()
-
     }
 
-
+    /**
+     * Find output directory path.
+     */
     private fun getOutputDirectory(): File {
         val mediaDir = requireActivity().externalMediaDirs.firstOrNull()?.let { mFile ->
             File(mFile, resources.getString(R.string.app_name)).apply {
@@ -85,6 +93,9 @@ class CameraFragment : Fragment() {
         return if (mediaDir != null && mediaDir.exists()) mediaDir else requireActivity().filesDir
     }
 
+    /**
+     * Takes photo by clicking button and saving image details in database.
+     */
     private fun takePhoto() {
 
         val imageCapture = imageCapture ?: return
@@ -132,6 +143,9 @@ class CameraFragment : Fragment() {
 
     }
 
+    /**
+     * Ask user for permissions for camera/ external storage.
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -148,6 +162,9 @@ class CameraFragment : Fragment() {
         }
     }
 
+    /**
+     * Shows camera on, binds lifecycle .
+     */
     private fun startCamera() {
         val cameraProviderFeature = ProcessCameraProvider.getInstance(requireContext())
 
@@ -173,6 +190,9 @@ class CameraFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
+    /**
+     * Checks if current permissions are enough to operate with camera
+     */
     private fun allPermissionGranted() =
         Constants.REQUIRED_PERMISSIONS.all {
             ContextCompat.checkSelfPermission(

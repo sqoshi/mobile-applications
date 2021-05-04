@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "173005632587",
+    "project_id": "simplemultiplayergamekotlin",
+    "storage_bucket": "simplemultiplayergamekotlin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173005632587:android:776eec1e1596c1005089ce",
+        "android_client_info": {
+          "package_name": "com.app.multiplayergame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "173005632587-nu9m92seojgqigq7fkoq68l1mbd3cbgo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLkMbFXuUg-wHUWotlGLQyvcgZCyzKuvA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "173005632587-nu9m92seojgqigq7fkoq68l1mbd3cbgo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -26,7 +26,7 @@ class ImageViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
-     * Add task object to database.
+     * Add imageElement object to database.
      */
     fun addImage(img: Image) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -35,7 +35,7 @@ class ImageViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
-     * Updates element by passing a task (with concrete id).
+     * Updates element by passing a imageElement (with concrete id).
      */
     fun updateImage(img: Image) {
         viewModelScope.launch(Dispatchers.IO) {
