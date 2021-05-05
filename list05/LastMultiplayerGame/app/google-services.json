@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "482093201347",
+    "firebase_url": "https://mpgk-b603a-default-rtdb.firebaseio.com",
+    "project_id": "mpgk-b603a",
+    "storage_bucket": "mpgk-b603a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482093201347:android:26c853ddb6f3248a2e2f76",
+        "android_client_info": {
+          "package_name": "com.app.lastmultiplayergame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482093201347-idcs26t2mfcb8sccs1scjcsqaheukq2a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBk-nqtSLyzKfKbcvWdy5uqeQK-ny2bsr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482093201347-idcs26t2mfcb8sccs1scjcsqaheukq2a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482093201347:android:a254e3bce47a7c6c2e2f76",
+        "android_client_info": {
+          "package_name": "com.app.multiplayergame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482093201347-idcs26t2mfcb8sccs1scjcsqaheukq2a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBk-nqtSLyzKfKbcvWdy5uqeQK-ny2bsr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482093201347-idcs26t2mfcb8sccs1scjcsqaheukq2a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

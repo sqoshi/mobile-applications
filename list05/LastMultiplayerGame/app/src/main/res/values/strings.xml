@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">LastMultiplayerGame</string>
+    <string name="name">Name</string>
+    <string name="log_in">LOG IN</string>
+    <string name="create_room">CREATE ROOM</string>
+    <string name="creating_room">CREATING ROOM</string>
+    <string name="poke">POKE</string>
+</resources>
