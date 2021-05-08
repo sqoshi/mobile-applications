@@ -1,9 +1,12 @@
-package com.app.pong
+package com.app.pong.game
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import com.app.pong.bot.BotPlayer
 import com.app.pong.models.Coordinates
 import com.app.pong.models.Movement
 import com.app.pong.models.PointCounter
@@ -16,7 +19,7 @@ class GameView(context: Context, private val mode: String, private val difficult
     private val th: GameThread
     private lateinit var callback: PointCounter
 
-    //    private lateinit var bot: BasicBot
+    private lateinit var bot: BotPlayer
     private lateinit var ball: Ball
     private lateinit var leftDesk: Desk
     private lateinit var rightDesk: Desk
@@ -52,8 +55,64 @@ class GameView(context: Context, private val mode: String, private val difficult
 
         nextRound()
 
-        th.isWorking = true
+        th.running = true
         th.start()
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        for (i in 0 until event!!.pointerCount) {
+            if (event.getX(i) < width / 2f) {
+                if (mode != "singleplayer") lPaddleMovement.onInput(
+                    event.getX(i),
+                    event.getY(i) - leftDesk.h / 2f
+                )
+            } else {
+                rPaddleMovement.onInput(event.getX(i), event.getY(i) - rightDesk.h / 2f)
+            }
+        }
+        return true
+    }
+
+    fun update() {
+        ball.update()
+        if (collision(ball, leftDesk)) {
+            ball.randomizedBounce(true, 0.2f)
+            ball.speedUp(getSpeedUp())
+            callback.onBounce()
+        }
+
+        if (collision(ball, rightDesk)) {
+            ball.randomizedBounce(true, 0.2f)
+            ball.speedUp(getSpeedUp())
+            callback.onBounce()
+        }
+
+        if (ball.x <= 0) {
+            callback.onPointCount(true)
+            nextRound()
+        }
+        if (ball.x + ball.SIZE >= width) {
+            callback.onPointCount(false)
+            nextRound()
+        }
+        if (ball.y <= 0 || ball.y + ball.SIZE >= height) ball.reflect(false)
+        lPaddleMovement.update()
+        rPaddleMovement.update()
+
+        if (mode == "singleplayer") bot.update().let {
+            lPaddleMovement.onInput(it.first, it.second - rightDesk.h / 2f)
+        }
+    }
+
+    private fun collision(ball: Ball, paddle: Desk): Boolean {
+        val ballX = ball.x + ball.xSpeed + ball.SIZE
+        val ballY = ball.y + ball.ySpeed + ball.SIZE
+        return ballX > paddle.getX() && ballX < paddle.getX() + paddle.w && ballY > paddle.getY() && ballY < paddle.getY() + paddle.h
+    }
+
+    private fun nextRound() {
+        ball = Ball(getDiffSpeed(), width / 2f, height / 2f)
+        if (mode == "singleplayer") bot = BotPlayer(ball, difficulty)
     }
 
     private fun getDiffSpeed(): Float {
@@ -87,12 +146,15 @@ class GameView(context: Context, private val mode: String, private val difficult
         }
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        TODO("Not yet implemented")
+    fun setPointCounter(pointCounter: PointCounter) {
+        callback = pointCounter
     }
 
+
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+
     override fun surfaceDestroyed(holder: SurfaceHolder) {
-        th.isWorking = false
+        th.running = false
         th.join()
     }
 }

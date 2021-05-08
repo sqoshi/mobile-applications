@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Pong</string>
+    <string name="multiplayer">MULTIPLAYER</string>
+    <string name="singleplayer">SINGLEPLAYER</string>
+    <string name="easy">EASY</string>
+    <string name="medium">MEDIUM</string>
+    <string name="hard">HARD</string>
 </resources>

@@ -1,20 +1,23 @@
-package com.app.pong.game
+package com.app.lastmultiplayergame.game
 
 import android.graphics.Canvas
+import android.graphics.Color
+import android.util.Log
 import android.view.SurfaceHolder
-import java.lang.Exception
+import java.util.concurrent.TimeUnit
 
-class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView: GameView) :
-    Thread() {
+class GameThread(
+    private val surfaceHolder: SurfaceHolder,
+    private val gameView: GameView
+) : Thread() {
     var running: Boolean = false
-
     private val fps = 60
     private var canvas: Canvas? = null
 
     override fun run() {
         var startTime: Long
         var time: Long
-        var sleepInterval: Long
+        var wait: Long
         val target = (1000 / fps).toLong()
 
         while (running) {
@@ -24,30 +27,29 @@ class GameThread(private val surfaceHolder: SurfaceHolder, private val gameView:
             try {
                 canvas = surfaceHolder.lockCanvas()
                 synchronized(surfaceHolder) {
-                    gameView.update()
-                    gameView.draw(canvas!!)
-
+//                    gameView.update()
+                    gameView.drawThis(canvas!!)
                 }
-            } catch (ex: Exception) {
-                ex.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
             } finally {
                 if (canvas != null) {
                     try {
                         surfaceHolder.unlockCanvasAndPost(canvas)
                     } catch (e: Exception) {
-                        e.printStackTrace()
+//                        e.printStackTrace()
                     }
                 }
             }
+
             time = (System.nanoTime() - startTime) / 1000000
-            sleepInterval = target - time
+            wait = target - time
 
             try {
-                sleep(sleepInterval)
+                sleep(wait)
             } catch (e: Exception) {
 //                e.printStackTrace()
             }
         }
     }
-
 }

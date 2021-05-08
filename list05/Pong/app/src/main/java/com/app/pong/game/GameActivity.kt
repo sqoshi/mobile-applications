@@ -1,12 +1,13 @@
-package com.app.pong
+package com.app.pong.game
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.RadioGroup
+import android.util.Log
+import android.widget.FrameLayout
+import android.widget.TextView
+import com.app.pong.R
 import com.app.pong.models.PointCounter
 
 class GameActivity : AppCompatActivity(), PointCounter {
@@ -23,7 +24,8 @@ class GameActivity : AppCompatActivity(), PointCounter {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_game)
+        closeOptionsMenu()
 
         difficulty = intent?.getStringExtra("diff").toString()
         mode = intent?.getStringExtra("mode").toString()
@@ -41,18 +43,55 @@ class GameActivity : AppCompatActivity(), PointCounter {
 
         val game = GameView(this, mode, difficulty)
         game.setPointCounter(this)
-        gameContainer.addView(game)
+        Log.d("XD", game.toString())
+        val gc = findViewById<FrameLayout>(R.id.gameContainer)
+        Log.d("XD", gc.toString())
 
-        scoreTextView.text = "$leftPoints:$rightPoints"
+        gc.addView(game)
+        val scoreText = findViewById<TextView>(R.id.scoreText)
+        scoreText.text = "$leftPoints:$rightPoints"
 
     }
 
     override fun onPointCount(left: Boolean) {
-        TODO("Not yet implemented")
+        if (mode == "multiplayer") {
+            if (left) rightPoints++
+            else leftPoints++
+
+            runOnUiThread {
+                val scoreText = findViewById<TextView>(R.id.scoreText)
+                scoreText.text = "$leftPoints:$rightPoints"
+            }
+        } else {
+            points = 0
+            runOnUiThread {
+                val scoreText = findViewById<TextView>(R.id.scoreText)
+                scoreText.text = "$points\r\nTop: $top"
+            }
+        }
     }
 
     override fun onBounce() {
-        TODO("Not yet implemented")
-    }
+        if (mode == "singleplayer") {
+            if (++points > top) {
+                top = points
+                with(prefs.edit()) {
+                    putInt(
+                        when (difficulty) {
+                            "easy" -> "te"
+                            "medium" -> "tm"
+                            "hard" -> "th"
+                            else -> "te"
+                        }, points
+                    )
+                    apply()
+                }
+            }
 
+            runOnUiThread {
+                val scoreText = findViewById<TextView>(R.id.scoreText)
+                scoreText.text = "$points\r\nTop: $top"
+            }
+        }
+    }
 }
