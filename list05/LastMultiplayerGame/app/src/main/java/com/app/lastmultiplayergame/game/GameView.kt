@@ -19,12 +19,21 @@ class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
     private lateinit var paddle: Paddle
     private lateinit var ball: Ball
     private lateinit var mason: Mason
+    private var score = 0
 
     init {
         holder.addCallback(this)
         thread = GameThread(holder, this)
     }
 
+    interface ScoreListener {
+        fun onGameEnd(score: Int)
+    }
+
+    private var gameScoreListener: ScoreListener? = null
+    fun setGameScoreListener(listener: ScoreListener) {
+        gameScoreListener = listener
+    }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
         val scr = ScreenCords(left, top, right, bottom)
@@ -55,6 +64,7 @@ class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
         ball.draw(canvas)
         ball.update(paddle, mason.wall)
         mason.drawWall(canvas)
+        gameScoreListener?.onGameEnd(mason.countBrokenBricks())
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

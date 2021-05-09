@@ -1,14 +1,11 @@
 package com.app.lastmultiplayergame.game.components
 
-import com.app.lastmultiplayergame.game.components.Point
 
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.Log
-import java.lang.Math.abs
-import java.lang.Thread.sleep
-
+//TODO: mason stretch bricks in width, half od paddle at start, multiplayer score
 class Ball(val cordX: Float, val cordY: Float, val radius: Float, val screenCords: ScreenCords) {
     val color = Paint().also { it.setARGB(123, 234, 11, 66) }
     var speedX = 10f

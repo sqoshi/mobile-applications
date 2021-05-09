@@ -12,7 +12,8 @@ class Mason(
     val columnAmount: Int,
 ) {
 
-    val brickWidth = (screenRight.toFloat() / columnAmount.toFloat() - (columnAmount.toFloat() + 1f)).toFloat()
+    val brickWidth =
+        (screenRight.toFloat() / columnAmount.toFloat() - (columnAmount.toFloat() + 1f)).toFloat()
     val brickHeight = screenBottom / 30.0f
     val wall = buildWall()
 
@@ -45,6 +46,17 @@ class Mason(
                     brick.draw(canvas)
             }
         }
+    }
+
+    fun countBrokenBricks(): Int {
+        var counter = 0
+        for (row in wall) {
+            for (brick in row) {
+                if (!brick.alive)
+                    counter += 1
+            }
+        }
+        return counter
     }
 
 

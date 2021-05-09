@@ -7,10 +7,11 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.app.lastmultiplayergame.game.GameView
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_game.*
 
-class GameActivity : AppCompatActivity() {
+class GameActivity : AppCompatActivity(), GameView.ScoreListener {
     private lateinit var button: Button
     private lateinit var database: FirebaseDatabase
     private lateinit var messageReference: DatabaseReference
@@ -18,9 +19,12 @@ class GameActivity : AppCompatActivity() {
     private var roomName = ""
     private var role = ""
     private var message = ""
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+        game_view.setGameScoreListener(this)
 
         button = pokeButton
 
@@ -47,13 +51,21 @@ class GameActivity : AppCompatActivity() {
 
     }
 
+    override fun onGameEnd(score: Int) {
+        Log.d("SCORE", "$score")
+        if (score == 2){
+            messageReference = database.getReference("rooms/$roomName/message")
+            messageReference.setValue("$playerName WON")
+        }
+    }
+
     private fun addRoomEventListener() {
         messageReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("ROOOMS ROOMNAME", "----------------------------------")
-                Log.d("ROOOMS PLAYERNAME", "$playerName : $roomName")
-                Log.d("ROOOMS", snapshot.getValue(String::class.java).toString())
-                Log.d("ROOOMS ROOMNAME", "----------------------------------")
+//                Log.d("ROOOMS ROOMNAME", "----------------------------------")
+//                Log.d("ROOOMS PLAYERNAME", "$playerName : $roomName")
+//                Log.d("ROOOMS", snapshot.getValue(String::class.java).toString())
+//                Log.d("ROOOMS ROOMNAME", "----------------------------------")
                 if (roomName == playerName) {
                     button.isEnabled = !snapshot.getValue(String::class.java)!!.contains(roomName)
                 } else {
