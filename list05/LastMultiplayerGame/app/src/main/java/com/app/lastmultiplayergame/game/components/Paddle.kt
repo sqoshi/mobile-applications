@@ -26,7 +26,7 @@ class Paddle(
     var speed = 10.0f
 
     init {
-        color.color = Color.parseColor("#7898FB")
+        color.color = Color.parseColor("#fee715")
 //        color.setShadowLayer(120f, 120f, 120f, Color.BLACK)
         color.setShadowLayer(4f, 0f, 0f, Color.WHITE);
     }

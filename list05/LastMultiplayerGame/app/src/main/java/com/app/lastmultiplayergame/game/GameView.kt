@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.appcompat.app.AlertDialog
+import com.app.lastmultiplayergame.R
 import com.app.lastmultiplayergame.game.components.Ball
 import com.app.lastmultiplayergame.game.builders.Mason
 import com.app.lastmultiplayergame.game.components.Paddle
@@ -72,7 +73,7 @@ class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
     fun drawThis(canvas: Canvas?) {
         super.draw(canvas)
         if (canvas == null) return
-        canvas.drawColor(Color.parseColor("#001437"))
+        canvas.drawColor(Color.parseColor("#101820"))
         paddle.draw(canvas)
         ball.draw(canvas)
         ball.update(paddle, mason.wall)

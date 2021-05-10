@@ -4,15 +4,19 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProvider
 import com.app.lastmultiplayergame.MainActivity
 import com.app.lastmultiplayergame.R
 import com.app.lastmultiplayergame.WindowAdjuster
 import com.app.lastmultiplayergame.game.listeners.ScoreListener
+import com.app.lastmultiplayergame.room.database.model.Achievement
+import com.app.lastmultiplayergame.room.database.viewmodel.AchievementViewModel
 import kotlinx.android.synthetic.main.activity_game.*
 import java.lang.Thread.sleep
 
 
 class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
+    private lateinit var viewModel: AchievementViewModel
 
     private var message = " stage finished."
     private var columns = 3
@@ -25,6 +29,7 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
         WindowAdjuster.hideMenu(window, actionBar, supportActionBar)
         setContentView(R.layout.activity_game)
         game_view.setGameScoreListener(this)
+        viewModel = ViewModelProvider(this).get(AchievementViewModel::class.java)
 
         if (intent.extras != null) {
             val newMode = intent.extras!!.getString("mode")
@@ -52,12 +57,22 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
                 startActivity(int)
             } else {
                 stageAlert("Yo have finished singleplayer.")
+                saveResult()
                 sleep(3000)
                 val int = Intent(applicationContext, MainActivity::class.java)
                 startActivity(int)
             }
 
         }
+    }
+
+    fun saveResult() {
+        val a = Achievement(
+            0,
+            "player",
+            0,
+        )
+        viewModel.addAchievement(a)
     }
 
 
