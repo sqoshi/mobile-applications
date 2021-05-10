@@ -7,6 +7,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.app.lastmultiplayergame.game.setup.GameTypeSettingsActivity
+import com.app.lastmultiplayergame.game.setup.LobbyActivity
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -20,9 +22,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowModifier.hideMenu(window, actionBar, supportActionBar)
+        WindowAdjuster.hideMenu(window, actionBar, supportActionBar)
         setContentView(R.layout.activity_main)
         database = FirebaseDatabase.getInstance()
+        database.getReference("rooms/").setValue(null)
+
 
         editText = editTextName
         button = loginButton
@@ -52,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 //success -> move to lobby activity
                 if (playerName != "") {
-                    val int = Intent(applicationContext, LobbyActivity::class.java)
+                    val int = Intent(applicationContext, GameTypeSettingsActivity::class.java)
                     int.putExtra("playerName", playerName)
                     startActivity(int)
                     finish()

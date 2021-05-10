@@ -1,7 +1,7 @@
-package com.app.lastmultiplayergame.game.components
+package com.app.lastmultiplayergame.game.builders
 
 import android.graphics.Canvas
-import android.util.Log
+import com.app.lastmultiplayergame.game.components.Brick
 import com.app.lastmultiplayergame.game.data.Point
 
 class Mason(

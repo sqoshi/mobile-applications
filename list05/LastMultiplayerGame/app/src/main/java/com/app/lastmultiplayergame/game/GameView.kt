@@ -9,31 +9,37 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.appcompat.app.AlertDialog
-import com.app.lastmultiplayergame.R
 import com.app.lastmultiplayergame.game.components.Ball
-import com.app.lastmultiplayergame.game.components.Mason
+import com.app.lastmultiplayergame.game.builders.Mason
 import com.app.lastmultiplayergame.game.components.Paddle
 import com.app.lastmultiplayergame.game.data.ScreenCords
-import kotlinx.android.synthetic.main.activity_settings.view.*
+import com.app.lastmultiplayergame.game.listeners.ScoreListener
+import com.google.firebase.database.*
 
 
 class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, attrs),
     SurfaceHolder.Callback {
 
     private val thread: GameThread
+    private lateinit var database: FirebaseDatabase
     private lateinit var paddle: Paddle
     private lateinit var ball: Ball
     private lateinit var mason: Mason
-    private var mode = "MEDIUM"
-    private var rows: Int = 4
-    private var columns: Int = 6
+    private var mode: String? = null// "MEDIUM"
+    private var rows: Int? = null
+    private var columns: Int? = null
     private var maxScore: Int? = null
+    var roomName = ""
+    private val builder = AlertDialog.Builder(context)
+
 
     init {
         holder.addCallback(this)
         thread = GameThread(holder, this)
-    }
+        database = FirebaseDatabase.getInstance()
+        Log.d("firebase", "INIT $columns $rows $mode")
 
+    }
 
     private var gameScoreListener: ScoreListener? = null
     fun setGameScoreListener(listener: ScoreListener) {
@@ -42,19 +48,20 @@ class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
 
 
     override fun surfaceCreated(holder: SurfaceHolder) {
+
         val scr = ScreenCords(left, top, right, bottom)
-        maxScore = rows * columns
+
+        maxScore = rows!! * columns!!
         paddle = Paddle(left, top, right, bottom)
         ball = Ball(right / 2.0f, bottom / 2f, 80f, scr)
-        mason = Mason(left, top, right, bottom, rows, columns)
-        waitingAlert()
+        mason = Mason(left, top, right, bottom, rows!!, columns!!, mode!!)
+//        waitingAlert()
+//        showAlert()
+//        runThread()
     }
 
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        Log.d("SURF","CANGE")
-
-    }
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         thread.running = false
@@ -70,7 +77,7 @@ class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
         ball.draw(canvas)
         ball.update(paddle, mason.wall)
         mason.drawWall(canvas)
-        gameScoreListener?.onGameEnd(mason.countBrokenBricks())
+        gameScoreListener?.whenGameEnd(mason.countBrokenBricks())
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -105,13 +112,22 @@ class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
     }
 
     fun waitingAlert() {
-        val builder = AlertDialog.Builder(context)
         with(builder)
         {
             setTitle("Listener")
             setMessage("Waiting for next player ...")
-            show()
         }
+    }
+
+    fun showAlert() {
+        builder.show()
+    }
+
+    fun hideAlert() {
+        val d = builder.show()
+        d.dismiss()
+        d.cancel()
+        d.hide()
     }
 
     fun setRows(n: Int) {
@@ -128,5 +144,6 @@ class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
         mode = if (id !== null) id else "MEDIUM"
     }
 
-
 }
+
+

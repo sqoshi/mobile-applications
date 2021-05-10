@@ -1,66 +1,54 @@
-package com.app.lastmultiplayergame
+package com.app.lastmultiplayergame.game
 
 import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
-import com.app.lastmultiplayergame.game.ScoreListener
+import com.app.lastmultiplayergame.R
+import com.app.lastmultiplayergame.WindowAdjuster
+import com.app.lastmultiplayergame.game.listeners.ScoreListener
+import com.app.lastmultiplayergame.game.setup.LobbyActivity
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlin.system.exitProcess
 
-class GameActivity : AppCompatActivity(), ScoreListener {
+class MultiplayerGameActivity : AppCompatActivity(), ScoreListener {
     private lateinit var database: FirebaseDatabase
     private lateinit var messageReference: DatabaseReference
     private lateinit var player2Reference: DatabaseReference
     private var playerName = ""
     private var roomName = ""
     private var message = ""
+    private var columns = 999 // should be null |/
+    private var rows = 999
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowModifier.hideMenu(window, actionBar, supportActionBar)
+        WindowAdjuster.hideMenu(window, actionBar, supportActionBar)
         setContentView(R.layout.activity_game)
         game_view.setGameScoreListener(this)
+        game_view.roomName = intent.extras?.getString("roomName").toString()
+
 
         database = FirebaseDatabase.getInstance()
 
-
         val extras = intent.extras
-        Log.d("MODE", "extras $extras")
         if (extras != null) {
             playerName = extras.getString("playerName", "").toString()
             roomName = extras.getString("roomName").toString()
-//            val r = extras.getString("rows")?.toIntOrNull()
-//            Log.d("MODE", /"SETTING $r ${extras.getString("rows")}" )
-//
-//            if (r != null) {
-//                rows = r
-//                game_view.setRows(rows)
-//                Log.d("MODE", "SETTING $r")
-//            }
-//            val c = extras.getString("columns")?.toIntOrNull()
-//            if (c != null) {
-//                columns = c
-//                game_view.setColumns(columns)
-//                Log.d("MODE", "SETTING $c")
-//
-//            }
-//            val m = extras.getString("mode")
-//            Log.d("MODE", "MODE: $m")
-//            game_view.setMode(m)
+            rows = extras.getString("rows")!!.toInt()
+            columns = extras.getString("columns")!!.toInt()
+            game_view.setMode(extras.getString("mode"))
+            game_view.setRows(rows)
+            game_view.setColumns(columns)
             if (playerName == roomName) {
                 game_view.waitingAlert()
+                game_view.showAlert()
             }
-//            game_view.createMason()
 
         }
-//        Log.d("MODE", "extras $extras")
-
-
         //listen incoming messages
         messageReference = database.getReference("rooms/$roomName/message")
         player2Reference = database.getReference("rooms/$roomName/player2")
@@ -70,8 +58,8 @@ class GameActivity : AppCompatActivity(), ScoreListener {
     }
 
 
-    override fun onGameEnd(score: Int) {
-        if (score == 24) {
+    override fun whenGameEnd(score: Int) {
+        if (score == rows * columns) {
             messageReference = database.getReference("rooms/$roomName/message")
             messageReference.setValue("$playerName WON")
         }
@@ -111,6 +99,7 @@ class GameActivity : AppCompatActivity(), ScoreListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.getValue(String::class.java) != null) {
                     game_view.runThread()
+                    game_view.hideAlert()
                 }
             }
 

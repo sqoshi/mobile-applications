@@ -5,7 +5,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 
-class WindowModifier {
+class WindowAdjuster {
     companion object {
         fun hideMenu(window: Window, actionBar: ActionBar?, supportActionBar: androidx.appcompat.app.ActionBar?) {
             window.setFlags(

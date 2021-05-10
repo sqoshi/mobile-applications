@@ -1,13 +1,15 @@
-package com.app.lastmultiplayergame
+package com.app.lastmultiplayergame.game.setup
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
+import com.app.lastmultiplayergame.R
+import com.app.lastmultiplayergame.WindowAdjuster
+import com.app.lastmultiplayergame.game.MultiplayerGameActivity
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_lobby.*
 import java.util.*
@@ -26,7 +28,7 @@ class LobbyActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowModifier.hideMenu(window, actionBar, supportActionBar)
+        WindowAdjuster.hideMenu(window, actionBar, supportActionBar)
         setContentView(R.layout.activity_lobby)
 
         database = FirebaseDatabase.getInstance()
@@ -42,17 +44,7 @@ class LobbyActivity : AppCompatActivity() {
 
 
         button.setOnClickListener {
-            // create room and add yourself as first player.
-//            button.text = getString(R.string.creating_room)
-//            button.isEnabled = false
-//            val int = Intent(applicationContext, GameActivity::class.java)
-//            int.putExtra("roomName", roomName)
-//            int.putExtra("playerName", playerName)
-//            startActivity(int)
-//            roomReference = database.getReference("rooms/$roomName/player1")
-//            addRoomEventListener()
-//            roomReference.setValue(playerName)
-            val int = Intent(applicationContext, SettingsActivity::class.java)
+            val int = Intent(applicationContext, MultiplayerSettingsActivity::class.java)
             int.putExtra("roomName", roomName)
             int.putExtra("playerName", playerName)
             startActivity(int)
@@ -74,7 +66,7 @@ class LobbyActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 button.text = getString(R.string.create_room)
                 button.isEnabled = true
-                val int = Intent(applicationContext, GameActivity::class.java)
+                val int = Intent(applicationContext, MultiplayerGameActivity::class.java)
                 int.putExtra("roomName", roomName)
                 int.putExtra("playerName", playerName)
                 startActivity(int)
