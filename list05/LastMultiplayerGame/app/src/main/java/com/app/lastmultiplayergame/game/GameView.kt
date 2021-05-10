@@ -1,5 +1,6 @@
 package com.app.lastmultiplayergame.game
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -7,10 +8,14 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import androidx.appcompat.app.AlertDialog
+import com.app.lastmultiplayergame.R
 import com.app.lastmultiplayergame.game.components.Ball
 import com.app.lastmultiplayergame.game.components.Mason
 import com.app.lastmultiplayergame.game.components.Paddle
-import com.app.lastmultiplayergame.game.components.ScreenCords
+import com.app.lastmultiplayergame.game.data.ScreenCords
+import kotlinx.android.synthetic.main.activity_settings.view.*
+
 
 class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, attrs),
     SurfaceHolder.Callback {
@@ -19,47 +24,48 @@ class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
     private lateinit var paddle: Paddle
     private lateinit var ball: Ball
     private lateinit var mason: Mason
-    private var score = 0
+    private var mode = "MEDIUM"
+    private var rows: Int = 4
+    private var columns: Int = 6
+    private var maxScore: Int? = null
 
     init {
         holder.addCallback(this)
         thread = GameThread(holder, this)
     }
 
-    interface ScoreListener {
-        fun onGameEnd(score: Int)
-    }
 
     private var gameScoreListener: ScoreListener? = null
     fun setGameScoreListener(listener: ScoreListener) {
         gameScoreListener = listener
     }
 
+
     override fun surfaceCreated(holder: SurfaceHolder) {
         val scr = ScreenCords(left, top, right, bottom)
+        maxScore = rows * columns
         paddle = Paddle(left, top, right, bottom)
         ball = Ball(right / 2.0f, bottom / 2f, 80f, scr)
-        mason = Mason(left, top, right, bottom, 4, 6)
-        Log.d("paddle", "SCREEN :" + (left + top + right + bottom).toString())
-        thread.running = true
-        thread.start()
-
+        mason = Mason(left, top, right, bottom, rows, columns)
+        waitingAlert()
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+        Log.d("SURF","CANGE")
+
+    }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         thread.running = false
         thread.join()
     }
 
+
     fun drawThis(canvas: Canvas?) {
         super.draw(canvas)
         if (canvas == null) return
-        Log.d("DRAWING", "Screen cords: [L: $left T:$top")
-        Log.d("DRAWING", "Screen cords: [R: $right B:$bottom")
-        Log.d("paddle", paddle.width.toString())
-        canvas.drawColor(Color.WHITE)
+        canvas.drawColor(Color.parseColor("#001437"))
         paddle.draw(canvas)
         ball.draw(canvas)
         ball.update(paddle, mason.wall)
@@ -67,10 +73,8 @@ class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
         gameScoreListener?.onGameEnd(mason.countBrokenBricks())
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        Log.d("EVENT CORDS", "EVENT ${event.x}")
-        Log.d("paddle", "paddle ${paddle.getCenterCords()}")
-
         val screenXCenter = width / 2.0f
 
         var sense = 0.0f
@@ -84,4 +88,45 @@ class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
 
         return true
     }
+
+    fun runThread() {
+        thread.running = true
+        thread.start()
+
+    }
+
+    fun pauseThread(value: Boolean = false) {
+        thread.running = value
+        thread.join()
+    }
+
+    fun interruptThread() {
+        thread.interrupt()
+    }
+
+    fun waitingAlert() {
+        val builder = AlertDialog.Builder(context)
+        with(builder)
+        {
+            setTitle("Listener")
+            setMessage("Waiting for next player ...")
+            show()
+        }
+    }
+
+    fun setRows(n: Int) {
+        rows = n
+
+    }
+
+    fun setColumns(n: Int) {
+        columns = n
+
+    }
+
+    fun setMode(id: String?) {
+        mode = if (id !== null) id else "MEDIUM"
+    }
+
+
 }

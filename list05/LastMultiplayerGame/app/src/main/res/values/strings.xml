@@ -1,8 +1,16 @@
 <resources>
-    <string name="app_name">LastMultiplayerGame</string>
+    <string name="app_name">Arcanoid</string>
     <string name="name">Name</string>
     <string name="log_in">LOG IN</string>
     <string name="create_room">CREATE ROOM</string>
     <string name="creating_room">CREATING ROOM</string>
     <string name="poke">POKE</string>
+    <string name="game_icon">game icon</string>
+    <string name="task_name">Task name</string>
+    <string name="rows">Rows</string>
+    <string name="columns">Columns</string>
+    <string name="room_name">Room name</string>
+    <string name="easy">EASY</string>
+    <string name="medium">MEDIUM</string>
+    <string name="hard">HARD</string>
 </resources>

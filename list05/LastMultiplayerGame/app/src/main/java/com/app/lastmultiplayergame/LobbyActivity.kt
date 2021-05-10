@@ -26,6 +26,7 @@ class LobbyActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowModifier.hideMenu(window, actionBar, supportActionBar)
         setContentView(R.layout.activity_lobby)
 
         database = FirebaseDatabase.getInstance()
@@ -42,17 +43,23 @@ class LobbyActivity : AppCompatActivity() {
 
         button.setOnClickListener {
             // create room and add yourself as first player.
-            button.text = getString(R.string.creating_room)
-            button.isEnabled = false
-            roomReference = database.getReference("rooms/$roomName/player1")
-            addRoomEventListener()
-            roomReference.setValue(playerName)
+//            button.text = getString(R.string.creating_room)
+//            button.isEnabled = false
+//            val int = Intent(applicationContext, GameActivity::class.java)
+//            int.putExtra("roomName", roomName)
+//            int.putExtra("playerName", playerName)
+//            startActivity(int)
+//            roomReference = database.getReference("rooms/$roomName/player1")
+//            addRoomEventListener()
+//            roomReference.setValue(playerName)
+            val int = Intent(applicationContext, SettingsActivity::class.java)
+            int.putExtra("roomName", roomName)
+            int.putExtra("playerName", playerName)
+            startActivity(int)
         }
 
         listView.setOnItemClickListener { parent, view, position, id ->
             roomName = roomsList[position].toString()
-            Log.d("ROOOMS", "ROMNAME " + roomName + playerName)
-            Log.d("ROOOMS", "PLAERNAME " + playerName)
             roomReference = database.getReference("rooms/$roomName/player2")
             addRoomEventListener()
             roomReference.setValue(playerName)
@@ -92,7 +99,8 @@ class LobbyActivity : AppCompatActivity() {
                     roomsList.add(el.key)
                     val adapter = ArrayAdapter<String>(
                         this@LobbyActivity,
-                        android.R.layout.simple_list_item_1,
+                        R.layout.room,
+                        R.id.text1,
                         roomsList
                     )
                     listView.adapter = adapter

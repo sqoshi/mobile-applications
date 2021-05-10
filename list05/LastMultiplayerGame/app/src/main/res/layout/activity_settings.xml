@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/room_name"
+        android:textColor="@color/living_yellow"
+        android:textSize="24sp">
+
+    </TextView>
+
+    <EditText
+        android:id="@+id/editTextColumn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:text="@string/columns"
+        android:textColor="@color/living_yellow" />
+
+    <EditText
+        android:id="@+id/editTextRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:text="@string/rows"
+        android:textColor="@color/living_yellow" />
+
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:layout_gravity="center"
+            android:id="@+id/easyRadioBtn"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:text="@string/easy"
+            android:textColor="@color/living_yellow" />
+
+        <RadioButton
+            android:id="@+id/mediumRadioBtn"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/medium"
+            android:textColor="@color/living_yellow" />
+
+        <RadioButton
+            android:id="@+id/hardRadioBtn"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:text="@string/hard"
+            android:textColor="@color/living_yellow" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/openRoom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/living_yellow"
+        android:text="@string/create_room"
+        android:textColor="@color/black" />
+
+</LinearLayout>

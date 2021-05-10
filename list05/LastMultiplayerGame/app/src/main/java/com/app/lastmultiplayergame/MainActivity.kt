@@ -1,8 +1,8 @@
 package com.app.lastmultiplayergame
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -20,37 +20,30 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowModifier.hideMenu(window, actionBar, supportActionBar)
         setContentView(R.layout.activity_main)
         database = FirebaseDatabase.getInstance()
-//        val myRef = database.getReference("player/")
-//        myRef.setValue("Hello, asd!")
-//        playerReference = database.getReference("players/$playerName")
-//        playerReference.setValue("Hello, asd!")
-
 
         editText = editTextName
         button = loginButton
 
-
-        if (playerName != "") {
-            playerReference = database.getReference("players/$playerName")
-            addEventListener()
-            playerReference.setValue("")
-        }
+        addPlayer()
 
         button.setOnClickListener {
             // log player in
             playerName = editText.text.toString()
             editText.setText("")
-            if (playerName != "") {
-                button.text = "LOGGING IN"
-                button.isEnabled = false
-                playerReference = database.getReference("players/$playerName")
-                playerReference.setValue("")
-                addEventListener()
-            }
+            addPlayer()
         }
 
+    }
+
+    private fun addPlayer() {
+        if (playerName != "") {
+            playerReference = database.getReference("players/$playerName")
+            playerReference.setValue("")
+            addEventListener()
+        }
     }
 
     private fun addEventListener() {
@@ -68,8 +61,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            @SuppressLint("SetTextI18n")
             override fun onCancelled(error: DatabaseError) {
-                button.setText("LOG IN")
+                button.text = "LOG IN"
                 button.isEnabled = true
                 Toast.makeText(applicationContext, "Error!", Toast.LENGTH_SHORT).show();
             }

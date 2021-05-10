@@ -1,10 +1,7 @@
 package com.app.lastmultiplayergame.game
 
 import android.graphics.Canvas
-import android.graphics.Color
-import android.util.Log
 import android.view.SurfaceHolder
-import java.util.concurrent.TimeUnit
 
 class GameThread(
     private val surfaceHolder: SurfaceHolder,
@@ -27,7 +24,6 @@ class GameThread(
             try {
                 canvas = surfaceHolder.lockCanvas()
                 synchronized(surfaceHolder) {
-//                    gameView.update()
                     gameView.drawThis(canvas!!)
                 }
             } catch (e: Exception) {
