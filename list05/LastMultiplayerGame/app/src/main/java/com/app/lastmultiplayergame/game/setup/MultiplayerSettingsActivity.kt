@@ -56,7 +56,7 @@ class MultiplayerSettingsActivity : AppCompatActivity() {
                 .setValue(editTextColumn.text.toString().toInt())
             database.getReference("rooms/$roomName/rows")
                 .setValue(editTextRow.text.toString().toInt())
-            game_view.setRows(editTextRow.text.toString().toInt())
+//            game_view.setRows(editTextRow.text.toString().toInt())
             database.getReference("rooms/$roomName/mode").setValue(rgc)
         }
 

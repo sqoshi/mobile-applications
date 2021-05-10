@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         WindowAdjuster.hideMenu(window, actionBar, supportActionBar)
         setContentView(R.layout.activity_main)
         database = FirebaseDatabase.getInstance()
-        database.getReference("rooms/").setValue(null)
+//        database.getReference("rooms/").setValue(null)
 
 
         editText = editTextName
