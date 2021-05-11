@@ -4,25 +4,28 @@ import android.graphics.*
 import com.app.lastmultiplayergame.game.data.Point
 import com.app.lastmultiplayergame.game.math.AuxiliaryOperations
 
+/**
+ * Paddle components moves to left, right  on screen touch.
+ */
 class Paddle(
     private val screenLeft: Int,
-    private val screenTop: Int,
+    screenTop: Int,
     private val screenRight: Int,
-    private val screenBottom: Int
+    screenBottom: Int
 ) {
     val color: Paint = Paint()
 
     // const
-    val width = AuxiliaryOperations.getHypotenuse(
+    private val width = AuxiliaryOperations.getHypotenuse(
         screenRight.toFloat(),
         screenBottom.toFloat()
     ) / 5f
-    val height = (screenBottom - screenTop) / 28.0f
-    val y = screenBottom - 1.5f * height  // y is const. not mutable
-    val top = y - height / 2.0f
-    val bottom = y + height / 2.0f
+    private val height = (screenBottom - screenTop) / 28.0f
+    private val y = screenBottom - 1.5f * height  // y is const. not mutable
+    private val top = y - height / 2.0f
+    private val bottom = y + height / 2.0f
 
-    var x = (screenRight - screenLeft) / 2.0f // center at begining
+    var x = (screenRight - screenLeft) / 2.0f
     var left = x - width / 2.0f
     var right = x + width / 2.0f
 
@@ -34,21 +37,26 @@ class Paddle(
         color.setShadowLayer(4f, 0f, 0f, Color.WHITE);
     }
 
-    fun getCenterCords(): Point {
-        return Point(x, y)
-    }
 
+    /**
+     * Return left top point of paddle.
+     */
     fun getLeftTopCords(): Point {
         return Point(left, top)
 
     }
 
+    /**
+     * Return right bottom point of paddle.
+     */
     fun getRightBottomCords(): Point {
         return Point(right, bottom)
 
     }
 
-
+    /**
+     * Updates paddle position, but prevent abroad screen moves.
+     */
     fun updateX(sense: Float) {
         if (right < screenRight && left > screenLeft) {
             val paddleHalfWidth = width / 2.0f
@@ -66,7 +74,7 @@ class Paddle(
                 newLeft = newRight - width
                 newX = newLeft + paddleHalfWidth
             }
-//            override existing values
+            // override existing values
             x = newX
             left = newLeft
             right = newRight
@@ -74,12 +82,11 @@ class Paddle(
         }
     }
 
-
+    /**
+     * Draw paddle on canvas.
+     */
     fun draw(canvas: Canvas) {
         canvas.drawRoundRect(RectF(left, top, right, bottom), 45f, 45f, color)
     }
 
-    fun getRect(): Rect {
-        return Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
-    }
 }

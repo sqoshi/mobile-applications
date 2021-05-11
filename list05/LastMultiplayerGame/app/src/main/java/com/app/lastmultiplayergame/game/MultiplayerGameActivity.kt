@@ -13,6 +13,9 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlin.system.exitProcess
 
+/**
+ * Handle multiplayer game.
+ */
 class MultiplayerGameActivity : AppCompatActivity(), ScoreListener {
     private lateinit var database: FirebaseDatabase
     private lateinit var messageReference: DatabaseReference
@@ -54,12 +57,16 @@ class MultiplayerGameActivity : AppCompatActivity(), ScoreListener {
         messageReference = database.getReference("rooms/$roomName/message")
         player2Reference = database.getReference("rooms/$roomName/player2")
         playerScoreReference = database.getReference("rooms/$roomName/$playerName/score")
-        addRoomEventListener()
+        addScoreListener()
+        addOpponentListener()
 
 
     }
 
-
+    /**
+     * Listener call this function on score change.
+     * Saves player score in firebase,
+     */
     override fun whenGameEnd(score: Int) {
         playerScoreReference.setValue("$score")
         if (score == rows * columns) {
@@ -67,20 +74,30 @@ class MultiplayerGameActivity : AppCompatActivity(), ScoreListener {
         }
     }
 
+    /**
+     * Closes current room.
+     */
     private fun closeRoom() {
         val room = database.getReference("rooms/$roomName")
         room.setValue(null)
 
     }
 
+    /**
+     * Closes room onStop.
+     */
     override fun onStop() {
         if (roomName == playerName)
             closeRoom()
         super.onStop()
     }
 
-    private fun addRoomEventListener() {
-
+    /**
+     * Adds listeners for score,
+     * If someone win then messageReference changes -> thread pause, win alert and closes room.
+     *
+     */
+    private fun addScoreListener() {
         messageReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.getValue(String::class.java) != null) {
@@ -96,6 +113,12 @@ class MultiplayerGameActivity : AppCompatActivity(), ScoreListener {
             }
 
         })
+    }
+
+    /**
+     * Add opponent listener, and run game when second player enter room.
+     */
+    private fun addOpponentListener() {
 
         player2Reference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -114,10 +137,13 @@ class MultiplayerGameActivity : AppCompatActivity(), ScoreListener {
 
     }
 
-
+    /**
+     * Simple basic alert with message.
+     * Exit closes app, lobby moves to lobby when player can play other game on open a new room.
+     */
     private fun basicAlert(message: String?) {
         val builder = AlertDialog.Builder(this)
-        val start = { dialog: DialogInterface, which: Int ->
+        val start = { _: DialogInterface, _: Int ->
             game_view.interruptThread()
             val int = Intent(applicationContext, LobbyActivity::class.java)
             int.putExtra("playerName", playerName)
@@ -127,7 +153,7 @@ class MultiplayerGameActivity : AppCompatActivity(), ScoreListener {
             closeRoom()
 
         }
-        val closeApp = { dialog: DialogInterface, which: Int ->
+        val closeApp = { _: DialogInterface, _: Int ->
             moveTaskToBack(false);
             closeRoom()
             finish()

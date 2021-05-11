@@ -18,6 +18,10 @@ import kotlinx.android.synthetic.main.activity_settings.*
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**
+ * Activity holds list of actual rooms.
+ * Players may move to create room activity or enter existing room.
+ */
 class LobbyActivity : AppCompatActivity() {
 
     private lateinit var listView: ListView
@@ -41,12 +45,8 @@ class LobbyActivity : AppCompatActivity() {
 
         playerName = intent.extras?.getString("playerName", "").toString()
         roomName = playerName
-
         listView = playerList
-
         button = createRoomButton
-
-        // available rooms
 
 
         button.setOnClickListener {
@@ -70,7 +70,9 @@ class LobbyActivity : AppCompatActivity() {
         addRoomsEventListener()
     }
 
-
+    /**
+     * Join multiplayer room, creates game activity connected to some room.
+     */
     private fun addRoomEventListener() {
         roomReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -94,6 +96,10 @@ class LobbyActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Creates list of clickable rooms with details.
+     * Actualize when new rooms is being added to firebase.
+     */
     private fun addRoomsEventListener() {
         roomReference = database.getReference("rooms")
         roomReference.addValueEventListener(object : ValueEventListener {

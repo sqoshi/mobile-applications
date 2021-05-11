@@ -10,7 +10,15 @@ import com.app.lastmultiplayergame.game.math.AuxiliaryOperations
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class Ball(val cordX: Float, val cordY: Float, val radius: Float, val screenCords: ScreenCords) {
+/**
+ * Object represent ball in game.
+ */
+class Ball(
+    cordX: Float,
+    cordY: Float,
+    private val radius: Float,
+    private val screenCords: ScreenCords
+) {
     val color = Paint().also { it.setARGB(123, 234, 11, 66) }
 
     private val accSpeed =
@@ -28,10 +36,16 @@ class Ball(val cordX: Float, val cordY: Float, val radius: Float, val screenCord
         color.setShadowLayer(4f, 0f, 0f, color.color);
     }
 
+    /**
+     * Draws ball in position with radius in color.
+     */
     fun draw(canvas: Canvas) {
         canvas.drawOval(RectF(x, y, x + radius, y + radius), color)
     }
 
+    /**
+     * Updates ball cords and bounces from other objects if needed.
+     */
     fun update(paddle: Paddle, wall: List<List<Brick>>) {
         bounceFromWalls()
         bounceFromPaddle(paddle)
@@ -41,6 +55,9 @@ class Ball(val cordX: Float, val cordY: Float, val radius: Float, val screenCord
         y += speedY
     }
 
+    /**
+     * Spawns ball in center of screen.
+     */
     private fun spawnInMiddle() {
         x = (screenCords.right / 2).toFloat()
         y = (screenCords.bottom / 2).toFloat()
@@ -54,6 +71,9 @@ class Ball(val cordX: Float, val cordY: Float, val radius: Float, val screenCord
         }
     }
 
+    /**
+     * Bounces ball from wall. By changing speed vector.
+     */
     private fun bounceFromWalls() {
         if (x + radius >= screenCords.right)
             speedX = -speedX
@@ -65,6 +85,9 @@ class Ball(val cordX: Float, val cordY: Float, val radius: Float, val screenCord
             speedY = -speedY
     }
 
+    /**
+     * Bounces from paddle ( a little bit randomly).
+     */
     private fun bounceFromPaddle(paddle: Paddle) {
         val lt = paddle.getLeftTopCords()
         val rb = paddle.getRightBottomCords()
@@ -78,6 +101,9 @@ class Ball(val cordX: Float, val cordY: Float, val radius: Float, val screenCord
 
     }
 
+    /**
+     * Handle bouncing for each brick.
+     */
     private fun bounceFromBrickWall(wall: List<List<Brick>>) {
         for (row in wall) {
             for (brick in row) {
@@ -87,6 +113,9 @@ class Ball(val cordX: Float, val cordY: Float, val radius: Float, val screenCord
         }
     }
 
+    /**
+     * Bounce from brick and hits that ( decrements hp by 1).
+     */
     private fun bounceFromBrick(brick: Brick) {
         if (x >= brick.left && x <= brick.right && y >= brick.top && y <= brick.bottom) {
             speedX *= getRandomSense()
@@ -96,6 +125,9 @@ class Ball(val cordX: Float, val cordY: Float, val radius: Float, val screenCord
 
     }
 
+    /**
+     * Returns randomly -1 or 1.
+     */
     private fun getRandomSense(): Float {
         return listOf(-1f, 1f).random()
 

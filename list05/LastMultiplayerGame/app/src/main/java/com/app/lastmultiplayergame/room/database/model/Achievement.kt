@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 /**
  * Abstract table.
- * Each Achievement class argument is a column inside image_table.
+ * Each Achievement class argument is a column inside achievements.
  */
 @Parcelize
 @Entity(tableName = "achievements")

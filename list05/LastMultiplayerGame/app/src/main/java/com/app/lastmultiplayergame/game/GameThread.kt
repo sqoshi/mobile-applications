@@ -3,6 +3,9 @@ package com.app.lastmultiplayergame.game
 import android.graphics.Canvas
 import android.view.SurfaceHolder
 
+/**
+ * Periodically repaints canvas elements. ( holds surface (GAMEVIEW)
+ */
 class GameThread(
     private val surfaceHolder: SurfaceHolder,
     private val gameView: GameView

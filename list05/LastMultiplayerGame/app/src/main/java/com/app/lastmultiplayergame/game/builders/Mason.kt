@@ -4,24 +4,27 @@ import android.graphics.Canvas
 import com.app.lastmultiplayergame.game.components.Brick
 import com.app.lastmultiplayergame.game.data.Point
 
+/**
+ * Mason is responsible for building the wall of bricks.
+ */
 class Mason(
-    val screenLeft: Int,
-    val screenTop: Int,
-    val screenRight: Int,
-    val screenBottom: Int,
+    private val screenLeft: Int,
+    private val screenTop: Int,
+    screenRight: Int,
+    screenBottom: Int,
     var rowAmount: Int,
     var columnAmount: Int,
     var mode: String = "MEDIUM",
 ) {
-//    var rowAmount: Int = 4
-//    var columnAmount: Int = 6
-//    var mode: String = "MEDIUM"
 
     var brickWidth = ((screenRight.toFloat() - (columnAmount + 1) * 2f) / columnAmount.toFloat())
     var brickHeight = screenBottom / 30.0f
     var wall = buildWall()
 
-    fun buildWall(): MutableList<MutableList<Brick>> {
+    /**
+     * Builds wall for current mode.
+     */
+    private fun buildWall(): MutableList<MutableList<Brick>> {
         when (mode) {
             "EASY" -> {
                 return buildEasy()
@@ -36,6 +39,9 @@ class Mason(
         return buildEasy()
     }
 
+    /**
+     * Draws every single brick in wall in alive.
+     */
     fun drawWall(canvas: Canvas) {
         for (row in wall) {
             for (brick in row) {
@@ -45,6 +51,9 @@ class Mason(
         }
     }
 
+    /**
+     * Count how many bricks is alive.
+     */
     fun countBrokenBricks(): Int {
         var counter = 0
         for (row in wall) {
@@ -56,6 +65,10 @@ class Mason(
         return counter
     }
 
+    /**
+     * Build easy stage.
+     * Only 1hp bricks.
+     */
     private fun buildEasy(): MutableList<MutableList<Brick>> {
         var currX = screenLeft.toFloat()
         var currY = screenTop.toFloat()
@@ -76,6 +89,10 @@ class Mason(
         return wall
     }
 
+    /**
+     * Build medium stage.
+     * 1hp brick in even rows and 2hp in rest.
+     */
     private fun buildMedium(): MutableList<MutableList<Brick>> {
         var currX = screenLeft.toFloat()
         var currY = screenTop.toFloat()
@@ -97,6 +114,10 @@ class Mason(
         return wall
     }
 
+    /**
+     * Build hard stage.
+     * 2,3hp alternately.
+     */
     private fun buildHard(): MutableList<MutableList<Brick>> {
         var currX = screenLeft.toFloat()
         var currY = screenTop.toFloat()

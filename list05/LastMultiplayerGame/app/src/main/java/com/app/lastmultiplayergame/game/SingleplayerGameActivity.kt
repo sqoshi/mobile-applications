@@ -14,14 +14,16 @@ import com.app.lastmultiplayergame.room.database.viewmodel.AchievementViewModel
 import kotlinx.android.synthetic.main.activity_game.*
 import java.lang.Thread.sleep
 
-
+/**
+ * Handles singleplayer game using room database.
+ */
 class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
     private lateinit var viewModel: AchievementViewModel
 
     private var message = " stage finished."
-    private var columns = 3
-    private var rows = 6
-    private var mode = "EASY"
+    private var columns = 3 // default
+    private var rows = 6 // default
+    private var mode = "EASY" //default
     private var round = 1
 
 
@@ -51,6 +53,9 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
 
     }
 
+    /**
+     * When player destroyed all blocks moves to next stage.
+     */
     override fun whenGameEnd(score: Int) {
         if (score == rows * columns) {
             val nxts = nextStage(mode)
@@ -72,6 +77,9 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
         }
     }
 
+    /**
+     * Saves result in local `room` database.
+     */
     private fun saveResult() {
         val a = Achievement(
             0,
@@ -81,7 +89,9 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
         viewModel.addAchievement(a)
     }
 
-
+    /**
+     * Alert about new stage.
+     */
     private fun stageAlert(message: String?) {
         val builder = AlertDialog.Builder(this)
         with(builder)
@@ -94,6 +104,9 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
 
     }
 
+    /**
+     * Finds next stage.
+     */
     private fun nextStage(s: String): String? {
         return when (s) {
             "EASY" -> {
@@ -106,6 +119,9 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
         }
     }
 
+    /**
+     * Increments round
+     */
     private fun nextRound(): Int {
         return round + 1
     }

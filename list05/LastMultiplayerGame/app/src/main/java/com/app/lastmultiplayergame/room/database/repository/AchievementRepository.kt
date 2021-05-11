@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import com.app.lastmultiplayergame.room.database.AchievementDao
 import com.app.lastmultiplayergame.room.database.model.Achievement
 
+/**
+ * Intermediary in communication with database.
+ */
 class AchievementRepository(private val achieveDao: AchievementDao) {
     val readAllData: LiveData<List<Achievement>> = achieveDao.readAllData()
 

@@ -8,7 +8,9 @@ import com.app.lastmultiplayergame.WindowAdjuster
 import com.app.lastmultiplayergame.game.SingleplayerGameActivity
 import kotlinx.android.synthetic.main.activity_game_type_settings.*
 
-
+/**
+ * Allow to choose game type singleplayer/ multiplayer
+ */
 class GameTypeSettingsActivity : AppCompatActivity() {
 
 

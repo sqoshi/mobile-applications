@@ -12,7 +12,9 @@ import com.app.lastmultiplayergame.game.setup.LobbyActivity
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 
-
+/**
+ * Activity logging and registering users.
+ */
 class MainActivity : AppCompatActivity() {
     private lateinit var editText: EditText
     private lateinit var button: Button
@@ -25,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         WindowAdjuster.hideMenu(window, actionBar, supportActionBar)
         setContentView(R.layout.activity_main)
         database = FirebaseDatabase.getInstance()
-//        database.getReference("rooms/").setValue(null)
 
 
         editText = editTextName
@@ -42,6 +43,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Adds player to firebase.
+     */
     private fun addPlayer() {
         if (playerName != "") {
             playerReference = database.getReference("players/$playerName")
@@ -50,11 +54,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * When player name is correct moves to lobby GameTypeSettingsActivity.
+     */
     private fun addEventListener() {
         // read database
         playerReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                //success -> move to lobby activity
                 if (playerName != "") {
                     val int = Intent(applicationContext, GameTypeSettingsActivity::class.java)
                     int.putExtra("playerName", playerName)
