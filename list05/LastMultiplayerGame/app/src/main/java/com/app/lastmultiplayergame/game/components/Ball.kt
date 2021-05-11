@@ -6,13 +6,18 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import com.app.lastmultiplayergame.game.data.ScreenCords
+import com.app.lastmultiplayergame.game.math.AuxiliaryOperations
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 class Ball(val cordX: Float, val cordY: Float, val radius: Float, val screenCords: ScreenCords) {
     val color = Paint().also { it.setARGB(123, 234, 11, 66) }
 
-    private val accSpeed = 20f
+    private val accSpeed =
+        AuxiliaryOperations.getHypotenuse(
+            screenCords.bottom.toFloat(),
+            screenCords.right.toFloat()
+        ) / 125f
     var speedX = accSpeed
     var speedY = accSpeed
     var x = cordX
@@ -54,11 +59,9 @@ class Ball(val cordX: Float, val cordY: Float, val radius: Float, val screenCord
             speedX = -speedX
         if (x <= screenCords.left)
             speedX = -speedX
-        if (y + radius >= screenCords.bottom) {
+        if (y + radius >= screenCords.bottom)
             spawnInMiddle()
-        }
-
-        if (y + radius <= screenCords.top)
+        if (y <= screenCords.top)
             speedY = -speedY
     }
 

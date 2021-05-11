@@ -3,7 +3,6 @@
     package="com.app.lastmultiplayergame">
 
     <uses-feature android:name="android.hardware.camera.any" />
-
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -11,15 +10,26 @@
         android:icon="@drawable/ic_arcanoid_icon"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_arcanoid_icon"
-        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/Theme.LastMultiplayerGame">
-        <activity android:name=".game.SingleplayerGameActivity" />
-        <activity android:name=".game.setup.GameTypeSettingsActivity" />
-        <activity android:name=".game.setup.LobbyActivity" />
-        <activity android:name=".game.setup.MultiplayerSettingsActivity" />
-        <activity android:name=".game.MultiplayerGameActivity" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".game.SingleplayerGameActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".game.setup.GameTypeSettingsActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".game.setup.LobbyActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".game.setup.MultiplayerSettingsActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".game.MultiplayerGameActivity"
+            android:screenOrientation="nosensor" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="nosensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

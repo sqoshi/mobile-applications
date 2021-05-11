@@ -22,6 +22,7 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
     private var columns = 3
     private var rows = 6
     private var mode = "EASY"
+    private var round = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +36,10 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
             val newMode = intent.extras!!.getString("mode")
             if (newMode != null) {
                 mode = newMode
+            }
+            val newRound = intent.extras!!.getInt("round")
+            if (newRound > 1) {
+                round = newRound
             }
         }
 
@@ -54,9 +59,10 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
                 sleep(1200)
                 val int = Intent(applicationContext, SingleplayerGameActivity::class.java)
                 int.putExtra("mode", nxts)
+                int.putExtra("round", nextRound())
                 startActivity(int)
             } else {
-                stageAlert("Yo have finished singleplayer.")
+                stageAlert("You have finished singleplayer.")
                 saveResult()
                 sleep(3000)
                 val int = Intent(applicationContext, MainActivity::class.java)
@@ -66,11 +72,11 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
         }
     }
 
-    fun saveResult() {
+    private fun saveResult() {
         val a = Achievement(
             0,
             "player",
-            0,
+            round,
         )
         viewModel.addAchievement(a)
     }
@@ -98,6 +104,10 @@ class SingleplayerGameActivity : AppCompatActivity(), ScoreListener {
             }
             else -> null
         }
+    }
+
+    private fun nextRound(): Int {
+        return round + 1
     }
 
 

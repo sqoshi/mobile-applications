@@ -2,6 +2,7 @@ package com.app.lastmultiplayergame.game.components
 
 import android.graphics.*
 import com.app.lastmultiplayergame.game.data.Point
+import com.app.lastmultiplayergame.game.math.AuxiliaryOperations
 
 class Paddle(
     private val screenLeft: Int,
@@ -10,10 +11,12 @@ class Paddle(
     private val screenBottom: Int
 ) {
     val color: Paint = Paint()
-//        Paint().setColor(Color.parseColor("#7898FB"))//Paint().also { it.setARGB(1, 120, 152, 251) }
 
     // const
-    val width = screenRight / 3
+    val width = AuxiliaryOperations.getHypotenuse(
+        screenRight.toFloat(),
+        screenBottom.toFloat()
+    ) / 5f
     val height = (screenBottom - screenTop) / 28.0f
     val y = screenBottom - 1.5f * height  // y is const. not mutable
     val top = y - height / 2.0f
@@ -47,7 +50,6 @@ class Paddle(
 
 
     fun updateX(sense: Float) {
-//        Log.d("UPDATE X", "UPDATE X $sense")
         if (right < screenRight && left > screenLeft) {
             val paddleHalfWidth = width / 2.0f
             var newX = x + sense * speed

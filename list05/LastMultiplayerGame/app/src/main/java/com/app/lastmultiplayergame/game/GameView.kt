@@ -38,7 +38,6 @@ class GameView(context: Context, attrs: AttributeSet) : SurfaceView(context, att
         holder.addCallback(this)
         thread = GameThread(holder, this)
         database = FirebaseDatabase.getInstance()
-        Log.d("firebase", "INIT $columns $rows $mode")
 
     }
 

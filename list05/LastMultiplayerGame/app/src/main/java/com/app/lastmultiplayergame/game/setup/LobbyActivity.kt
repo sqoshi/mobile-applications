@@ -103,9 +103,6 @@ class LobbyActivity : AppCompatActivity() {
                 for (el in rooms) {
                     val r = Room(el.key!!, null, null, null)
                     for (child in el.children) {
-                        Log.d("CHILDREN", "${child.key.toString() == "mode"}")
-                        Log.d("CHILDREN", "${child.key.toString() == "columns"}")
-                        Log.d("CHILDREN", "${child.key.toString() == "rows"}")
                         when {
                             child.key.toString() == "mode" ->
                                 r.mode = child.value.toString()

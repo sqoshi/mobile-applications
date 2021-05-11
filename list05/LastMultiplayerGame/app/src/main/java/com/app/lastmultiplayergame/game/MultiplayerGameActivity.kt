@@ -16,6 +16,7 @@ import kotlin.system.exitProcess
 class MultiplayerGameActivity : AppCompatActivity(), ScoreListener {
     private lateinit var database: FirebaseDatabase
     private lateinit var messageReference: DatabaseReference
+    private lateinit var playerScoreReference: DatabaseReference
     private lateinit var player2Reference: DatabaseReference
     private var playerName = ""
     private var roomName = ""
@@ -52,6 +53,7 @@ class MultiplayerGameActivity : AppCompatActivity(), ScoreListener {
         //listen incoming messages
         messageReference = database.getReference("rooms/$roomName/message")
         player2Reference = database.getReference("rooms/$roomName/player2")
+        playerScoreReference = database.getReference("rooms/$roomName/$playerName/score")
         addRoomEventListener()
 
 
@@ -59,8 +61,8 @@ class MultiplayerGameActivity : AppCompatActivity(), ScoreListener {
 
 
     override fun whenGameEnd(score: Int) {
+        playerScoreReference.setValue("$score")
         if (score == rows * columns) {
-            messageReference = database.getReference("rooms/$roomName/message")
             messageReference.setValue("$playerName WON")
         }
     }
