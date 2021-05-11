@@ -1,15 +1,39 @@
 # Table Of Contents
 - [Table Of Contents](#table-of-contents)
-- [Roshambo](#roshambo)
-    - [Layout](#layout)
-      - [Portrait](#portrait)
-      - [Landscape](#landscape)
-    - [Code Example](#code-example)
-- [TicTacToe](#tictactoe)
+- [Arcanoid](#arcanoid)
+  - [Introduction](#introduction)
+  - [General Info](#general-info)
+    - [Multiplayer](#multiplayer)
+      - [Video](#video)
+      - [Database](#database)
+    - [Singleplayer](#singleplayer)
+      - [Video](#video-1)
+  - [Code Example](#code-example)
+- [Snapgram](#snapgram)
+  - [Introduction](#introduction-1)
+  - [General Info](#general-info-1)
+  - [Layout](#layout)
+    - [Gallery](#gallery)
+    - [Camera](#camera)
+    - [Image](#image)
+  - [CodeExample](#codeexample)
+- [ToDo](#todo)
+    - [Introduction](#introduction-2)
+    - [General Info](#general-info-2)
+      - [Sorts](#sorts)
+      - [Filter by priority](#filter-by-priority)
+      - [Task structure](#task-structure)
+      - [Icon chooser](#icon-chooser)
+      - [Calendar](#calendar)
     - [Layout](#layout-1)
-      - [Main](#main)
-      - [Board3x3](#board3x3)
-      - [Round Win](#round-win)
+      - [Portrait](#portrait)
+        - [Tasks list](#tasks-list)
+        - [Task update](#task-update)
+        - [Task deletion](#task-deletion)
+        - [All tasks deletion](#all-tasks-deletion)
+      - [Landscape](#landscape)
+        - [Tasks list](#tasks-list-1)
+        - [Task addition](#task-addition)
     - [Code Example](#code-example-1)
 - [HangMan](#hangman)
     - [Layout](#layout-2)
@@ -17,165 +41,159 @@
       - [Landscape](#landscape-1)
       - [Lost Popup](#lost-popup)
     - [Code Example](#code-example-2)
-- [ToDo](#todo)
-    - [Introduction](#introduction)
-    - [General Info](#general-info)
-      - [Sorts](#sorts)
-      - [Filter by priority](#filter-by-priority)
-      - [Task structure](#task-structure)
-      - [Icon chooser](#icon-chooser)
-      - [Calendar](#calendar)
+- [TicTacToe](#tictactoe)
     - [Layout](#layout-3)
-      - [Portrait](#portrait-2)
-        - [Tasks list](#tasks-list)
-        - [Task update](#task-update)
-        - [Task deletion](#task-deletion)
-        - [All tasks deletion](#all-tasks-deletion)
-      - [Landscape](#landscape-2)
-        - [Tasks list](#tasks-list-1)
-        - [Task addition](#task-addition)
+      - [Main](#main)
+      - [Board3x3](#board3x3)
+      - [Round Win](#round-win)
     - [Code Example](#code-example-3)
-  - [Snapgram](#snapgram)
-    - [Introduction](#introduction-1)
-    - [General Info](#general-info-1)
+- [Roshambo](#roshambo)
     - [Layout](#layout-4)
-      - [Gallery](#gallery)
-      - [Camera](#camera)
-      - [Image](#image)
-    - [CodeExample](#codeexample)
-  - [Arcanoid](#arcanoid)
-    - [Introduction](#introduction-2)
-    - [General Info](#general-info-2)
-      - [Multiplayer](#multiplayer)
-        - [Video](#video)
-        - [Database](#database)
-      - [Singleplayer](#singleplayer)
-        - [Video](#video-1)
+      - [Portrait](#portrait-2)
+      - [Landscape](#landscape-2)
+    - [Code Example](#code-example-4)
 
+
+
+----------------------------
+# Arcanoid
+<p align="center">
+  <img src="list05/Arcanoid/media/arca-icon.png" width="80"/>
+</p>
+
+
+## Introduction
+Simple implementation of very popular game [Arcanoid](https://en.wikipedia.org/wiki/Arkanoid). Two game modes `multiplayer` and `singleplayer` allow to play with friends and break your records. Video of both modes are avaible in [multiplayer](#video) [singleplayer](#video-1)
+
+![](list05/Arcanoid/media/game.png)
+
+## General Info
+Each user register his nickname in database. Registration is automatical, it does mean that first login stores nickname in database ( if nickname is available). 
+
+### Multiplayer
+When user want to play with friends he need to join or create a room. Each room contains Game configuration (rows, columns, mode(EASY,HARD,MEDIUM)). Room may be created by every user and configured as only he wish.
+![](list05/Arcanoid/media/rooms.png)
+Lobby is a list of rooms that are open
+ at the moment. By clicking list item player joins as a guest and contest begin. The one who first destroys all the bricks wins. 
+
+#### Video
+https://user-images.githubusercontent.com/43937286/117873213-d3ecfc80-b29f-11eb-9aab-1ddb09e2f876.mp4
+
+#### Database
+Communication is owed to the firebase.
+Players listening opponents score and communicating in real time in such way.
+
+![](list05/Arcanoid/media/database.png)
+
+### Singleplayer
+When user playing singleplayer mode he just beat next stages and local `room` database stores his achievements ( records ).
+
+#### Video
+https://user-images.githubusercontent.com/43937286/117873233-da7b7400-b29f-11eb-8744-9b43241c9d68.mp4
+
+## Code Example
+
+```kotlin
+
+private fun addScoreListener() {
+    messageReference.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            if (snapshot.getValue(String::class.java) != null) {
+                game_view.pauseThread()
+                basicAlert(snapshot.getValue(String::class.java))
+                closeRoom()
+
+            }
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            messageReference.setValue(message)
+        }
+
+    })
+}
+
+```
+
+----------------------------
+
+# Snapgram
+## Introduction
+Application is some way similar to `instagram`. Users of application can take images, rate them and comment.
+## General Info
+Main activity handles viewpager2 that switches between gallery and camera page.
+
+Clicking any image object in gallery, which is compressed to achieve better average performance, carries us out with a new intent to a new activity.
+New activity handles next viewpager2, that represents detailed objects from gallery.
+
+Images are stored in a special directory under media/thisApp path, when details are stored in room database.
+
+Screenshots are available in Layout section. 
+## Layout
+_*[CAUTION\] Layout requires a little more work*_
+### Gallery
+Gallery contains all objects stored in special directory.
+![](list04/GalleryApp/media/gallery.png)
+### Camera
+Camera is viewpager2's page that allow user to make images and store them in special path + details in room.
+![](list04/GalleryApp/media/camera.png)
+### Image
+Section represent single image stored in application, user has possibility to rate photos and comment them. 
+![](list04/GalleryApp/media/image.png)
+## CodeExample
+```kotlin
+private fun takePhoto() {
+
+        val imageCapture = imageCapture ?: return
+        Log.d(Constants.TAG, outputDirectory.toString())
+        val photoFile = File(
+            outputDirectory,
+            SimpleDateFormat(
+                Constants.FILE_NAME_FORMAT,
+                Locale.getDefault()
+            ).format(System.currentTimeMillis()) + ".jpg"
+        )
+
+        val savedUri = Uri.fromFile(photoFile)
+
+
+        val outputOption = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        imageCapture.takePicture(
+            outputOption, ContextCompat.getMainExecutor(requireContext()),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    val msg = "Photo saved"
+                    Toast.makeText(
+                        requireActivity(),
+                        "$msg ", Toast.LENGTH_SHORT
+                    ).show()
+
+                    // insert image to database
+                    val img = Image(
+                        0,
+                        path = savedUri.path!!,
+                        description = null,
+                        rating = null
+                    )
+                    mImageViewModel.addImage(img)
+
+                }
+
+                override fun onError(exception: ImageCaptureException) {
+                    Log.d(Constants.TAG, "onError: ${exception.message}", exception)
+                }
+
+            }
+        )
+
+    }
+```
 
 
 
 ---------------------------
-# [Roshambo](https://github.com/sqoshi/mobile-applications/tree/master/list01/exercise2)
 
-[Rock paper scissors](https://en.wikipedia.org/wiki/Rock_paper_scissors).
-Simple game implementation in Kotlin.
-
-### Layout
-#### Portrait
-![](list01/media/s1.png)
-
-#### Landscape
-![](list01/media/s2.png)
-### Code Example
-```kotlin
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
-        if (savedInstanceState != null) {
-            val value = savedInstanceState.getInt("counter")
-            binding.counter.text = value.toString()
-            counter = value
-        }
-    }
-```
----------------------------
-
-# [TicTacToe](https://github.com/sqoshi/mobile-applications/tree/master/list02/TicTacToe)
-
-[TicTacToe](https://en.wikipedia.org/wiki/Tic-tac-toe) game implementation in Kotlin.
-
-Games offers 2 boards in size 3x3 and 5x5.
-
-Players can play kotlin.maxint rounds and still recognize who is winning.
-
-### Layout
-#### Main
-![](list02/TicTacToe/media/front.png)
-
-#### Board3x3
-![](list02/TicTacToe/media/3x3.png)
-
-#### Round Win
-Example win in 5x5 board mode.
-
-![](list02/TicTacToe/media/5x5r.png)
-
-### Code Example
-```kotlin
-    private fun onButtonClick(button: Button, r: Int, c: Int) {
-        if (!isFieldBusy(button)) {
-            if (player1Turn) {
-                button.text = player1Symbol
-                button.setBackgroundColor(Color.parseColor("#5e60ce"))
-                player1Turn = false
-                player1Fields.add(intArrayOf(r, c))
-                if (hasWin(player1Fields)) {
-                    basicAlert(findViewById(R.id.resetButton), "Player1 has won")
-                    player1Score += 1
-                    updateScore(player1ScoreTextView, player1Score)
-
-                }
-
-            } else {
-                button.text = player2Symbol
-                button.setBackgroundColor(Color.parseColor("#64dfdf"))
-                player1Turn = true
-                player2Fields.add(intArrayOf(r, c))
-                if (hasWin(player2Fields)) {
-                    basicAlert(findViewById(R.id.resetButton), "Player2 has won")
-                    player2Score += 1
-                    updateScore(player2ScoreTextView, player2Score)
-                }
-
-            }
-
-            if ((player1Fields.size + player2Fields.size).toDouble() == size.toDouble().pow(2.0)) {
-                basicAlert(findViewById(R.id.resetButton), "Draw")
-                roundCounter++
-            }
-        } else {
-            Toast.makeText(applicationContext, "Field is busy.", Toast.LENGTH_SHORT).show()
-
-        }
-    }
-```
-
-----------------------------
-# [HangMan](https://github.com/sqoshi/mobile-applications/tree/master/list02/TicTacToe)
-[Hangman](https://en.wikipedia.org/wiki/Hangman_(game)) game implementation in Kotlin.
-
-### Layout
-#### Portrait
-![](list02/HangMan/media/lyt.png)
-
-#### Landscape
-![](list02/HangMan/media/lytland.png)
-
-#### Lost Popup
-
-![](list02/HangMan/media/rs.png)
-
-### Code Example
-```kotlin
-    private fun onOrientationChange(savedInstanceState: Bundle) {
-        imageIndex = savedInstanceState.getInt("imageIndex")
-        displayNextHangmanImage(imageIndex)
-        currentWord = savedInstanceState.getString("currentWord").toString()
-        val alreadyDiscoveredLettersAsStr = savedInstanceState.getString("alreadyDiscoveredLetters")
-        if (alreadyDiscoveredLettersAsStr != null) {
-            alreadyDiscoveredLetters = alreadyDiscoveredLettersAsStr.split(" ").toHashSet()
-        }
-        showBlurredWord(currentWord)
-        for (x in alreadyDiscoveredLetters) {
-            showLetter(x)
-        }
-
-    }
-```
-----------------------------
 # [ToDo](https://github.com/sqoshi/mobile-applications/tree/master/list03/ToDo)
 
 ### Introduction
@@ -275,120 +293,129 @@ private fun setUpNotification(hour: Int, minute: Int, day: Int, month: Int, year
     }
 ```
 
-
-
 ----------------------------
 
-## Snapgram
-### Introduction
-Application is some way similar to `instagram`. Users of application can take images, rate them and comment.
-### General Info
-Main activity handles viewpager2 that switches between gallery and camera page.
+# [HangMan](https://github.com/sqoshi/mobile-applications/tree/master/list02/TicTacToe)
+[Hangman](https://en.wikipedia.org/wiki/Hangman_(game)) game implementation in Kotlin.
 
-Clicking any image object in gallery, which is compressed to achieve better average performance, carries us out with a new intent to a new activity.
-New activity handles next viewpager2, that represents detailed objects from gallery.
-
-Images are stored in a special directory under media/thisApp path, when details are stored in room database.
-
-Screenshots are available in Layout section. 
 ### Layout
-_*[CAUTION\] Layout requires a little more work*_
-#### Gallery
-Gallery contains all objects stored in special directory.
-![](list04/GalleryApp/media/gallery.png)
-#### Camera
-Camera is viewpager2's page that allow user to make images and store them in special path + details in room.
-![](list04/GalleryApp/media/camera.png)
-#### Image
-Section represent single image stored in application, user has possibility to rate photos and comment them. 
-![](list04/GalleryApp/media/image.png)
-### CodeExample
+#### Portrait
+![](list02/HangMan/media/lyt.png)
+
+#### Landscape
+![](list02/HangMan/media/lytland.png)
+
+#### Lost Popup
+
+![](list02/HangMan/media/rs.png)
+
+### Code Example
 ```kotlin
-private fun takePhoto() {
+    private fun onOrientationChange(savedInstanceState: Bundle) {
+        imageIndex = savedInstanceState.getInt("imageIndex")
+        displayNextHangmanImage(imageIndex)
+        currentWord = savedInstanceState.getString("currentWord").toString()
+        val alreadyDiscoveredLettersAsStr = savedInstanceState.getString("alreadyDiscoveredLetters")
+        if (alreadyDiscoveredLettersAsStr != null) {
+            alreadyDiscoveredLetters = alreadyDiscoveredLettersAsStr.split(" ").toHashSet()
+        }
+        showBlurredWord(currentWord)
+        for (x in alreadyDiscoveredLetters) {
+            showLetter(x)
+        }
 
-        val imageCapture = imageCapture ?: return
-        Log.d(Constants.TAG, outputDirectory.toString())
-        val photoFile = File(
-            outputDirectory,
-            SimpleDateFormat(
-                Constants.FILE_NAME_FORMAT,
-                Locale.getDefault()
-            ).format(System.currentTimeMillis()) + ".jpg"
-        )
-
-        val savedUri = Uri.fromFile(photoFile)
+    }
+```
+----------------------------
 
 
-        val outputOption = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+# [TicTacToe](https://github.com/sqoshi/mobile-applications/tree/master/list02/TicTacToe)
 
-        imageCapture.takePicture(
-            outputOption, ContextCompat.getMainExecutor(requireContext()),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    val msg = "Photo saved"
-                    Toast.makeText(
-                        requireActivity(),
-                        "$msg ", Toast.LENGTH_SHORT
-                    ).show()
+[TicTacToe](https://en.wikipedia.org/wiki/Tic-tac-toe) game implementation in Kotlin.
 
-                    // insert image to database
-                    val img = Image(
-                        0,
-                        path = savedUri.path!!,
-                        description = null,
-                        rating = null
-                    )
-                    mImageViewModel.addImage(img)
+Games offers 2 boards in size 3x3 and 5x5.
+
+Players can play kotlin.maxint rounds and still recognize who is winning.
+
+### Layout
+#### Main
+![](list02/TicTacToe/media/front.png)
+
+#### Board3x3
+![](list02/TicTacToe/media/3x3.png)
+
+#### Round Win
+Example win in 5x5 board mode.
+
+![](list02/TicTacToe/media/5x5r.png)
+
+### Code Example
+```kotlin
+    private fun onButtonClick(button: Button, r: Int, c: Int) {
+        if (!isFieldBusy(button)) {
+            if (player1Turn) {
+                button.text = player1Symbol
+                button.setBackgroundColor(Color.parseColor("#5e60ce"))
+                player1Turn = false
+                player1Fields.add(intArrayOf(r, c))
+                if (hasWin(player1Fields)) {
+                    basicAlert(findViewById(R.id.resetButton), "Player1 has won")
+                    player1Score += 1
+                    updateScore(player1ScoreTextView, player1Score)
 
                 }
 
-                override fun onError(exception: ImageCaptureException) {
-                    Log.d(Constants.TAG, "onError: ${exception.message}", exception)
+            } else {
+                button.text = player2Symbol
+                button.setBackgroundColor(Color.parseColor("#64dfdf"))
+                player1Turn = true
+                player2Fields.add(intArrayOf(r, c))
+                if (hasWin(player2Fields)) {
+                    basicAlert(findViewById(R.id.resetButton), "Player2 has won")
+                    player2Score += 1
+                    updateScore(player2ScoreTextView, player2Score)
                 }
 
             }
-        )
 
+            if ((player1Fields.size + player2Fields.size).toDouble() == size.toDouble().pow(2.0)) {
+                basicAlert(findViewById(R.id.resetButton), "Draw")
+                roundCounter++
+            }
+        } else {
+            Toast.makeText(applicationContext, "Field is busy.", Toast.LENGTH_SHORT).show()
+
+        }
     }
 ```
 
 ----------------------------
-## Arcanoid
-<p align="center">
-  <img src="list05/Arcanoid/media/arca-icon.png" width="80"/>
-</p>
-
-
-### Introduction
-Simple implementation of very popular game [Arcanoid](https://en.wikipedia.org/wiki/Arkanoid). Two game modes `multiplayer` and `singleplayer` allow to play with friends and break your records. Video of both modes are avaible in [multiplayer](#video) [singleplayer](#video-1)
-
-![](list05/Arcanoid/media/game.png)
-
-### General Info
-Each user register his nickname in database. Registration is automatical, it does mean that first login stores nickname in database ( if nickname is available). 
 
 
 
+# [Roshambo](https://github.com/sqoshi/mobile-applications/tree/master/list01/exercise2)
 
-#### Multiplayer
-When user want to play with friends he need to join or create a room. Each room contains Game configuration (rows, columns, mode(EASY,HARD,MEDIUM)). Room may be created by every user and configured as only he wish.
-![](list05/Arcanoid/media/rooms.png)
-Lobby is a list of rooms that are open
- at the moment. By clicking list item player joins as a guest and contest begin. The one who first destroys all the bricks wins. 
+[Rock paper scissors](https://en.wikipedia.org/wiki/Rock_paper_scissors).
+Simple game implementation in Kotlin.
 
-##### Video
-https://user-images.githubusercontent.com/43937286/117873213-d3ecfc80-b29f-11eb-9aab-1ddb09e2f876.mp4
+### Layout
+#### Portrait
+![](list01/media/s1.png)
 
-##### Database
-Communication is owed to the firebase.
-Players listening opponents score and communicating in real time in such way.
-
-![](list05/Arcanoid/media/database.png)
-
-#### Singleplayer
-When user playing singleplayer mode he just beat next stages and local `room` database stores his achievements ( records ).
-
-##### Video
-https://user-images.githubusercontent.com/43937286/117873233-da7b7400-b29f-11eb-8744-9b43241c9d68.mp4
-
-----------------------------
+#### Landscape
+![](list01/media/s2.png)
+### Code Example
+```kotlin
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        if (savedInstanceState != null) {
+            val value = savedInstanceState.getInt("counter")
+            binding.counter.text = value.toString()
+            counter = value
+        }
+    }
+```
+---------------------------
