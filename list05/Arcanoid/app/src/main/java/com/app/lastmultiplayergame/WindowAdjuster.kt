@@ -7,10 +7,12 @@ import android.view.WindowManager
 
 /**
  * [(DRY)] Allow to not repeat code.
- * Allow to hide menubar,statusbar,actionbar.
  */
 class WindowAdjuster {
     companion object {
+        /**
+         * Allow to hide menubar,statusbar,actionbar.
+         */
         fun hideMenu(
             window: Window,
             actionBar: ActionBar?,
