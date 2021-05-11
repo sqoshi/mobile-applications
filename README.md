@@ -351,8 +351,10 @@ private fun takePhoto() {
   <img src="list05/Arcanoid/media/arca-icon.png" width="100"/>
 </p>
 ### Multiplayer
+
 https://user-images.githubusercontent.com/43937286/117873213-d3ecfc80-b29f-11eb-9aab-1ddb09e2f876.mp4
 
+### Singleplayer
 
 https://user-images.githubusercontent.com/43937286/117873233-da7b7400-b29f-11eb-8744-9b43241c9d68.mp4
 
