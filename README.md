@@ -9,6 +9,7 @@
     - [Singleplayer](#singleplayer)
       - [Video](#video-1)
   - [Code Example](#code-example)
+  - [Technologies](#technologies)
 - [Snapgram](#snapgram)
   - [Introduction](#introduction-1)
   - [General Info](#general-info-1)
@@ -16,7 +17,8 @@
     - [Gallery](#gallery)
     - [Camera](#camera)
     - [Image](#image)
-  - [CodeExample](#codeexample)
+  - [Code Example](#code-example-1)
+  - [Technologies](#technologies-1)
 - [ToDo](#todo)
     - [Introduction](#introduction-2)
     - [General Info](#general-info-2)
@@ -34,24 +36,35 @@
       - [Landscape](#landscape)
         - [Tasks list](#tasks-list-1)
         - [Task addition](#task-addition)
-    - [Code Example](#code-example-1)
+    - [Code Example](#code-example-2)
+  - [Technologies](#technologies-2)
+- [Color Focus](#color-focus)
+  - [Installation](#installation)
+  - [Launch](#launch)
+  - [Introduction](#introduction-3)
+  - [General Info](#general-info-3)
+  - [Code Example](#code-example-3)
+  - [Technologies](#technologies-3)
 - [HangMan](#hangman)
     - [Layout](#layout-2)
       - [Portrait](#portrait-1)
       - [Landscape](#landscape-1)
       - [Lost Popup](#lost-popup)
-    - [Code Example](#code-example-2)
+    - [Code Example](#code-example-4)
+  - [Technologies](#technologies-4)
 - [TicTacToe](#tictactoe)
     - [Layout](#layout-3)
       - [Main](#main)
       - [Board3x3](#board3x3)
       - [Round Win](#round-win)
-    - [Code Example](#code-example-3)
+    - [Code Example](#code-example-5)
+  - [Technologies](#technologies-5)
 - [Roshambo](#roshambo)
     - [Layout](#layout-4)
       - [Portrait](#portrait-2)
       - [Landscape](#landscape-2)
-    - [Code Example](#code-example-4)
+    - [Code Example](#code-example-6)
+  - [Technologies](#technologies-6)
 
 
 
@@ -115,6 +128,11 @@ private fun addScoreListener() {
 
 ```
 
+## Technologies
+- firebase
+- kotlin
+- room
+
 ----------------------------
 
 # Snapgram
@@ -140,7 +158,7 @@ Camera is viewpager2's page that allow user to make images and store them in spe
 ### Image
 Section represent single image stored in application, user has possibility to rate photos and comment them. 
 ![](list04/GalleryApp/media/image.png)
-## CodeExample
+## Code Example
 ```kotlin
 private fun takePhoto() {
 
@@ -190,7 +208,10 @@ private fun takePhoto() {
     }
 ```
 
-
+## Technologies
+- xcamera
+- kotlin
+- room
 
 ---------------------------
 
@@ -293,6 +314,96 @@ private fun setUpNotification(hour: Int, minute: Int, day: Int, month: Int, year
     }
 ```
 
+## Technologies
+- kotlin
+- room
+
+
+----------------------------
+
+# Color Focus
+ 
+
+## Installation
+1. [REACTJS](https://www.tecmint.com/install-reactjs-on-ubuntu/)
+2. [RUN REACT-NATIVE CLONED PROJECT](https://stackoverflow.com/questions/49410610/setup-a-cloned-react-native-project-created-via-react-native-init-command/49410772)
+3. `OPTIONAL` [EXPO](https://reactnative.dev/docs/environment-setup) `npm install -g expo-cli`    
+
+## Launch
+1. Run android emulator
+2. Run npm server `npm start`
+3. Deploy game on emulator
+
+## Introduction
+
+Simple `color focus` written in `react-native`. There are three buttons with `correct labels` but wrong colors. User need to click button in background color as fast as only he can. 
+
+## General Info
+
+Game improves focus ability.
+
+![](list06/color-focus/media/rnative.png)
+
+## Code Example
+```javascript
+export default class App extends React.Component {
+    state = {
+        bcg: 'blue',
+        points: 0
+    }
+
+    handleUpdate(value, bcg) {
+        if (value.toLowerCase() == bcg) {
+            this.setState({
+                bcg: randomColor(),
+                points: this.state.points + 1
+            })
+        } else {
+            this.setState({bcg: randomColor(), points: this.state.points-1})
+        }
+    }
+
+    render() {
+        return (
+            <View
+                style={{
+                flex: 1,
+                backgroundColor: this.state.bcg,
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <Text style={{
+                    flex: 1,
+                    fontSize: 24,
+                    color: 'white'
+                }}>Points: {this.state.points}</Text>
+                <StatusBar style="auto"/>
+                <View style={styles.btnBox}>
+                    <View style={styles.btn}>
+                        <Button
+                            title="RED"
+                            color="blue"
+                            onPress={() => this.handleUpdate("red", this.state.bcg)}></Button>
+                    </View>
+                    <View style={styles.btn}>
+                        <Button title="BLUE" color="green" onPress={() => this.handleUpdate("blue", this.state.bcg)}></Button>
+                    </View>
+                    <View style={styles.btn}>
+                        <Button title="GREEN" color="red" onPress={() => this.handleUpdate("green", this.state.bcg)}></Button>
+                    </View>
+                </View>
+            </View>
+
+        );
+    }
+}
+```
+## Technologies
+- react-native
+- expo
+- nodejs
+
+
 ----------------------------
 
 # [HangMan](https://github.com/sqoshi/mobile-applications/tree/master/list02/TicTacToe)
@@ -326,6 +437,10 @@ private fun setUpNotification(hour: Int, minute: Int, day: Int, month: Int, year
 
     }
 ```
+
+## Technologies
+- kotlin
+
 ----------------------------
 
 
@@ -389,6 +504,9 @@ Example win in 5x5 board mode.
     }
 ```
 
+## Technologies
+- kotlin
+
 ----------------------------
 
 
@@ -418,4 +536,9 @@ Simple game implementation in Kotlin.
         }
     }
 ```
+
+## Technologies
+- kotlin
+
+
 ---------------------------

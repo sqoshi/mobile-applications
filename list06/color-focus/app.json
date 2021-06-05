@@ -1,0 +1,12 @@
+{
+  "name": "guess-number",
+  "displayName": "guess-number",
+  "expo": {
+    "name": "guess-number",
+    "slug": "guess-number",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
